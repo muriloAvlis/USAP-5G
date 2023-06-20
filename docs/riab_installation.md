@@ -21,7 +21,7 @@ Set the branch
 git checkout master
 ```
 
-Deploy RIAB on the machine/VM
+Deploy RIAB on the machine or VM
 
 ```bash
 make riab OPT=oai VER=v1.4.0
