@@ -1,0 +1,23 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: qmai
+  namespace: riab
+spec:
+  selector:
+    matchLabels:
+      app: qmai
+  template:
+    metadata:
+      labels:
+        app: qmai
+    spec:
+      containers:
+        - name: qmai
+          image: muriloavlis/qmai:dev
+          resources:
+            limits:
+              memory: "1Gi"
+              cpu: "800m"
+          ports:
+            - containerPort: 80
