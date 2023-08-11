@@ -1,4 +1,4 @@
-package qmaiXapp
+package e2Connectivity
 
 // import ONF ONOS RIC SDK
 import (
@@ -12,7 +12,3 @@ func NewE2Client(svcModelName, svcModelVersion string) e2client.Client {
 		e2client.WithEncoding(e2client.ProtoEncoding))
 	return client
 }
-
-// func E2Subscription(nodeID string) {
-
-// }

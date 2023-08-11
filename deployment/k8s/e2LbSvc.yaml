@@ -7,7 +7,7 @@ spec:
   selector:
     app.kubernetes.io/name: onos-e2t
   ports:
-    - name: nbgrpc
+    - name: e2grpc
       protocol: TCP
       port: 5150
       targetPort: 5150

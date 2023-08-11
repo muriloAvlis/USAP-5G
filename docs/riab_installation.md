@@ -24,5 +24,5 @@ git checkout master
 Deploy RIAB on the machine or VM
 
 ```bash
-make riab OPT=oai VER=v1.4.0
+make riab OPT=oai VER=stable
 ```
