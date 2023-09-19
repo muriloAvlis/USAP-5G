@@ -1,11 +1,11 @@
-FROM golang:1.20.5-alpine
+FROM golang:1.21-alpine
 
-WORKDIR /root
+WORKDIR /usr/src/qmai
+
+COPY go.mod go.sum ./
+RUN go mod download && go mod verify
 
 COPY . .
-
-RUN go get github.com/onosproject/onos-ric-sdk-go
-
-RUN go build -v -o /usr/local/bin/qmai main.go
+RUN go build -v -o /usr/local/bin/qmai ./cmd/main.go
 
 ENTRYPOINT ["qmai"]

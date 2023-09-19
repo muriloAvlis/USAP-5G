@@ -1,8 +1,11 @@
 module github.com/muriloAvlis/qmai
 
-go 1.21.0
+go 1.21.1
 
-require github.com/onosproject/onos-ric-sdk-go v0.8.12
+require (
+	github.com/onosproject/onos-api/go v0.10.31
+	github.com/onosproject/onos-ric-sdk-go v0.8.12
+)
 
 require (
 	github.com/Shopify/sarama v1.31.1 // indirect
@@ -28,7 +31,6 @@ require (
 	github.com/magiconair/properties v1.8.6 // indirect
 	github.com/mitchellh/go-homedir v1.1.0 // indirect
 	github.com/mitchellh/mapstructure v1.4.3 // indirect
-	github.com/onosproject/onos-api/go v0.10.31 // indirect
 	github.com/onosproject/onos-lib-go v0.10.24 // indirect
 	github.com/pelletier/go-toml v1.9.4 // indirect
 	github.com/pelletier/go-toml/v2 v2.0.0-beta.8 // indirect

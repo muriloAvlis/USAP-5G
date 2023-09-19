@@ -14,10 +14,10 @@ spec:
     spec:
       containers:
         - name: qmai
-          image: muriloavlis/qmai:dev
+          image: muriloavlis/qmai:latest
           resources:
             limits:
               memory: "1Gi"
               cpu: "800m"
-          ports:
-            - containerPort: 80
+          # ports:
+          #   - containerPort: 80
