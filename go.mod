@@ -3,7 +3,7 @@ module github.com/muriloAvlis/qmai
 go 1.21.1
 
 require (
-	github.com/onosproject/onos-api/go v0.10.31
+	github.com/onosproject/onos-api/go v0.10.32
 	github.com/onosproject/onos-ric-sdk-go v0.8.12
 )
 
