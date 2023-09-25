@@ -3,6 +3,7 @@ package e2Connectivity
 // import ONF ONOS RIC SDK
 import (
 	e2api "github.com/onosproject/onos-api/go/onos/e2t/e2/v1beta1"
+	"github.com/onosproject/onos-lib-go/pkg/logging"
 	e2client "github.com/onosproject/onos-ric-sdk-go/pkg/e2/v1beta1"
 )
 
@@ -16,12 +17,13 @@ var (
 	eventTriggerData     []byte // event trigger payload
 	actionDefinitionData []byte // action definitions payload
 	actions              []e2api.Action
+	log                  = logging.GetLogger("qmai", "e2Connectivity", "e2Connectivity")
 )
 
 // Creates a New E2 Client
-func NewE2Client(e2tAddr string) e2client.Client {
-	client := e2client.NewClient(e2client.WithAppID(e2client.AppID("qmai")),
-		e2client.WithE2TAddress(e2tAddr, 5150),
+func NewE2Client(e2tAddr string, e2Port int, appName string) e2client.Client {
+	client := e2client.NewClient(e2client.WithAppID(e2client.AppID(appName)),
+		e2client.WithE2TAddress(e2tAddr, e2Port),
 		e2client.WithServiceModel(e2client.ServiceModelName(svcModelName),
 			e2client.ServiceModelVersion(svcModelVersion)),
 		e2client.WithEncoding(e2client.ProtoEncoding))
