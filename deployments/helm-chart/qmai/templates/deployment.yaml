@@ -9,6 +9,8 @@ spec:
       app: qmai
   template:
     metadata:
+      annotations:
+        proxy.onosproject.org/inject: "true"
       labels:
         app: qmai
     spec:
@@ -17,7 +19,9 @@ spec:
           image: muriloavlis/qmai:latest
           resources:
             limits:
-              memory: "1Gi"
-              cpu: "800m"
-          # ports:
-          #   - containerPort: 80
+              memory: "512Mi"
+              cpu: "500m"
+          ports:
+            - containerPort: 5150
+              name: grpc
+              protocol: TCP
