@@ -11,7 +11,7 @@ import (
 // Topo configs
 type Config struct {
 	TopoAddress string
-	GRPCPort    int
+	TopoPort    int
 }
 
 // TopoClient R-NIB client interface
@@ -31,11 +31,86 @@ var log = logging.GetLogger("qmai", "rnib")
 
 // creates a new Topo client
 func NewClient(config Config) (Client, error) {
-	sdkClient, err := toposdk.NewClient()
+	sdkClient, err := toposdk.NewClient(
+		toposdk.WithTopoAddress(
+			config.TopoAddress,
+			config.TopoPort,
+		),
+	)
 	if err != nil {
 		return Client{}, err
 	}
 	return Client{
 		rnibClient: sdkClient,
 	}, nil
+}
+
+// create a control relation filter
+func getControlRelationFilter() *topoapi.Filters {
+	filter := &topoapi.Filters{
+		KindFilter: &topoapi.Filter{
+			Filter: &topoapi.Filter_Equal_{
+				Equal_: &topoapi.EqualFilter{
+					Value: topoapi.CONTROLS,
+				},
+			},
+		},
+	}
+	return filter
+}
+
+// gets E2 node aspects
+func (c *Client) GetE2NodeAspects(ctx context.Context, nodeID topoapi.ID) (*topoapi.E2Node, error) {
+	object, err := c.rnibClient.Get(ctx, nodeID)
+	if err != nil {
+		return nil, err
+	}
+	e2Node := &topoapi.E2Node{}
+	err = object.GetAspect(e2Node)
+	return e2Node, err
+
+}
+
+// Checks if an E2 Node has KPM Service Model
+func (c *Client) HasKPMRanFunction(ctx context.Context, nodeID topoapi.ID, oid string) bool {
+	e2Node, err := c.GetE2NodeAspects(ctx, nodeID)
+	if err != nil {
+		// log.Warn(err)
+		return false
+	}
+
+	for _, sm := range e2Node.GetServiceModels() {
+		if sm.OID == oid {
+			return true
+		}
+	}
+
+	return false
+}
+
+// WatchE2Connections watch e2 node connection changes
+func (c *Client) WatchE2Connections(ctx context.Context, ch chan topoapi.Event) error {
+	err := c.rnibClient.Watch(ctx, ch, toposdk.WithWatchFilters(getControlRelationFilter()))
+	if err != nil {
+		return err
+	}
+	return nil
+}
+
+// E2NodeIDs lists all of connected E2 nodes
+func (c *Client) E2NodeIDs(ctx context.Context, oid string) ([]topoapi.ID, error) {
+	objects, err := c.rnibClient.List(ctx, toposdk.WithListFilters(getControlRelationFilter()))
+	if err != nil {
+		return nil, err
+	}
+
+	e2NodeIDs := make([]topoapi.ID, len(objects))
+	for _, object := range objects {
+		relation := object.Obj.(*topoapi.Object_Relation)
+		e2NodeID := relation.Relation.TgtEntityID
+		if c.HasKPMRanFunction(ctx, e2NodeID, oid) {
+			e2NodeIDs = append(e2NodeIDs, e2NodeID)
+		}
+	}
+	return e2NodeIDs, nil
 }

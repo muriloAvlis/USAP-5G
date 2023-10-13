@@ -9,7 +9,7 @@ RUN go build -v -o ./build/_output/${XAPPNAME} ./cmd/${XAPPNAME}
 
 FROM alpine:3.18
 
-# RUN apk add libc6-compat
+RUN apk add libc6-compat
 USER nobody
 COPY --from=build /usr/src/github.com/muriloAvlis/qmai/build/_output/qmai /usr/local/bin/qmai
 ENTRYPOINT ["qmai"]

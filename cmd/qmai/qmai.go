@@ -26,8 +26,9 @@ func main() {
 		KeyPath:      "",
 		CertPath:     "",
 		E2tEndpoint:  "onos-e2t",
+		E2tPort:      5150,
 		TopoEndpoint: "onos-topo",
-		GRPCPort:     5150,
+		TopoPort:     5150,
 		ConfigPath:   "/etc/qmai/config/config.json",
 		SMName:       "oran-e2sm-kpm",
 		SMVersion:    "v2",
@@ -42,7 +43,7 @@ func main() {
 	// configures a shutdown signal for xApp
 	killSignal := make(chan os.Signal, 1)
 	signal.Notify(killSignal, os.Interrupt, syscall.SIGTERM, syscall.SIGINT)
-	log.Debug("xApp: received a shutdown signal", <-killSignal)
+	log.Debug("xApp: received a shutdown signal ", <-killSignal)
 
 	// finalizes xApp processes
 	mgr.Close()
