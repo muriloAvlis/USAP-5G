@@ -3,6 +3,7 @@ package rnib
 import (
 	"context"
 
+	"github.com/atomix/atomix/api/errors"
 	topoapi "github.com/onosproject/onos-api/go/onos/topo"
 	"github.com/onosproject/onos-lib-go/pkg/logging"
 	toposdk "github.com/onosproject/onos-ric-sdk-go/pkg/topo"
@@ -113,4 +114,37 @@ func (c *Client) E2NodeIDs(ctx context.Context, oid string) ([]topoapi.ID, error
 		}
 	}
 	return e2NodeIDs, nil
+}
+
+// get list of cells for each E2 node
+func (c *Client) GetCells(ctx context.Context, nodeID topoapi.ID) ([]*topoapi.E2Cell, error) {
+	filter := &topoapi.Filters{
+		RelationFilter: &topoapi.RelationFilter{
+			SrcId:        string(nodeID),
+			RelationKind: topoapi.CONTAINS,
+			TargetKind:   "",
+		},
+	}
+
+	objects, err := c.rnibClient.List(ctx, toposdk.WithListFilters(filter))
+	if err != nil {
+		return nil, err
+	}
+
+	var cells []*topoapi.E2Cell
+	for _, obj := range objects {
+		cellObject := &topoapi.E2Cell{}
+		err := obj.GetAspect(cellObject)
+		if err != nil {
+			log.Warn("Cell entity %s has no E2Cell aspect", obj.ID)
+			return nil, err
+		}
+		cells = append(cells, cellObject)
+	}
+
+	if len(cells) == 0 {
+		return nil, errors.New(errors.NotFound, "There is no cell to subscribe for E2 node %s", nodeID)
+	}
+
+	return cells, nil
 }
