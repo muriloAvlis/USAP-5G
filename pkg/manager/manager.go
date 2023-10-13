@@ -12,8 +12,9 @@ type Config struct {
 	KeyPath      string
 	CertPath     string
 	E2tEndpoint  string
+	E2tPort      int
 	TopoEndpoint string
-	GRPCPort     int
+	TopoPort     int
 	ConfigPath   string
 	SMName       string
 	SMVersion    string
@@ -34,8 +35,9 @@ func NewManager(config Config) *Manager {
 	e2Config := e2.Config{
 		AppID:       config.AppID,
 		E2tAddress:  config.E2tEndpoint,
+		E2tPort:     config.E2tPort,
 		TopoAddress: config.TopoEndpoint,
-		GRPCPort:    config.GRPCPort,
+		TopoPort:    config.TopoPort,
 		SMName:      config.SMName,
 		SMVersion:   config.SMVersion,
 	}
@@ -56,7 +58,7 @@ func NewManager(config Config) *Manager {
 // runs xAPP
 func (m *Manager) Run() {
 	if err := m.start(); err != nil {
-		log.Errorf("Unable when starting QMAI: %v", err)
+		log.Errorf("Unable when starting Manager: %v", err)
 	}
 }
 
