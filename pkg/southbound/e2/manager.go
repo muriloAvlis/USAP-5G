@@ -3,9 +3,11 @@ package e2
 // import ONF ONOS RIC SDK
 import (
 	"context"
+	"strings"
 
+	"github.com/atomix/atomix/api/errors"
+	prototypes "github.com/gogo/protobuf/types"
 	"github.com/muriloAvlis/qmai/pkg/rnib"
-	e2api "github.com/onosproject/onos-api/go/onos/e2t/e2/v1beta1"
 	topoapi "github.com/onosproject/onos-api/go/onos/topo"
 	"github.com/onosproject/onos-lib-go/pkg/logging"
 	e2client "github.com/onosproject/onos-ric-sdk-go/pkg/e2/v1beta1"
@@ -22,6 +24,7 @@ type Config struct {
 }
 
 type Manager struct {
+	config     Config
 	e2client   e2client.Client
 	rnibClient rnib.Client
 }
@@ -98,8 +101,11 @@ func (m *Manager) watchE2Connections(ctx context.Context) error {
 			}
 
 			go func(t topoapi.Event) {
-				log.Debugf("Creating subscription - %v", t)
-				// TODO: Create a new subscription logic
+				log.Debugf("Start subscription process - %v", t)
+				err := m.createSubscription(ctx, e2NodeID)
+				if err != nil {
+					log.Warn(err)
+				}
 			}(topoEvent)
 		} else if topoEvent.Type == topoapi.EventType_REMOVED {
 			continue
@@ -110,31 +116,50 @@ func (m *Manager) watchE2Connections(ctx context.Context) error {
 }
 
 // Creates a subscription spec for KPM v2
-func NewReportSubscription() e2api.SubscriptionSpec {
-	var actionDefinitionData, eventTriggerData []byte // action definitions payload
-	var actions []e2api.Action
-
-	// define a action
-	action := e2api.Action{
-		ID:   100,
-		Type: e2api.ActionType_ACTION_TYPE_REPORT,
-		SubsequentAction: &e2api.SubsequentAction{
-			Type:       e2api.SubsequentActionType_SUBSEQUENT_ACTION_TYPE_CONTINUE,
-			TimeToWait: e2api.TimeToWait_TIME_TO_WAIT_ZERO,
-		},
-		Payload: actionDefinitionData,
+func (m *Manager) createSubscription(ctx context.Context, e2NodeID topoapi.ID) error {
+	log.Info("Creating subscription for E2 node with ID:", e2NodeID)
+	aspects, err := m.rnibClient.GetE2NodeAspects(ctx, e2NodeID)
+	if err != nil {
+		log.Warn(err)
+		return err
 	}
 
-	// slice of actions
-	actions = append(actions, action)
-
-	// subscription spec
-	subSpec := e2api.SubscriptionSpec{
-		Actions: actions,
-		EventTrigger: e2api.EventTrigger{
-			Payload: eventTriggerData,
-		},
+	// get report styles for KPM
+	reportStyles, err := m.getReportStyles(aspects.ServiceModels)
+	if err != nil {
+		log.Warn(err)
+		return err
 	}
 
-	return subSpec
+	// get cells for each E2 Node
+	cells, err := m.rnibClient.GetCells(ctx, e2NodeID)
+	if err != nil {
+		log.Warn(err)
+		return err
+	}
+
+	// TODO
+	// reportPeriod, err := m.config.AppID
+
+	return nil
+}
+
+// get E2 Node report style
+func (m *Manager) getReportStyles(serviceModelsInfo map[string]*topoapi.ServiceModelInfo) ([]*topoapi.KPMReportStyle, error) {
+	for _, sm := range serviceModelsInfo {
+		smName := strings.ToLower(sm.Name)
+		if smName == string(m.config.SMName) && sm.OID == kpmServiceModelOID {
+			kpmRanFunction := &topoapi.KPMRanFunction{}
+			for _, ranFunction := range sm.RanFunctions {
+				if ranFunction.TypeUrl == ranFunction.GetTypeUrl() {
+					err := prototypes.UnmarshalAny(ranFunction, kpmRanFunction)
+					if err != nil {
+						return nil, err
+					}
+					return kpmRanFunction.ReportStyles, nil
+				}
+			}
+		}
+	}
+	return nil, errors.New(errors.NotFound, "cannot retrieve report styles")
 }
