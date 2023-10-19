@@ -21,7 +21,7 @@ func main() {
 
 	// set manager configuration
 	cfg := manager.Config{
-		AppID:        "QMAI",
+		AppID:        "qmai",
 		CAPath:       "",
 		KeyPath:      "",
 		CertPath:     "",
@@ -43,7 +43,7 @@ func main() {
 	// configures a shutdown signal for xApp
 	killSignal := make(chan os.Signal, 1)
 	signal.Notify(killSignal, os.Interrupt, syscall.SIGTERM, syscall.SIGINT)
-	log.Debug("xApp: received a shutdown signal ", <-killSignal)
+	log.Debug("xApp received a shutdown signal ", <-killSignal)
 
 	// finalizes xApp processes
 	mgr.Close()
