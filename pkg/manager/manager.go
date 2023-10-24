@@ -1,6 +1,7 @@
 package manager
 
 import (
+	appConfig "github.com/muriloAvlis/qmai/pkg/config"
 	"github.com/muriloAvlis/qmai/pkg/southbound/e2"
 	"github.com/onosproject/onos-lib-go/pkg/logging"
 )
@@ -22,6 +23,7 @@ type Config struct {
 
 // Manager is an abstract struct for manager
 type Manager struct {
+	appConfig appConfig.Config
 	config    Config
 	E2Manager e2.Manager
 }
@@ -31,9 +33,16 @@ var log = logging.GetLogger("qmai", "manager")
 
 // new xAPP manager
 func NewManager(config Config) *Manager {
+	// initializes app configuration
+	appCfg, err := appConfig.NewConfig(config.ConfigPath)
+	if err != nil {
+		log.Warn(err)
+	}
+
 	// creates a e2Config
 	e2Config := e2.Config{
 		AppID:       config.AppID,
+		AppConfig:   appCfg,
 		E2tAddress:  config.E2tEndpoint,
 		E2tPort:     config.E2tPort,
 		TopoAddress: config.TopoEndpoint,
@@ -48,6 +57,7 @@ func NewManager(config Config) *Manager {
 	}
 
 	manager := &Manager{
+		appConfig: appCfg,
 		config:    config,
 		E2Manager: e2Manager,
 	}

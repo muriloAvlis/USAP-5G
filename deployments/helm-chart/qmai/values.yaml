@@ -2,26 +2,21 @@
 # This is a YAML-formatted file.
 # Declare variables to be passed into your templates.
 
+# App name override
+nameOverride: ""
+fullnameOverride: "qmai"
+
+# Replicas
 replicaCount: 1
 
+# image pull
 image:
-  repository: nginx
-  pullPolicy: IfNotPresent
+  repository: muriloAvlis/qmai
+  pullPolicy: Always
   # Overrides the image tag whose default is the chart appVersion.
-  tag: ""
+  tag: '{{ .Chart.AppVersion }}'
 
 imagePullSecrets: []
-nameOverride: ""
-fullnameOverride: ""
-
-serviceAccount:
-  # Specifies whether a service account should be created
-  create: true
-  # Annotations to add to the service account
-  annotations: {}
-  # The name of the service account to use.
-  # If not set and create is true, a name is generated using the fullname template
-  name: ""
 
 podAnnotations: {}
 
@@ -37,24 +32,25 @@ securityContext: {}
   # runAsUser: 1000
 
 service:
-  type: ClusterIP
-  port: 80
+  grpc:
+    port: 5150
+  gnmi:
+    port: 9339 # It is necessary port ??
+  gui:         # TODO: Would the GUI be here?
+    port: 8000
+    nodePort:
+      enabled: false
+      port: 31800
 
-ingress:
-  enabled: false
-  className: ""
-  annotations: {}
-    # kubernetes.io/ingress.class: nginx
-    # kubernetes.io/tls-acme: "true"
-  hosts:
-    - host: chart-example.local
-      paths:
-        - path: /
-          pathType: ImplementationSpecific
-  tls: []
-  #  - secretName: chart-example-tls
-  #    hosts:
-  #      - chart-example.local
+
+config:
+  qmai:
+    e2tEndpoint: "onos-e2t:5150"
+    kpmVersion: "v2"
+    configJson:
+      reportPeriod:
+        interval: 1000
+        granularity: 1000
 
 resources: {}
   # We usually recommend not to specify default resources and to leave this as a conscious
@@ -71,8 +67,8 @@ resources: {}
 autoscaling:
   enabled: false
   minReplicas: 1
-  maxReplicas: 100
-  targetCPUUtilizationPercentage: 80
+  maxReplicas: 10
+  targetCPUUtilizationPercentage: 70
   # targetMemoryUtilizationPercentage: 80
 
 nodeSelector: {}
@@ -80,3 +76,15 @@ nodeSelector: {}
 tolerations: []
 
 affinity: {}
+
+logging:
+  loggers:
+    root:
+      level: info
+      output:
+        stdout:
+          sink: stdout
+  sinks:
+    stdout:
+      type: stdout
+      stdout: {}

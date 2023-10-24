@@ -5,10 +5,8 @@ import (
 
 	e2api "github.com/onosproject/onos-api/go/onos/e2t/e2/v1beta1"
 	topoapi "github.com/onosproject/onos-api/go/onos/topo"
-	e2smkpmv2 "github.com/onosproject/onos-e2-sm/servicemodels/e2sm_kpm_v2_go/v2/e2sm-kpm-v2-go"
 	"github.com/onosproject/onos-kpimon/pkg/broker"
 	"github.com/onosproject/onos-lib-go/pkg/logging"
-	"google.golang.org/protobuf/proto"
 )
 
 type Monitor struct {
@@ -44,16 +42,8 @@ func (m *Monitor) Start(ctx context.Context) error {
 		}
 	}()
 
+	// TODO: gets indication/measurements and does a decision in select
 	select {
-	case ind := <-m.indChan:
-		indMessage := e2smkpmv2.E2SmKpmIndicationMessage{}
-		err := proto.Unmarshal(ind.IndMsg.Payload, &indMessage)
-		if err != nil {
-			return err
-		}
-		indMsg := indMessage.String()
-		log.Debugf("E2 Node: %s, Pkg Payload: %v", ind.NodeID, indMsg)
-		return nil
 	case err := <-errCh:
 		return err
 	case <-ctx.Done():
