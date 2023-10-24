@@ -8,7 +8,7 @@ The certificates were generated based on the script
 [generate_certs.sh](/deployments/helm-chart/qmai/files/certs/generate_certs.sh), as shown below:
 
 ```bash
-generate-certs.sh qmai-xapp.gercom.ufpa.br
+generate-certs.sh qmai.gercom.ufpa.br
 ```
 
 In this folder they **must** be (re)named

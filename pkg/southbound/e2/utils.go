@@ -84,31 +84,31 @@ func (m *Manager) createSubscriptionActions(ctx context.Context, reportStyle *to
 			return nil, err
 		}
 
-		// // gets a Action Definition format
-		// e2smKpmActionDefinition, err := pdubuilder.CreateE2SmKpmActionDefinitionFormat1(reportStyle.Type, actionDefinition)
-		// if err != nil {
-		// 	return nil, err
-		// }
+		// gets a Action Definition format
+		e2smKpmActionDefinition, err := pdubuilder.CreateE2SmKpmActionDefinitionFormat1(reportStyle.Type, actionDefinition)
+		if err != nil {
+			return nil, err
+		}
 
-		// // convert Action Definition to []bytes
-		// e2smKpmActionDefinitionProto, err := proto.Marshal(e2smKpmActionDefinition)
-		// if err != nil {
-		// 	return nil, err
-		// }
+		// convert Action Definition to []bytes
+		e2smKpmActionDefinitionProto, err := proto.Marshal(e2smKpmActionDefinition)
+		if err != nil {
+			return nil, err
+		}
 
-		// // creates an action
-		// action := &e2api.Action{
-		// 	ID:   int32(index),
-		// 	Type: e2api.ActionType_ACTION_TYPE_REPORT,
-		// 	SubsequentAction: &e2api.SubsequentAction{
-		// 		Type:       e2api.SubsequentActionType_SUBSEQUENT_ACTION_TYPE_CONTINUE,
-		// 		TimeToWait: e2api.TimeToWait_TIME_TO_WAIT_ZERO,
-		// 	},
-		// 	Payload: e2smKpmActionDefinitionProto,
-		// }
+		// creates an action
+		action := &e2api.Action{
+			ID:   int32(index),
+			Type: e2api.ActionType_ACTION_TYPE_REPORT,
+			SubsequentAction: &e2api.SubsequentAction{
+				Type:       e2api.SubsequentActionType_SUBSEQUENT_ACTION_TYPE_CONTINUE,
+				TimeToWait: e2api.TimeToWait_TIME_TO_WAIT_ZERO,
+			},
+			Payload: e2smKpmActionDefinitionProto,
+		}
 
 		// adds action to list
-		// actions = append(actions, *action)
+		actions = append(actions, *action)
 	}
 
 	return actions, nil

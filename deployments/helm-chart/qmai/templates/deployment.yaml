@@ -9,17 +9,15 @@ spec:
   replicas: {{ .Values.replicaCount }}
   selector:
     matchLabels:
-      app: {{ template "qmai.fullname" . }}
+      name: {{ template "qmai.fullname" . }}
       resource: {{ template "qmai.fullname" . }}
-      {{- include "qmai.selectorLabels" . | nindent 6 }}
   template:
     metadata:
       annotations:
         proxy.onosproject.org/inject: "true"
       labels:
-        app: {{ template "qmai.fullname" . }}
+        name: {{ template "qmai.fullname" . }}
         resource: {{ template "qmai.fullname" . }}
-        {{- include "qmai.selectorLabels" . | nindent 6 }}
     spec:
       securityContext:
         {{- toYaml .Values.podSecurityContext | nindent 8 }}
@@ -42,21 +40,21 @@ spec:
               containerPort: {{ .Values.service.grpc.port }}
             - name: gnmi
               containerPort: {{ .Values.service.gnmi.port}}
-          startupProbe:
-            tcpSocket:
-              port: 5150
-            periodSeconds: 5
-            failureThreshold: 60
-          readinessProbe:
-            tcpSocket:
-              port: 5150
-            initialDelaySeconds: 10
-            periodSeconds: 10
-          livenessProbe:
-            tcpSocket:
-              port: 5150
-            initialDelaySeconds: 10
-            periodSeconds: 10
+          # startupProbe: ## TODO: creates a GRPC server in xApp
+          #   tcpSocket:
+          #     port: 5150
+          #   periodSeconds: 5
+          #   failureThreshold: 60
+          # readinessProbe:
+          #   tcpSocket:
+          #     port: 5150
+          #   initialDelaySeconds: 10
+          #   periodSeconds: 10
+          # livenessProbe:
+          #   tcpSocket:
+          #     port: 5150
+          #   initialDelaySeconds: 10
+          #   periodSeconds: 10
           volumeMounts:
             - name: secret
               mountPath: /etc/qmai/certs

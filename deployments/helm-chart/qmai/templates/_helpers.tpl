@@ -46,7 +46,7 @@ app.kubernetes.io/managed-by: {{ .Release.Service }}
 {{/*
 Selector labels
 */}}
-{{- define "qmai.selectorLabels" -}}
+{{- define "qmai.selectorLabels" -}} # TODO: FIXME in deployment.yaml
 app.kubernetes.io/name: {{ include "qmai.name" . }}
 app.kubernetes.io/instance: {{ .Release.Name }}
 {{- end -}}
@@ -55,15 +55,10 @@ app.kubernetes.io/instance: {{ .Release.Name }}
 qmai image name
 */}}
 {{- define "qmai.imagename" -}}
-{{- if .Values.global.image.registry -}}
-{{- printf "%s/" .Values.global.image.registry -}}
-{{- else if .Values.image.registry -}}
-{{- printf "%s/" .Values.image.registry -}}
-{{- end -}}
 {{- printf "%s:" .Values.image.repository -}}
-{{- if .Values.global.image.tag -}}
-{{- .Values.global.image.tag -}}
-{{- else -}}
-{{- tpl .Values.image.tag . -}}
+{{- if .Values.image.tag -}}
+{{- .Values.image.tag -}}
+{{- else if .Chart.AppVersion -}}
+{{- .Chart.AppVersion -}}
 {{- end -}}
 {{- end -}}
