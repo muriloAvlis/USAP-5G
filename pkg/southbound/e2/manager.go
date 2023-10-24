@@ -7,18 +7,20 @@ import (
 
 	"github.com/atomix/atomix/api/errors"
 	prototypes "github.com/gogo/protobuf/types"
-	"github.com/muriloAvlis/qmai/pkg/monitoring"
+	appConfig "github.com/muriloAvlis/qmai/pkg/config"
 	"github.com/muriloAvlis/qmai/pkg/rnib"
-	subutils "github.com/muriloAvlis/qmai/utils/subscription"
 	e2api "github.com/onosproject/onos-api/go/onos/e2t/e2/v1beta1"
 	topoapi "github.com/onosproject/onos-api/go/onos/topo"
 	"github.com/onosproject/onos-kpimon/pkg/broker"
+	"github.com/onosproject/onos-kpimon/pkg/store/actions"
+	"github.com/onosproject/onos-kpimon/pkg/store/measurements"
 	"github.com/onosproject/onos-lib-go/pkg/logging"
 	e2client "github.com/onosproject/onos-ric-sdk-go/pkg/e2/v1beta1"
 )
 
 type Config struct {
 	AppID       string
+	AppConfig   appConfig.Config
 	E2tAddress  string
 	E2tPort     int
 	TopoAddress string
@@ -27,12 +29,15 @@ type Config struct {
 	SMVersion   string
 }
 
+// TODO: creates appConfig path
 type Manager struct {
-	e2client     e2client.Client
-	rnibClient   rnib.Client
-	serviceModel ServiceModelOptions
-	streams      broker.Broker
-	indCh        chan *monitoring.E2NodeIndication
+	appConfig        appConfig.Config
+	e2client         e2client.Client
+	rnibClient       rnib.Client
+	serviceModel     ServiceModelOptions
+	streams          broker.Broker
+	actionStore      actions.Store
+	measurementStore measurements.Store
 }
 
 const (
@@ -66,18 +71,17 @@ func NewManager(config Config) (Manager, error) {
 		return Manager{}, err
 	}
 
-	// creates a indication channel
-	indCh := make(chan *monitoring.E2NodeIndication)
-
 	return Manager{
+		appConfig:  config.AppConfig,
 		e2client:   e2Client,
 		rnibClient: rnibClient,
 		serviceModel: ServiceModelOptions{
 			Name:    config.SMName,
 			Version: config.SMVersion,
 		},
-		streams: broker.NewBroker(),
-		indCh:   indCh,
+		streams:          broker.NewBroker(),
+		actionStore:      actions.NewStore(),
+		measurementStore: measurements.NewStore(),
 	}, nil
 }
 
@@ -155,71 +159,82 @@ func (m *Manager) createSubscription(ctx context.Context, e2NodeID topoapi.ID) e
 	// gets E2 Node SM aspects
 	aspects, err := m.rnibClient.GetE2NodeAspects(ctx, e2NodeID)
 	if err != nil {
+		log.Warn(err)
 		return err
 	}
 
 	// gets report styles for KPM (KPM RAN Function)
-	_, err = m.getReportStyles(aspects.ServiceModels)
-	if err != nil {
-		return err
-	}
-
-	// creates event trigger data
-	reportPeriod := 1000 // 1000 ms
-	eventTriggerData, err := subutils.CreateEventTriggerData(int64(reportPeriod))
-
-	if err != nil {
-		return err
-	}
-
-	// creates actions
-	actions := m.createSubscriptionActions()
-
-	ch := make(chan e2api.Indication)
-	node := m.e2client.Node(e2client.NodeID(e2NodeID))
-	subName := "qmai-kpm-subscription"
-	subSpec := e2api.SubscriptionSpec{
-		Actions: actions,
-		EventTrigger: e2api.EventTrigger{
-			Payload: eventTriggerData,
-		},
-	}
-
-	channelID, err := node.Subscribe(ctx, subName, subSpec, ch)
-	if err != nil {
-		return err
-	}
-
-	log.Debugf("Channel ID: %s", channelID)
-
-	streamReader, err := m.streams.OpenReader(ctx, node, subName, channelID, subSpec)
-	if err != nil {
-		return err
-	}
-
-	go m.sendIndicationOnStream(streamReader.StreamID(), ch)
-
-	monitor := monitoring.NewMonitor(streamReader, e2NodeID, m.indCh)
-	err = monitor.Start(ctx)
+	reportStyles, err := m.getReportStyles(aspects.ServiceModels)
 	if err != nil {
 		log.Warn(err)
+		return err
+	}
+
+	// gets cells by E2 Node ID
+	cells, err := m.rnibClient.GetCells(ctx, e2NodeID)
+	if err != nil {
+		log.Warn(err)
+		return err
+	}
+
+	// sets report period
+	reportPeriod := 1000 // default: 1000 ms ?
+	log.Debug(m.appConfig)
+	// reportPeriod, err := m.appConfig.GetReportPeriod() // default: 1000 ms ?
+	// if err != nil {
+	// 	log.Warn(err)
+	// 	return err
+	// }
+	log.Debugf("Report period: %d", reportPeriod)
+
+	// creates event trigger data
+	eventTriggerData, err := CreateEventTriggerData(int64(reportPeriod))
+	if err != nil {
+		log.Warn(err)
+		return err
+	}
+
+	// sets granularity period
+	granularityPeriod := 1000 // default: 1000 ms ?
+	log.Debugf("Granularity: %d", granularityPeriod)
+
+	// prints reports styles
+	log.Debugf("Report styles:%v", reportStyles)
+
+	// for each report style creates a subscription
+	for _, reportStyle := range reportStyles {
+		actions, err := m.createSubscriptionActions(ctx, reportStyle, cells, int64(granularityPeriod))
+		if err != nil {
+			log.Warn(err)
+			return err
+		}
+		// measurements := reportStyle.Measurements
+		ch := make(chan e2api.Indication)
+		node := m.e2client.Node(e2client.NodeID(e2NodeID))
+		subName := "qmai-kpm-subscription"
+
+		subSpec := e2api.SubscriptionSpec{
+			Actions: actions,
+			EventTrigger: e2api.EventTrigger{
+				Payload: eventTriggerData,
+			},
+		}
+
+		channelID, err := node.Subscribe(ctx, subName, subSpec, ch)
+		if err != nil {
+			return err
+		}
+		log.Debugf("Subscription channel ID: %v", channelID)
+
+		streamReader, err := m.streams.OpenReader(ctx, node, subName, channelID, subSpec)
+		if err != nil {
+			return err
+		}
+
+		go m.sendIndicationOnStream(streamReader.StreamID(), ch)
 	}
 
 	return nil
-}
-
-func (m *Manager) createSubscriptionActions() []e2api.Action {
-	actions := make([]e2api.Action, 0)
-	action := &e2api.Action{
-		ID:   0,
-		Type: e2api.ActionType_ACTION_TYPE_REPORT,
-		SubsequentAction: &e2api.SubsequentAction{
-			Type:       e2api.SubsequentActionType_SUBSEQUENT_ACTION_TYPE_CONTINUE,
-			TimeToWait: e2api.TimeToWait_TIME_TO_WAIT_ZERO,
-		},
-	}
-	actions = append(actions, *action)
-	return actions
 }
 
 // get E2 Node report style
