@@ -8,6 +8,7 @@ import (
 	"github.com/atomix/atomix/api/errors"
 	prototypes "github.com/gogo/protobuf/types"
 	appConfig "github.com/muriloAvlis/qmai/pkg/config"
+	"github.com/muriloAvlis/qmai/pkg/monitoring"
 	"github.com/muriloAvlis/qmai/pkg/rnib"
 	e2api "github.com/onosproject/onos-api/go/onos/e2t/e2/v1beta1"
 	topoapi "github.com/onosproject/onos-api/go/onos/topo"
@@ -20,7 +21,7 @@ import (
 
 type Config struct {
 	AppID       string
-	AppConfig   appConfig.Config
+	AppConfig   *appConfig.AppConfig
 	E2tAddress  string
 	E2tPort     int
 	TopoAddress string
@@ -31,7 +32,7 @@ type Config struct {
 
 // TODO: creates appConfig path
 type Manager struct {
-	appConfig        appConfig.Config
+	appConfig        *appConfig.AppConfig
 	e2client         e2client.Client
 	rnibClient       rnib.Client
 	serviceModel     ServiceModelOptions
@@ -178,13 +179,11 @@ func (m *Manager) createSubscription(ctx context.Context, e2NodeID topoapi.ID) e
 	}
 
 	// sets report period
-	reportPeriod := 1000 // default: 1000 ms ?
-	log.Debug(m.appConfig)
-	// reportPeriod, err := m.appConfig.GetReportPeriod() // default: 1000 ms ?
-	// if err != nil {
-	// 	log.Warn(err)
-	// 	return err
-	// }
+	reportPeriod, err := m.appConfig.GetReportPeriod() // default: 1000 ms
+	if err != nil {
+		log.Warn(err)
+		return err
+	}
 	log.Debugf("Report period: %d", reportPeriod)
 
 	// creates event trigger data
@@ -195,7 +194,11 @@ func (m *Manager) createSubscription(ctx context.Context, e2NodeID topoapi.ID) e
 	}
 
 	// sets granularity period
-	granularityPeriod := 1000 // default: 1000 ms ?
+	granularityPeriod, err := m.appConfig.GetGranularityPeriod() // default: 1000 ms ?
+	if err != nil {
+		log.Warn(err)
+		return err
+	}
 	log.Debugf("Granularity: %d", granularityPeriod)
 
 	// prints reports styles
@@ -203,12 +206,15 @@ func (m *Manager) createSubscription(ctx context.Context, e2NodeID topoapi.ID) e
 
 	// for each report style creates a subscription
 	for _, reportStyle := range reportStyles {
+		// creates actions to each cells
 		actions, err := m.createSubscriptionActions(ctx, reportStyle, cells, int64(granularityPeriod))
 		if err != nil {
 			log.Warn(err)
 			return err
 		}
-		// measurements := reportStyle.Measurements
+
+		measurements := reportStyle.Measurements
+
 		ch := make(chan e2api.Indication)
 		node := m.e2client.Node(e2client.NodeID(e2NodeID))
 		subName := "qmai-kpm-subscription"
@@ -220,18 +226,37 @@ func (m *Manager) createSubscription(ctx context.Context, e2NodeID topoapi.ID) e
 			},
 		}
 
+		// subscribe to E2 Node
 		channelID, err := node.Subscribe(ctx, subName, subSpec, ch)
 		if err != nil {
 			return err
 		}
 		log.Debugf("Subscription channel ID: %v", channelID)
 
+		// Opens a new stream/buffer to subscription channel
 		streamReader, err := m.streams.OpenReader(ctx, node, subName, channelID, subSpec)
 		if err != nil {
 			return err
 		}
 
+		// send indication from ch to stream
 		go m.sendIndicationOnStream(streamReader.StreamID(), ch)
+
+		monitor := monitoring.NewMonitor(
+			monitoring.WithStreamReader(streamReader),
+			monitoring.WithMeasurementStore(m.measurementStore),
+			monitoring.WithActionStore(m.actionStore),
+			monitoring.WithAppConfig(m.appConfig),
+			monitoring.WithMeasurements(measurements),
+			monitoring.WithNodeID(e2NodeID),
+			monitoring.WithRNIBClient(m.rnibClient),
+		)
+
+		err = monitor.Start(ctx)
+		if err != nil {
+			log.Errorf("Error starting KPM monitor: %v", err)
+			return err
+		}
 	}
 
 	return nil

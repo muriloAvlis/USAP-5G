@@ -22,9 +22,9 @@ func main() {
 	// set manager configuration
 	cfg := manager.Config{
 		AppID:        "qmai",
-		CAPath:       "",
-		KeyPath:      "",
-		CertPath:     "",
+		CAPath:       "/etc/qmai/certs/tls.cacrt",
+		KeyPath:      "/etc/qmai/certs/tls.key",
+		CertPath:     "/etc/qmai/certs/tls.crt",
 		E2tEndpoint:  "onos-e2t",
 		E2tPort:      5150,
 		TopoEndpoint: "onos-topo",

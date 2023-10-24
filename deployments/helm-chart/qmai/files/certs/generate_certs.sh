@@ -3,7 +3,7 @@
 
 #!/bin/sh
 
-SUBJBASE="/C=US/ST=CA/L=MenloPark/O=ONF/OU=Engineering/"
+SUBJBASE="/C=BR/ST=PA/L=Belem/O=UFPA/OU=GERCOM/"
 DEVICE=${1:-device1.opennetworking.org}
 SUBJ=${SUBJBASE}"CN="${DEVICE}
 
@@ -30,9 +30,16 @@ fi
 
 rm -f ${DEVICE}.*
 
+## BEFORE
+# Generate private key for CA
+# openssl genrsa -des3 -out ca.key 4096
+
+# Generate a root ceriticate
+# openssl req -x509 -new -nodes -key ca.key -sha256 -days 1825 -out ca.pem
+
 # Generate Server Private Key
 openssl req \
-        -newkey rsa:2048 \
+        -newkey rsa:4096 \
         -nodes \
         -keyout ${DEVICE}.key \
 	      -noout \
@@ -50,8 +57,8 @@ openssl req \
 openssl x509 \
         -req \
         -in ${DEVICE}.csr \
-        -CA onfca.crt \
-        -CAkey onfca.key \
+        -CA ca.pem \
+        -CAkey ca.key \
         -CAcreateserial \
         -days 3650 \
         -sha256 \
