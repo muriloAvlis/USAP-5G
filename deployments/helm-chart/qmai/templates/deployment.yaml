@@ -5,6 +5,8 @@ metadata:
   namespace: riab
   labels: 
     {{- include "qmai.labels" . | nindent 4 }}
+  annotations:
+      keel.sh/policy: "all"
 spec:
   replicas: {{ .Values.replicaCount }}
   selector:
