@@ -2,7 +2,7 @@ FROM golang:1.22.0 as build
 
 ENV XAPPNAME=qmai
 WORKDIR /usr/src/github.com/muriloAvlis/qmai/
-COPY ../go.mod ../go.sum ./
+COPY go.mod go.sum ./
 RUN go mod download && go mod verify
 COPY ../ .
 RUN go build -v -o ./build/_output/${XAPPNAME} ./cmd/${XAPPNAME}
