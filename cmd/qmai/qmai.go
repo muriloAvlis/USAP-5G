@@ -21,17 +21,19 @@ func main() {
 
 	// set manager configuration
 	cfg := manager.Config{
-		AppID:        "qmai",
-		CAPath:       "/etc/qmai/certs/tls.cacrt",
-		KeyPath:      "/etc/qmai/certs/tls.key",
-		CertPath:     "/etc/qmai/certs/tls.crt",
-		E2tEndpoint:  "onos-e2t",
-		E2tPort:      5150,
-		TopoEndpoint: "onos-topo",
-		TopoPort:     5150,
-		ConfigPath:   "/etc/qmai/config/config.json",
-		SMName:       "oran-e2sm-kpm",
-		SMVersion:    "v2",
+		AppID:         "qmai",
+		CAPath:        "/etc/qmai/certs/tls.cacrt",
+		KeyPath:       "/etc/qmai/certs/tls.key",
+		CertPath:      "/etc/qmai/certs/tls.crt",
+		E2tEndpoint:   "onos-e2t",
+		E2tPort:       5150,
+		TopoEndpoint:  "onos-topo",
+		TopoPort:      5150,
+		UeNibEndpoint: "onos-uenib",
+		UeNibPort:     5150,
+		ConfigPath:    "/etc/qmai/config/config.json",
+		SMName:        "oran-e2sm-kpm",
+		SMVersion:     "v2",
 	}
 
 	// creates an application manager
