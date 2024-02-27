@@ -2,6 +2,7 @@ package uemgr
 
 import (
 	"context"
+	"io"
 	"strconv"
 
 	"github.com/onosproject/onos-api/go/onos/uenib"
@@ -14,7 +15,7 @@ import (
 
 var log = logging.GetLogger("qmai", "uenib")
 
-// creates a new uemgr
+// creates a new UE Manager
 func NewManager(config Config) (Manager, error) {
 	// onos-uenib address
 	ueNibServiceAddress := config.UeNibEndpoint + ":" + strconv.Itoa(config.UeNibPort)
@@ -25,11 +26,49 @@ func NewManager(config Config) (Manager, error) {
 	}
 	// creates a ue-nib client
 	ueClient := uenib.CreateUEServiceClient(conn)
-	log.Info(ueClient)
 
 	return Manager{
 		ueClient: ueClient,
 	}, nil
+}
+
+// starts UE Manager
+func (m *Manager) Start() error {
+	// go routine
+	go func() {
+		ctx, cancel := context.WithCancel(context.Background())
+		defer cancel()
+		m.ListUEs(ctx)
+		// err := m.watchE2Connections(ctx)
+		// if err != nil {
+		// 	log.Warn(err)
+		// 	return
+		// }
+	}()
+
+	return nil
+}
+
+// list all UEs
+func (m *Manager) ListUEs(ctx context.Context) {
+	// sets UE aspect to list
+	aspectTypes := []string{"onos.uenib.CellInfo", "operator.SubscriberData"}
+	// get UEs stream
+	stream, err := m.ueClient.ListUEs(ctx, &uenib.ListUERequest{AspectTypes: aspectTypes})
+	if err != nil {
+		log.Warn(err)
+	}
+
+	for {
+		response, err := stream.Recv()
+		if err == io.EOF {
+			break
+		}
+		if err != nil {
+			log.Warn(err)
+		}
+		log.Debug(response.UE)
+	}
 }
 
 // ConnectUeNibServiceHost connects to UE NIB service

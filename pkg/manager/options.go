@@ -3,6 +3,7 @@ package manager
 import (
 	appConfig "github.com/muriloAvlis/qmai/pkg/config"
 	"github.com/muriloAvlis/qmai/pkg/southbound/e2"
+	uemgr "github.com/muriloAvlis/qmai/pkg/uenib"
 )
 
 // manager configuration
@@ -27,4 +28,5 @@ type Manager struct {
 	appConfig appConfig.Config
 	config    Config
 	E2Manager e2.Manager
+	UeManager uemgr.Manager
 }

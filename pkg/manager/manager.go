@@ -47,12 +47,12 @@ func NewManager(config Config) *Manager {
 	if err != nil {
 		log.Warn(err)
 	}
-	log.Info(ueManager)
 
 	manager := &Manager{
 		appConfig: appCfg,
 		config:    config,
 		E2Manager: e2Manager,
+		UeManager: ueManager,
 	}
 
 	return manager
@@ -70,12 +70,18 @@ func (m *Manager) start() error {
 	// E2 subscriptions
 	err := m.E2Manager.Start()
 
-	// UE-NiB (TODO)
-
 	if err != nil {
 		log.Warn(err)
 		return err
 	}
+
+	// UE-NiB Module
+	err = m.UeManager.Start()
+	if err != nil {
+		log.Warn(err)
+		return err
+	}
+
 	return nil
 }
 
