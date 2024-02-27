@@ -7,28 +7,6 @@ import (
 	"github.com/onosproject/onos-lib-go/pkg/logging"
 )
 
-// manager configuration
-type Config struct {
-	AppID        string
-	CAPath       string
-	KeyPath      string
-	CertPath     string
-	E2tEndpoint  string
-	E2tPort      int
-	TopoEndpoint string
-	TopoPort     int
-	ConfigPath   string
-	SMName       string
-	SMVersion    string
-}
-
-// Manager is an abstract struct for manager
-type Manager struct {
-	appConfig appConfig.Config
-	config    Config
-	E2Manager e2.Manager
-}
-
 // initializes package log
 var log = logging.GetLogger("qmai", "manager")
 
@@ -58,8 +36,14 @@ func NewManager(config Config) *Manager {
 		log.Warn(err)
 	}
 
+	// creates a UE-NIB Config
+	ueConfig := uemgr.Config{
+		UeNibEndpoint: config.UeNibEndpoint,
+		UeNibPort:     config.UeNibPort,
+	}
+
 	// creates a UE-NIB Manager
-	ueManager, err := uemgr.NewClient()
+	ueManager, err := uemgr.NewManager(ueConfig)
 	if err != nil {
 		log.Warn(err)
 	}
