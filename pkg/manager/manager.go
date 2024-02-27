@@ -3,6 +3,7 @@ package manager
 import (
 	appConfig "github.com/muriloAvlis/qmai/pkg/config"
 	"github.com/muriloAvlis/qmai/pkg/southbound/e2"
+	"github.com/muriloAvlis/qmai/pkg/uenib"
 	"github.com/onosproject/onos-lib-go/pkg/logging"
 )
 
@@ -52,6 +53,10 @@ func NewManager(config Config) *Manager {
 	}
 	// creates a new E2 Manager
 	e2Manager, err := e2.NewManager(e2Config)
+
+	// creates a UE-NIB Manager
+	ueManager, err := uenib.NewClient()
+
 	if err != nil {
 		log.Warn(err)
 	}
@@ -76,6 +81,9 @@ func (m *Manager) Run() {
 func (m *Manager) start() error {
 	// E2 subscriptions
 	err := m.E2Manager.Start()
+
+	// UE-NiB (TODO)
+
 	if err != nil {
 		log.Warn(err)
 		return err

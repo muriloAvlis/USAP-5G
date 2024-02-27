@@ -80,7 +80,7 @@ func (m *Monitor) processIndication(ctx context.Context, indication e2api.Indica
 	return nil
 }
 
-// Process indication on format 1
+// Process indication on format 1 (is necessary?)
 func (m *Monitor) processIndicationFormat1(ctx context.Context, indication e2api.Indication, measurements []*topoapi.KPMMeasurement, nodeID topoapi.ID) error {
 	return nil
 }

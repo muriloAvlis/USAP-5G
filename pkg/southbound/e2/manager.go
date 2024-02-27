@@ -87,7 +87,7 @@ func NewManager(config Config) (Manager, error) {
 }
 
 func (m *Manager) Start() error {
-	// go routine for Watch KPMs
+	// go routine for Watch KPMs from E2 Nodes
 	go func() {
 		ctx, cancel := context.WithCancel(context.Background())
 		defer cancel()
