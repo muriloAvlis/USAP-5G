@@ -7,12 +7,10 @@ import (
 	"github.com/muriloAvlis/qmai/pkg/rnib"
 	e2api "github.com/onosproject/onos-api/go/onos/e2t/e2/v1beta1"
 	topoapi "github.com/onosproject/onos-api/go/onos/topo"
-	e2smkpmv2 "github.com/onosproject/onos-e2-sm/servicemodels/e2sm_kpm_v2_go/v2/e2sm-kpm-v2-go"
 	"github.com/onosproject/onos-kpimon/pkg/broker"
 	"github.com/onosproject/onos-kpimon/pkg/store/actions"
 	measurmentStore "github.com/onosproject/onos-kpimon/pkg/store/measurements"
 	"github.com/onosproject/onos-lib-go/pkg/logging"
-	"google.golang.org/protobuf/proto"
 )
 
 // Indication monitor
@@ -64,7 +62,6 @@ func (m *Monitor) Start(ctx context.Context) error {
 		}
 	}()
 
-	// TODO: gets indication/measurements and does a decision in select
 	select {
 	case err := <-errCh:
 		return err
@@ -73,61 +70,17 @@ func (m *Monitor) Start(ctx context.Context) error {
 	}
 }
 
-// Process indication msg
+// Process indication msg (E2 Nodes metrics)
 func (m *Monitor) processIndication(ctx context.Context, indication e2api.Indication, measurements []*topoapi.KPMMeasurement, nodeID topoapi.ID) error {
 	err := m.processIndicationFormat1(ctx, indication, measurements, nodeID)
 	if err != nil {
 		log.Warn(err)
 		return err
 	}
-
 	return nil
 }
 
 // Process indication on format 1
 func (m *Monitor) processIndicationFormat1(ctx context.Context, indication e2api.Indication, measurements []*topoapi.KPMMeasurement, nodeID topoapi.ID) error {
-	// Gets indication msg header
-	indHeader := e2smkpmv2.E2SmKpmIndicationHeader{}
-	err := proto.Unmarshal(indication.Header, &indHeader)
-	if err != nil {
-		log.Warn(err)
-		return err
-	}
-
-	// Gets indication msg payload
-	indMessage := e2smkpmv2.E2SmKpmIndicationMessage{}
-	err = proto.Unmarshal(indication.Payload, &indMessage)
-	if err != nil {
-		log.Warn(err)
-		return err
-	}
-
-	// Gets indication header on format 1
-	indMsgFormat1 := indMessage.GetIndicationMessageFormats().GetIndicationMessageFormat1()
-	// log.Debugf("Received indication header format 1 %v:", indHdrFormat1)
-	// log.Debugf("Received indication message format 1: %v", indMsgFormat1)
-
-	// gets cell obj ID
-	var cid string
-
-	if indMsgFormat1.GetCellObjId() == nil {
-		// Use the actions store to find cell object Id based on sub ID in action definition
-		key := actions.NewKey(actions.SubscriptionID{
-			SubID: indMsgFormat1.GetSubscriptId().GetValue(),
-		})
-
-		response, err := m.actionStore.Get(ctx, key)
-		if err != nil {
-			return err
-		}
-
-		actionDefinition := response.Value.(*e2smkpmv2.E2SmKpmActionDefinitionFormat1)
-		cid = actionDefinition.GetCellObjId().GetValue()
-	} else {
-		cid = indMsgFormat1.GetCellObjId().Value
-	}
-
-	// TODO: Review this code to get UEs metrics
-
 	return nil
 }
