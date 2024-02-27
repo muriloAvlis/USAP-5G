@@ -103,22 +103,9 @@ func (m *Monitor) processIndicationFormat1(ctx context.Context, indication e2api
 	}
 
 	// Gets indication header on format 1
-	indHdrFormat1 := indHeader.GetIndicationHeaderFormats().GetIndicationHeaderFormat1()
 	indMsgFormat1 := indMessage.GetIndicationMessageFormats().GetIndicationMessageFormat1()
 	// log.Debugf("Received indication header format 1 %v:", indHdrFormat1)
 	// log.Debugf("Received indication message format 1: %v", indMsgFormat1)
-
-	startTime := getTimeStampFromHeader(indHdrFormat1)
-	startTimeUnixNano := toUnixNano(int64(startTime))
-
-	// Gets granularity
-	granularity, err := m.appConfig.GetGranularityPeriod()
-	if err != nil {
-		log.Warn(err)
-		return err
-	}
-
-	log.Debug(startTimeUnixNano, granularity)
 
 	// gets cell obj ID
 	var cid string
@@ -139,8 +126,6 @@ func (m *Monitor) processIndicationFormat1(ctx context.Context, indication e2api
 	} else {
 		cid = indMsgFormat1.GetCellObjId().Value
 	}
-
-	log.Debugf("Cell object ID: %v", cid)
 
 	// TODO: Review this code to get UEs metrics
 
