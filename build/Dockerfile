@@ -1,4 +1,4 @@
-FROM golang:1.21.3 as build
+FROM golang:1.22.0 as build
 
 ENV XAPPNAME=qmai
 WORKDIR /usr/src/github.com/muriloAvlis/qmai/
@@ -7,7 +7,7 @@ RUN go mod download && go mod verify
 COPY ../ .
 RUN go build -v -o ./build/_output/${XAPPNAME} ./cmd/${XAPPNAME}
 
-FROM alpine:3.18
+FROM alpine:3.19
 # TODO: creates appConfig path
 RUN apk add libc6-compat
 USER nobody
