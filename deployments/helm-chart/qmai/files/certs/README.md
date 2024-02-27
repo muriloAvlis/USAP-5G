@@ -18,6 +18,6 @@ In this folder they **must** be (re)named
 
 Use
 ```bash
-openssl x509 -in deployments/helm/qmai/files/certs/tls.crt -text -noout
+openssl x509 -in tls.crt -text -noout
 ```
 to verify the contents (especially the subject).
