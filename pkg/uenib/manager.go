@@ -67,8 +67,19 @@ func (m *Manager) ListUEs(ctx context.Context) {
 		if err != nil {
 			log.Warn(err)
 		}
-		log.Debug(response.UE)
+
+		// prints UE Infos
+		log.Debug("UE ID:" + response.UE.ID)
+		log.Debug("UE ID:" + response.UE.GetID())
+		log.Debug(response.UE.Aspects)
+		log.Debug(response.UE.GetAspects())
+		log.Debug("UE ID:" + response.UE.String())
 	}
+}
+
+// TODO
+func (m *Manager) getUE(ctx context.Context) {
+
 }
 
 // ConnectUeNibServiceHost connects to UE NIB service

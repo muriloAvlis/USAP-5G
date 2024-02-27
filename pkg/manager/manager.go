@@ -69,7 +69,6 @@ func (m *Manager) Run() {
 func (m *Manager) start() error {
 	// E2 subscriptions
 	err := m.E2Manager.Start()
-
 	if err != nil {
 		log.Warn(err)
 		return err
