@@ -4,7 +4,7 @@ ENV XAPPNAME=qmai
 WORKDIR /usr/src/github.com/muriloAvlis/qmai/
 COPY go.mod go.sum ./
 RUN go mod download && go mod verify
-COPY ../ .
+COPY . .
 RUN go build -v -o ./build/_output/${XAPPNAME} ./cmd/${XAPPNAME}
 
 FROM alpine:3.19
