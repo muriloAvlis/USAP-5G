@@ -39,7 +39,7 @@ func (m *Manager) Start() error {
 		ctx, cancel := context.WithCancel(context.Background())
 		defer cancel()
 		m.listUEs(ctx)
-		// err := m.watchE2Connections(ctx)
+		// err := m.watchUEConnections(ctx) // TODO
 		// if err != nil {
 		// 	log.Warn(err)
 		// 	return
@@ -57,7 +57,11 @@ func (m *Manager) listUEs(ctx context.Context) {
 	stream, err := m.ueClient.ListUEs(ctx, &uenib.ListUERequest{AspectTypes: aspectTypes})
 	if err != nil {
 		log.Warn(err)
+		return
 	}
+
+	// Number of UEs
+	num_ues := 0
 
 	for {
 		response, err := stream.Recv()
@@ -68,16 +72,24 @@ func (m *Manager) listUEs(ctx context.Context) {
 			log.Warn(err)
 		}
 
-		// print UE id
-		log.Debugf("UE %v connected", response.UE.ID)
+		// increment num of UEs
+		num_ues++
+
+		// print UE num and UE id
+		log.Debugf("UE-%d with ID %v connected", num_ues, response.UE.ID)
 
 		// get UE aspects
-		m.getUE(ctx, response.UE.ID)
+		m.getUE(ctx, response.UE.ID, num_ues)
+
+		// create an UE aspect
+		m.createUEAspect(response.UE)
 	}
+
+	log.Info("Total connected UEs: %d", num_ues)
 }
 
 // getUE gets UE aspects
-func (m *Manager) getUE(ctx context.Context, ueID uenib.ID) {
+func (m *Manager) getUE(ctx context.Context, ueID uenib.ID, num_ue int) {
 	response, err := m.ueClient.GetUE(ctx, &uenib.GetUERequest{ID: ueID})
 	if err != nil {
 		log.Warn(err)
@@ -89,7 +101,20 @@ func (m *Manager) getUE(ctx context.Context, ueID uenib.ID) {
 		aspects = append(aspects, k)
 	}
 
-	log.Debugf("Available aspects of UE %v: %s", ueID, aspects)
+	log.Debugf("Available aspects of UE-%d: %s", num_ue, aspects)
+}
+
+func (m *Manager) createUEAspect(ue uenib.UE) {
+	// cellTest := topoapi.E2Cell{
+	// 	CellObjectID: "e2:4/e00/2/64/e0000",
+	// }
+	// cellID := cellTest.CellObjectID
+	log.Debug("Creating UE aspects")
+
+	ue.SetAspect(&uenib.CellInfo{ServingCell: &uenib.CellConnection{
+		ID:             "e2:4/e00/2/64/e0000",
+		SignalStrength: 11.0,
+	}})
 }
 
 // ConnectUeNibServiceHost connects to UE NIB service
