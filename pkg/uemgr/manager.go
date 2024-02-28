@@ -116,7 +116,7 @@ func (m *Manager) createUEAspect(ctx context.Context, ue uenib.UE) {
 		SignalStrength: 11.0,
 	}})
 
-	_, err := m.ueClient.CreateUE(ctx, &uenib.CreateUERequest{
+	_, err := m.ueClient.UpdateUE(ctx, &uenib.UpdateUERequest{
 		UE: ue,
 	})
 
