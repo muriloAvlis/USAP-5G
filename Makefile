@@ -21,7 +21,7 @@ helm-uninstall:
 dev-ops: docker-push helm-uninstall helm-install
 
 k8s-logs:
-	@kubectl logs -n riab $$(kubectl get pods -n riab --no-headers -o custom-columns=":metadata.name" | grep qmai) -f
+	@kubectl logs -n riab $$(kubectl get pods -n riab --no-headers -o custom-columns=":metadata.name" | grep qmai) qmai -f
 
 clean: # @HELP remove all the build artifacts
 	rm -rf ./build/_output
