@@ -67,15 +67,15 @@ func (m *Manager) Run() {
 
 // starts xAPP processes
 func (m *Manager) start() error {
-	// E2 subscriptions
-	err := m.E2Manager.Start()
-	if err != nil {
-		log.Warn(err)
-		return err
-	}
+	// E2 subscriptions (TODO)
+	// err := m.E2Manager.Start()
+	// if err != nil {
+	// 	log.Warn(err)
+	// 	return err
+	// }
 
 	// UE-NiB Module
-	err = m.UeManager.Start()
+	err := m.UeManager.Start()
 	if err != nil {
 		log.Warn(err)
 		return err
