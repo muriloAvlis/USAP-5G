@@ -82,7 +82,7 @@ func (m *Manager) listUEs(ctx context.Context) {
 		m.getUE(ctx, response.UE.ID, num_ues)
 
 		// create an UE aspect
-		m.createUEAspect(response.UE)
+		m.createUEAspect(ctx, response.UE)
 	}
 
 	log.Info("Total connected UEs: %d", num_ues)
@@ -104,7 +104,7 @@ func (m *Manager) getUE(ctx context.Context, ueID uenib.ID, num_ue int) {
 	log.Debugf("Available aspects of UE-%d: %s", num_ue, aspects)
 }
 
-func (m *Manager) createUEAspect(ue uenib.UE) {
+func (m *Manager) createUEAspect(ctx context.Context, ue uenib.UE) {
 	// cellTest := topoapi.E2Cell{
 	// 	CellObjectID: "e2:4/e00/2/64/e0000",
 	// }
@@ -115,6 +115,14 @@ func (m *Manager) createUEAspect(ue uenib.UE) {
 		ID:             "e2:4/e00/2/64/e0000",
 		SignalStrength: 11.0,
 	}})
+
+	_, err := m.ueClient.CreateUE(ctx, &uenib.CreateUERequest{
+		UE: ue,
+	})
+
+	if err != nil {
+		log.Warn(err)
+	}
 }
 
 // ConnectUeNibServiceHost connects to UE NIB service
