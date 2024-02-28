@@ -38,7 +38,7 @@ func (m *Manager) Start() error {
 	go func() {
 		ctx, cancel := context.WithCancel(context.Background())
 		defer cancel()
-		m.ListUEs(ctx)
+		m.listUEs(ctx)
 		// err := m.watchE2Connections(ctx)
 		// if err != nil {
 		// 	log.Warn(err)
@@ -50,7 +50,7 @@ func (m *Manager) Start() error {
 }
 
 // list all UEs
-func (m *Manager) ListUEs(ctx context.Context) {
+func (m *Manager) listUEs(ctx context.Context) {
 	// sets UE aspect to list
 	aspectTypes := []string{"onos.uenib.CellInfo", "operator.SubscriberData"}
 	// get UEs stream
@@ -58,6 +58,8 @@ func (m *Manager) ListUEs(ctx context.Context) {
 	if err != nil {
 		log.Warn(err)
 	}
+
+	log.Info("Listing UEs")
 
 	for {
 		response, err := stream.Recv()
@@ -68,18 +70,19 @@ func (m *Manager) ListUEs(ctx context.Context) {
 			log.Warn(err)
 		}
 
-		// prints UE Infos
-		log.Debug("UE ID:" + response.UE.ID)
-		log.Debug("UE ID:" + response.UE.GetID())
-		log.Debug(response.UE.Aspects)
-		log.Debug(response.UE.GetAspects())
-		log.Debug("UE ID:" + response.UE.String())
+		// get UE aspects
+		m.getUE(ctx, response.UE.ID)
 	}
 }
 
-// TODO
-func (m *Manager) getUE(ctx context.Context) {
+// getUE gets UE aspects
+func (m *Manager) getUE(ctx context.Context, ueID uenib.ID) {
+	response, err := m.ueClient.GetUE(ctx, &uenib.GetUERequest{ID: ueID})
+	if err != nil {
+		log.Warn(err)
+	}
 
+	log.Debug(response.UE.String())
 }
 
 // ConnectUeNibServiceHost connects to UE NIB service
