@@ -85,7 +85,7 @@ func (m *Manager) listUEs(ctx context.Context) {
 		m.createUEAspect(ctx, response.UE)
 	}
 
-	log.Info("Total connected UEs: %d", num_ues)
+	log.Infof("Total connected UEs: %d", num_ues)
 }
 
 // getUE gets UE aspects
