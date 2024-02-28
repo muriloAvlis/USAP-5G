@@ -79,17 +79,17 @@ func (m *Manager) listUEs(ctx context.Context) {
 		log.Debugf("UE-%d with ID %v connected", num_ues, response.UE.ID)
 
 		// get UE aspects
-		m.getUE(ctx, response.UE.ID, num_ues)
+		m.getUEAspects(ctx, response.UE.ID, num_ues)
 
-		// create an UE aspect
-		m.createUEAspect(ctx, response.UE)
+		// create an UE aspect (TODO)
+		// m.updateUEAspects(ctx, response.UE)
 	}
 
 	log.Infof("Total connected UEs: %d", num_ues)
 }
 
 // getUE gets UE aspects
-func (m *Manager) getUE(ctx context.Context, ueID uenib.ID, num_ue int) {
+func (m *Manager) getUEAspects(ctx context.Context, ueID uenib.ID, num_ue int) {
 	response, err := m.ueClient.GetUE(ctx, &uenib.GetUERequest{ID: ueID})
 	if err != nil {
 		log.Warn(err)
@@ -104,17 +104,14 @@ func (m *Manager) getUE(ctx context.Context, ueID uenib.ID, num_ue int) {
 	log.Debugf("Available aspects of UE-%d: %s", num_ue, aspects)
 }
 
-func (m *Manager) createUEAspect(ctx context.Context, ue uenib.UE) {
-	// cellTest := topoapi.E2Cell{
-	// 	CellObjectID: "e2:4/e00/2/64/e0000",
-	// }
-	// cellID := cellTest.CellObjectID
+// TODO
+func (m *Manager) updateUEAspects(ctx context.Context, ue uenib.UE) {
 	log.Debug("Creating UE aspects")
 
-	ue.SetAspect(&uenib.CellInfo{ServingCell: &uenib.CellConnection{
-		ID:             "e2:4/e00/2/64/e0000",
-		SignalStrength: 11.0,
-	}})
+	// ue.SetAspect(&uenib.CellInfo{ServingCell: &uenib.CellConnection{
+	// 	ID:             "e2:4/e00/2/64/e0000",
+	// 	SignalStrength: 11.0,
+	// }})
 
 	_, err := m.ueClient.UpdateUE(ctx, &uenib.UpdateUERequest{
 		UE: ue,
