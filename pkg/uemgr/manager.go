@@ -59,8 +59,6 @@ func (m *Manager) listUEs(ctx context.Context) {
 		log.Warn(err)
 	}
 
-	log.Info("Listing UEs")
-
 	for {
 		response, err := stream.Recv()
 		if err == io.EOF {
@@ -69,6 +67,9 @@ func (m *Manager) listUEs(ctx context.Context) {
 		if err != nil {
 			log.Warn(err)
 		}
+
+		// print UE id
+		log.Debugf("UE %v connected", response.UE.ID)
 
 		// get UE aspects
 		m.getUE(ctx, response.UE.ID)
@@ -88,7 +89,7 @@ func (m *Manager) getUE(ctx context.Context, ueID uenib.ID) {
 		aspects = append(aspects, k)
 	}
 
-	log.Debug("Available aspects of UE %v: %s", ueID, aspects)
+	log.Debugf("Available aspects of UE %v: %s", ueID, aspects)
 }
 
 // ConnectUeNibServiceHost connects to UE NIB service
