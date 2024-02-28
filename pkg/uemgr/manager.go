@@ -82,7 +82,13 @@ func (m *Manager) getUE(ctx context.Context, ueID uenib.ID) {
 		log.Warn(err)
 	}
 
-	log.Debug(response.UE.String())
+	var aspects []string
+
+	for k := range response.UE.GetAspects() {
+		aspects = append(aspects, k)
+	}
+
+	log.Debug("Available aspects of UE %v: %s", ueID, aspects)
 }
 
 // ConnectUeNibServiceHost connects to UE NIB service
