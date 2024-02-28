@@ -3,7 +3,7 @@ package manager
 import (
 	appConfig "github.com/muriloAvlis/qmai/pkg/config"
 	"github.com/muriloAvlis/qmai/pkg/southbound/e2"
-	uemgr "github.com/muriloAvlis/qmai/pkg/uenib"
+	uemgr "github.com/muriloAvlis/qmai/pkg/uemgr"
 	"github.com/onosproject/onos-lib-go/pkg/logging"
 )
 
