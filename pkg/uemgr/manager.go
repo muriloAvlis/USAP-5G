@@ -38,23 +38,47 @@ func (m *Manager) Start() error {
 	go func() {
 		ctx, cancel := context.WithCancel(context.Background())
 		defer cancel()
-		m.listUEs(ctx)
-		// err := m.watchUEConnections(ctx) // TODO
-		// if err != nil {
-		// 	log.Warn(err)
-		// 	return
-		// }
+		err := m.watchUEConnections(ctx)
+		if err != nil {
+			log.Warn(err)
+			return
+		}
 	}()
+
+	return nil
+}
+
+// watch UEs changes
+func (m *Manager) watchUEConnections(ctx context.Context) error {
+	// list UEs
+	m.listUEs(ctx)
+
+	stream, err := m.ueClient.WatchUEs(ctx, &uenib.WatchUERequest{AspectTypes: defaultAspectTypes})
+	if err != nil {
+		log.Warn(err)
+		return err
+	}
+
+	for {
+		msg, err := stream.Recv()
+		if err == io.EOF {
+			break
+		}
+		if err != nil {
+			log.Warn(err)
+		}
+
+		log.Debug(msg.Event.Type, msg.Event.UE)
+		// processEvent(); (TODO)
+	}
 
 	return nil
 }
 
 // list all UEs
 func (m *Manager) listUEs(ctx context.Context) {
-	// sets UE aspect to list
-	aspectTypes := []string{"onos.uenib.CellInfo", "operator.SubscriberData"}
 	// get UEs stream
-	stream, err := m.ueClient.ListUEs(ctx, &uenib.ListUERequest{AspectTypes: aspectTypes})
+	stream, err := m.ueClient.ListUEs(ctx, &uenib.ListUERequest{AspectTypes: defaultAspectTypes})
 	if err != nil {
 		log.Warn(err)
 		return
@@ -75,24 +99,23 @@ func (m *Manager) listUEs(ctx context.Context) {
 		// increment num of UEs
 		num_ues++
 
-		// print UE num and UE id
+		// print UE num and UE ID
 		log.Debugf("UE-%d with ID %v connected", num_ues, response.UE.ID)
 
-		// get UE aspects
-		m.getUEAspects(ctx, response.UE.ID, num_ues)
-
-		// create an UE aspect (TODO)
-		// m.updateUEAspects(ctx, response.UE)
+		// get UE aspectTypes
+		aspects := m.getUEAspects(ctx, response.UE.ID)
+		log.Debugf("Available aspects of UE-%d: %s", num_ues, aspects)
 	}
 
 	log.Infof("Total connected UEs: %d", num_ues)
 }
 
 // getUE gets UE aspects
-func (m *Manager) getUEAspects(ctx context.Context, ueID uenib.ID, num_ue int) {
+func (m *Manager) getUEAspects(ctx context.Context, ueID uenib.ID) []string {
 	response, err := m.ueClient.GetUE(ctx, &uenib.GetUERequest{ID: ueID})
 	if err != nil {
 		log.Warn(err)
+		return nil
 	}
 
 	var aspects []string
@@ -101,13 +124,14 @@ func (m *Manager) getUEAspects(ctx context.Context, ueID uenib.ID, num_ue int) {
 		aspects = append(aspects, k)
 	}
 
-	log.Debugf("Available aspects of UE-%d: %s", num_ue, aspects)
+	return aspects
 }
 
-// TODO
+// TODO: it is not necessary for now
 func (m *Manager) updateUEAspects(ctx context.Context, ue uenib.UE) {
-	log.Debug("Creating UE aspects")
+	log.Debug("Updating UE aspects")
 
+	// uncomment me to set aspect to existing UE
 	// ue.SetAspect(&uenib.CellInfo{ServingCell: &uenib.CellConnection{
 	// 	ID:             "e2:4/e00/2/64/e0000",
 	// 	SignalStrength: 11.0,
