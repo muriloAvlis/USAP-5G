@@ -53,6 +53,8 @@ func (m *Manager) watchUEConnections(ctx context.Context) error {
 	// list UEs
 	m.listUEs(ctx)
 
+	// watch changes
+	log.Info("Starting to watch the UEs change")
 	stream, err := m.ueClient.WatchUEs(ctx, &uenib.WatchUERequest{AspectTypes: defaultAspectTypes})
 	if err != nil {
 		log.Warn(err)
@@ -77,6 +79,7 @@ func (m *Manager) watchUEConnections(ctx context.Context) error {
 
 // list all UEs
 func (m *Manager) listUEs(ctx context.Context) {
+	log.Info("Starting UEs listing")
 	// get UEs stream
 	stream, err := m.ueClient.ListUEs(ctx, &uenib.ListUERequest{AspectTypes: defaultAspectTypes})
 	if err != nil {
