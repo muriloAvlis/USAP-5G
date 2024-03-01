@@ -1,8 +1,4 @@
 # xApp for QoS Management by Artificial Intelligence
 
-## Requirements
-
-## Deploy Xapp
-
-## Tests
+### Migrated to https://github.com/gercom-ufpa/iqos-xapp
 
