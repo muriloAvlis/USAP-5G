@@ -13,7 +13,7 @@ import (
 	"google.golang.org/grpc/credentials"
 )
 
-var log = logging.GetLogger("qmai", "uenib")
+var log = logging.GetLogger("qmai", "uemgr")
 
 // creates a new UE Manager
 func NewManager(config Config) (Manager, error) {
@@ -54,7 +54,7 @@ func (m *Manager) watchUEConnections(ctx context.Context) error {
 	m.listUEs(ctx)
 
 	// watch changes
-	log.Info("Starting to watch the UEs change")
+	log.Info("Starting to watch the UEs changes")
 	stream, err := m.ueClient.WatchUEs(ctx, &uenib.WatchUERequest{AspectTypes: defaultAspectTypes})
 	if err != nil {
 		log.Warn(err)
@@ -70,7 +70,7 @@ func (m *Manager) watchUEConnections(ctx context.Context) error {
 			log.Warn(err)
 		}
 
-		log.Debug(msg.Event.Type, msg.Event.UE)
+		log.Debug(msg.Event.Type.String(), msg.Event.UE.String())
 		// processEvent(); (TODO)
 	}
 
@@ -113,6 +113,9 @@ func (m *Manager) listUEs(ctx context.Context) {
 	log.Infof("Total connected UEs: %d", num_ues)
 }
 
+// func (m *Manager) getUes() (uenib.UE, error) { // TODO
+// }
+
 // getUE gets UE aspects
 func (m *Manager) getUEAspects(ctx context.Context, ueID uenib.ID) []string {
 	response, err := m.ueClient.GetUE(ctx, &uenib.GetUERequest{ID: ueID})
@@ -128,6 +131,9 @@ func (m *Manager) getUEAspects(ctx context.Context, ueID uenib.ID) []string {
 	}
 
 	return aspects
+}
+
+func (m *Manager) createUEAspect(ctx context.Context) {
 }
 
 // TODO: it is not necessary for now
