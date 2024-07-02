@@ -1,6 +1,4 @@
-# xApp for QoS Management by Artificial Intelligence 
+# QoS Management Platform on 5G Networks (QMPO5GNet)
 
-## Deprecated repository
-
-### Migrated to https://github.com/gercom-ufpa/iqos-xapp
-
+The QoS Management Platform in 5G Networks (QMPO5GNet) is a project to manage and optimize QoS on Open 5G Networks
+with support for the ORAN Alliance O-RAN standard.
