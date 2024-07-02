@@ -17,8 +17,17 @@ git checkout develop
 
 ### Install OAI-5G CN via Helm Chart
 
+Copy the custom files in the configs folder to the chart directory and install them.
+
 ```sh 
 cd ~/oai-cn5g-fed/charts/oai-5g-core/oai-5g-advance
+cp ~/QMPO5GNet/docs/oai-cn/configs/* .
 helm dependency update
-helm install -n oai5gcn --create-namespace oai5gcn . -f oai_cn_values.yaml
+helm upgrade --install -n oai5gcn --create-namespace oai-5gcn . -f values.yaml
+```
+
+### Clean up
+
+```sh
+helm uninstall -n oai5gcn oai-5gcn && kubectl delete ns oai5gcn
 ```
