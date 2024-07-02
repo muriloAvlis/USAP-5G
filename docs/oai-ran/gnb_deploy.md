@@ -3,6 +3,8 @@
 ## Requirements
 
 - Kubernetes
+- Helm v3
 
 ## Getting Started
 
+###
