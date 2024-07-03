@@ -12,4 +12,12 @@
 
 ## Getting Started
 
-###
+### Clone oai-cn5g-fed repository
+
+```sh
+cd ~
+git clone https://gitlab.eurecom.fr/oai/cn5g/oai-cn5g-fed.git
+git checkout develop
+```
+
+### TODO
