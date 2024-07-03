@@ -3,7 +3,7 @@
 The QoS Management Platform in 5G Networks (QMPO5GNet) is a project to manage and optimize QoS on Open 5G Networks
 with support for the ORAN Alliance O-RAN standard.
 
-## Summary
+## Table of Content
 
 1. [OAI-CN Deployment](docs/oai-cn/oai_cn_deploy.md)
 2. [OAI-RAN gNB Deployment](docs/oai-ran/gnb_deploy.md)
@@ -17,3 +17,12 @@ with support for the ORAN Alliance O-RAN standard.
 - Kubernetes Cluster (tutorial on [K8s Installation Using the RKE2](https://github.com/muriloAvlis/k8s-utils/blob/main/docs/cluster_deploy/rke2/README.md))
 - 5G Core (OAI-CN was used)
 - 5G RAN (OAI-RAN was used)
+
+### Slices Configuration
+
+|                 | **sst** | **sd** | **dnn** |
+|-----------------|---------|--------|---------|
+| **embb_slice**  | 1       | 000001 | nongbr  |
+| **urllc_slice** | 2       | 000001 | gbr     |
+| **miot_slice**  | 3       | 000001 | iot     |
+|                 |         |        |         |
