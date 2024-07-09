@@ -25,11 +25,11 @@ with support for the ORAN Alliance O-RAN standard.
 
 - Kubernetes Cluster (tutorial on [K8s Installation Using the RKE2](https://github.com/muriloAvlis/k8s-utils/blob/main/docs/cluster_deploy/rke2/README.md))
 - 5G Core (OAI-CN was used)
-- 5G RAN (OAI-RAN was used)
+- 5G RAN (SRSRAN was used)
 
 ### Slices Configuration
 
-|                 | **sst** | **sd** | **dnn** | **Subnet** |
+|                 | **sst** | **sd** | **dnn** | **Subnet**  |
 |-----------------|---------|--------|---------|-------------|
 | **embb_slice**  | 1       | 000001 | nongbr  | 12.1.1.0/24 | 
 | **urllc_slice** | 2       | 000001 | gbr     | 13.1.1.0/24 |

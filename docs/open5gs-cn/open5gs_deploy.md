@@ -17,10 +17,10 @@ git clone https://github.com/muriloAvlis/QMPO5GNet.git
 ### Install the core network with Helm
 
 ```sh
-helm upgrade --install open5gs -n open5gs --create-namespace oci://registry-1.docker.io/gradiant/open5gs --version 2.2.2 -f ~/QMPO5GNet/docs/open5gs-cn/configs/open5gs_with_slices.yaml
+helm upgrade --install open5gs -n open5gs --create-namespace oci://registry-1.docker.io/gradiant/open5gs --version 2.2.2 -f ~/QMPO5GNet/configs/open5gs-cn/open5gs_with_slices.yaml
 ```
 
-> **_NOTE_**: [open5gs_with_slices.yaml](./configs/open5gs_with_slices.yaml) example file.
+> **_NOTE_**: [open5gs_with_slices.yaml](../../configs/open5gs-cn/open5gs_with_slices.yaml) example file.
 
 > **_NOTE_**: nodeSelector is `kubernetes.io/hostname: open5gslocal`, change it if necessary.
 
