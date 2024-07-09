@@ -7,11 +7,13 @@
 
 ## Getting Starting
 
-### Clone ric-dep repository
+### Clone ric-dep repository (DEPRECATED)
 
 ```sh
 git clone "https://gerrit.o-ran-sc.org/r/ric-plt/ric-dep"
 ```
+
+> **_NOTE_**: Use `~/QMPO5GNet/charts/nearrtric-0.1.0.tgz` instead.
 
 ### Creating Platform and Xapp Namespaces
 

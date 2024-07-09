@@ -1,0 +1,71 @@
+FROM ubuntu:24.04
+
+ENV DEBIAN_FRONTEND=noninteractive
+ENV TZ=America/Belem
+
+## Install package dependencies
+RUN apt update \
+    && apt upgrade -y \
+    && apt install -y \
+    cmake \
+    make \
+    gcc \
+    g++ \
+    pkg-config \
+    libfftw3-dev \
+    libmbedtls-dev \
+    libsctp-dev \
+    libyaml-cpp-dev \
+    libgtest-dev \
+    git \
+    build-essential \
+    ninja-build \
+    ccache \
+    libbackward-cpp-dev \
+    libczmq-dev \
+    libczmq4 \
+    tar \
+    curl \
+    python3-pip \
+    python3-pyelftools \
+    libnuma-dev \
+    meson \
+    software-properties-common
+
+## Install UHD (for USRPs)
+RUN add-apt-repository ppa:ettusresearch/uhd \
+    && apt update \
+    && apt -y install libuhd-dev uhd-host
+
+WORKDIR /opt
+
+## Install DPDK
+RUN curl -LO https://fast.dpdk.org/rel/dpdk-23.11.1.tar.xz \
+    && tar -xvf dpdk-23.11.1.tar.xz \
+    && rm -rf dpdk-23.11.1.tar.xz \
+    && cd dpdk-stable-23.11.1 \
+    && meson setup build \
+    && cd build \
+    && ninja \
+    && meson install \
+    && ldconfig
+
+## Install SRSRAN-5G
+RUN git clone https://github.com/srsran/srsRAN_Project.git \
+    && cd srsRAN_Project \
+    && git checkout release_24_04 \
+    && mkdir build \
+    && cd build \
+    && cmake \ 
+    -DENABLE_EXPORT=ON \
+    -DENABLE_ZEROMQ=ON \
+    # -DENABLE_ASAN=ON \
+    -DENABLE_DPDK=ON \
+    -DENABLE_LIBNUMA=ON .. \
+    && make -j $(nproc) \
+    && make test -j $(nproc)
+
+## Copy entrypoint
+COPY ./charts/srsran-5g-zmq/resources/entrypoint.sh /entrypoint.sh
+
+ENTRYPOINT [ "/bin/bash" ]
