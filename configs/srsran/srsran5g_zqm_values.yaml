@@ -63,8 +63,8 @@ extraDeploy: []
 image:
   srsran:
     registry: docker.io
-    repository: openverso/srsran-5g
-    tag: "23_10_1"
+    repository: muriloavlis/srsran-5g
+    tag: "24_04"
     digest: ""
     ## Specify a imagePullPolicy
     ## Defaults to 'Always' if image tag is 'latest', else set to 'IfNotPresent'

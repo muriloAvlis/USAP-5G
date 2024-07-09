@@ -27,11 +27,11 @@ with support for the ORAN Alliance O-RAN standard.
 - 5G Core (OAI-CN was used)
 - 5G RAN (SRSRAN was used)
 
-### Slices Configuration
+### Network Configurations
 
-|                 | **sst** | **sd** | **dnn** | **Subnet**  |
-|-----------------|---------|--------|---------|-------------|
-| **embb_slice**  | 1       | 000001 | nongbr  | 12.1.1.0/24 | 
-| **urllc_slice** | 2       | 000001 | gbr     | 13.1.1.0/24 |
-| **miot_slice**  | 3       | 000001 | iot     | 14.1.1.0/24 |
-|                 |         |        |         |             |
+|                 | **sst** | **sd** | **dnn** | **Subnet**  | **MCC** | **MNC** |
+|-----------------|---------|--------|---------|-------------|---------|---------|
+| **embb_slice**  | 1       | 000001 | nongbr  | 12.1.1.0/24 |   724   |   70    |
+| **urllc_slice** | 2       | 000001 | gbr     | 13.1.1.0/24 |   724   |   70    |
+| **miot_slice**  | 3       | 000001 | iot     | 14.1.1.0/24 |   724   |   70    |
+|                 |         |        |         |             |   724   |   70    |
