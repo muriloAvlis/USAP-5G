@@ -85,7 +85,12 @@ RUN git clone https://github.com/srsran/srsRAN_Project.git \
 
 RUN cd srsRAN_Project/build && make install
 
+## Pass it to a second stage
+RUN apt install -y gettext dnsutils bind9-dnsutils
+
 ## Copy entrypoint
 COPY ./charts/srsran-5g-zmq/resources/entrypoint.sh /entrypoint.sh
 
 ENTRYPOINT [ "/entrypoint.sh" ]
+
+## TODO: create final stage with smaller image size
