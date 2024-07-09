@@ -3,6 +3,11 @@ FROM ubuntu:24.04
 ENV DEBIAN_FRONTEND=noninteractive
 ENV TZ=America/Belem
 
+LABEL org.opencontainers.image.authors="Murilo Silva <murilosilva@itec.ufpa.br>" \
+    org.opencontainers.image.vendor="GERCOM/UFPA" \
+    # org.opencontainers.image.licenses="Apache-2.0" \
+    org.opencontainers.image.version="release_24_04"
+
 ## Install package dependencies
 RUN apt update \
     && apt upgrade -y \
@@ -22,15 +27,26 @@ RUN apt update \
     ninja-build \
     ccache \
     libbackward-cpp-dev \
-    libczmq-dev \
-    libczmq4 \
+    libzmq3-dev \
     tar \
     curl \
     python3-pip \
     python3-pyelftools \
     libnuma-dev \
     meson \
-    software-properties-common
+    software-properties-common \
+    libboost-program-options-dev \
+    libdpdk-dev \
+    libelf-dev \
+    libdwarf-dev \
+    xz-utils \
+    apt-transport-https \
+    ca-certificates \
+    libfdt-dev \
+    pciutils \
+    libdw-dev \
+    binutils-dev \
+    libconfig++-dev
 
 ## Install UHD (for USRPs)
 RUN add-apt-repository ppa:ettusresearch/uhd \
@@ -56,16 +72,20 @@ RUN git clone https://github.com/srsran/srsRAN_Project.git \
     && git checkout release_24_04 \
     && mkdir build \
     && cd build \
-    && cmake \ 
+    && cmake \
+    -DCMAKE_INSTALL_PREFIX=/opt/srsRAN_Project/target \
     -DENABLE_EXPORT=ON \
     -DENABLE_ZEROMQ=ON \
     # -DENABLE_ASAN=ON \
+    -DBUILD_TESTS=OFF \
     -DENABLE_DPDK=ON \
-    -DENABLE_LIBNUMA=ON .. \
-    && make -j $(nproc) \
-    && make test -j $(nproc)
+    -DENABLE_LIBNUMA=ON \
+    -DASSERT_LEVEL=MINIMAL .. \
+    && make -j $(nproc)
+
+RUN cd srsRAN_Project/build && make install
 
 ## Copy entrypoint
-COPY ./charts/srsran-5g-zmq/resources/entrypoint.sh /entrypoint.sh
+COPY ./charts/srsran-5g-zmq/resources/entrypoint.sh /opt/entrypoint.sh
 
 ENTRYPOINT [ "/bin/bash" ]
