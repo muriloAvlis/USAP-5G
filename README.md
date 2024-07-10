@@ -39,3 +39,7 @@ with support for the ORAN Alliance O-RAN standard.
 ### Proposal topology
 
 ![proposal-topology-v1](./images/proposal_diagram-topology-v1.png)
+
+### How It Works
+
+TODO
