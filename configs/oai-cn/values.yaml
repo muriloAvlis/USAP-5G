@@ -13,7 +13,7 @@ mysql:
     - name: "regcred"
   persistence:
     enabled: true
-    storageClass: openebs-jiva-csi-default
+    storageClass: openebs-hostpath
   nodeSelector:
     kubernetes.io/hostname: oaicn
 oai-nrf:

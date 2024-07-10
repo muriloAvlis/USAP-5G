@@ -144,7 +144,7 @@ e2term:
         print: "1"
         messagecollectorfile: "/data/outgoing/"
       dataVolSize: 100Mi
-      storageClassName: openebs-jiva-csi-default
+      storageClassName: openebs-hostpath
       pizpub:
         enabled: false
 
@@ -153,8 +153,7 @@ jaegeradapter:
   image:
     registry: "docker.io"
     name: jaegertracing/all-in-one
-    tag: 1.58
-
+    tag: 1.12
 
 rtmgr:
   rtmgr:
@@ -199,7 +198,7 @@ influxdb2:
   service:
     port: 8086
   persistence:
-    storageClass: openebs-jiva-csi-default
+    storageClass: openebs-hostpath
 
 xapp-onboarder:
   xapponboarder:

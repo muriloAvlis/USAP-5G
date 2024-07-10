@@ -35,3 +35,6 @@ with support for the ORAN Alliance O-RAN standard.
 | **urllc_slice** | 2       | 000001 | gbr     | 13.1.1.0/24 |   724   |   70    |
 | **miot_slice**  | 3       | 000001 | iot     | 14.1.1.0/24 |   724   |   70    |
 |                 |         |        |         |             |   724   |   70    |
+
+### Network topology
+
