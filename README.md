@@ -1,7 +1,6 @@
-# Intelligent Allocation of UEs in Slices on Open 5G Networks (IAUS-O5G)
+# UE Smart Allocation Platform on Open 5G Networks (USAP-O5GNet)
 
-The QoS Management Platform in 5G Networks (QMPO5GNet) is a project to manage and optimize QoS on Open 5G Networks
-with support for the ORAN Alliance O-RAN standard.
+The **UE Smart Allocation Platform on Open 5G Networks (USAP-O5GNet)** is a project to manage and optimize the allocation of UEs and UE QoS, using slices on Open 5G Networks with support for the ORAN Alliance O-RAN standard.
 
 ## Table of Content
 
