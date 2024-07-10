@@ -36,5 +36,6 @@ with support for the ORAN Alliance O-RAN standard.
 | **miot_slice**  | 3       | 000001 | iot     | 14.1.1.0/24 |   724   |   70    |
 |                 |         |        |         |             |   724   |   70    |
 
-### Network topology
+### Proposal topology
 
+![proposal-topology-v1](./images/proposal_diagram-topology-v1.png)
