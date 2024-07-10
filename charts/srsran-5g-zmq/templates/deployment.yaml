@@ -69,7 +69,7 @@ spec:
       containers:
         - name: {{ include "common.names.fullname" . }}-gnb
           image: {{ template "srsran.image" . }}
-          imagePullPolicy: {{ .Values.image.pullPolicy | quote }}
+          imagePullPolicy: {{ .Values.image.srsran.pullPolicy | quote }}
           {{- if .Values.command }}
           command: {{- include "common.tplvalues.render" (dict "value" .Values.command "context" $) | nindent 12 }}
           {{- end }}

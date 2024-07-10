@@ -113,7 +113,7 @@ config:
   
   e2:
     ric:
-      hostname: service-ricplt-e2term-sctp-alpha.ricplt # RIC Service on K8s
+      hostname: service-ricplt-e2term-sctp-alpha.ricplt # RIC Service (on K8s) or IP address
       port: 36421 # RIC SCTP port
       bind_interface: eth0 # A local IP that the E2 agent binds to traffic from the RIC. ONLY required if running the RIC on a separate machine. 
 ue:
@@ -193,6 +193,7 @@ extraVolumeMounts: []
 ## @param initContainers Add additional init containers to the pod (evaluated as a template)
 ##
 initContainers: []
+
 ## @param sidecars Attach additional containers to the pod (evaluated as a template)
 ##
 sidecars: []
@@ -349,6 +350,7 @@ lifecycleHooks: {}
 ## ref: https://kubernetes.io/docs/concepts/overview/working-with-objects/annotations/
 ##
 podAnnotations: {}
+  # k8s.v1.cni.cncf.io/networks: e2-network-macvlan@eth1
 ## @param podLabels Add additional labels to the pod (evaluated as a template)
 ## ref: https://kubernetes.io/docs/concepts/overview/working-with-objects/labels/
 ##
