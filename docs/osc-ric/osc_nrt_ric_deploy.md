@@ -13,7 +13,7 @@
 git clone "https://gerrit.o-ran-sc.org/r/ric-plt/ric-dep"
 ```
 
-> **_NOTE_**: Use `~/QMPO5GNet/charts/nearrtric-0.1.0.tgz` instead.
+> **_NOTE_**: Use `~/USAP/charts/nearrtric-0.1.0.tgz` instead.
 
 ### Creating Platform and Xapp Namespaces
 
@@ -22,7 +22,9 @@ kubectl create ns ricplt
 kubectl create ns ricxapp
 ```
 
-### Running Chart Museum on Docker
+### Running Chart Museum
+
+- docker
 
 ```sh
 docker run --rm -it \
@@ -33,6 +35,12 @@ docker run --rm -it \
   -e STORAGE_LOCAL_ROOTDIR=/charts \
   -v $HOME/helm/chartsmuseum/:/charts \
   ghcr.io/helm/chartmuseum:v0.16.2
+```
+
+- shell 
+
+```sh
+chartmuseum --port 6873 --debug --storage=local --storage-local-rootdir=~/helm/charts
 ```
 
 ### Install Chartmuseum Plugin on the Helm
@@ -75,7 +83,7 @@ helm search repo local/nearrtric
 ### Deploy Near-RT RIC
 
 ```sh
-helm upgrade --install nearrtric -n ricplt local/nearrtric -f ~/QMPO5GNet/configs/osc-ric/osc_ric_values.yaml --create-namespace
+helm upgrade --install nearrtric -n ricplt local/nearrtric -f ~/USAP/configs/osc-ric/osc_ric_values.yaml --create-namespace
 ```
 
 ## Clean up
