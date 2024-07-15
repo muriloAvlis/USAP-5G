@@ -21,8 +21,8 @@ Copy the custom files in the configs folder to the chart directory and install t
 
 ```sh 
 cd ~/oai-cn5g-fed/charts/oai-5g-ran/oai-nr-ue
-cp ~/QMPO5GNet/configs/oai-ran/oai_nr_ue_values.yaml .
-cp ~/QMPO5GNet/configs/oai-ran/oai_nr_ue_configmap.yaml ./templates/configmap.yaml
+cp ~/USAP/configs/oai-ran/oai_nr_ue_values.yaml .
+cp ~/USAP/configs/oai-ran/oai_nr_ue_configmap.yaml ./templates/configmap.yaml
 helm dependency update
 helm upgrade --install -n oairan --create-namespace oai-ue . -f oai_nr_ue_values.yaml
 ```

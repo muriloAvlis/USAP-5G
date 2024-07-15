@@ -42,7 +42,7 @@ global:
     submgr:
       http: 8088
   nodeSelector: 
-    kubernetes.io/hostname: oscric
+    kubernetes.io/hostname: nrtric
 
 # Change the overall image pull policy using the following option
 #  pullpolicy: IfNotPresent
@@ -144,7 +144,7 @@ e2term:
         print: "1"
         messagecollectorfile: "/data/outgoing/"
       dataVolSize: 100Mi
-      storageClassName: openebs-hostpath
+      storageClassName: local-path
       pizpub:
         enabled: false
 
@@ -198,7 +198,9 @@ influxdb2:
   service:
     port: 8086
   persistence:
-    storageClass: openebs-hostpath
+    storageClass: local-path
+  nodeSelector: 
+    kubernetes.io/hostname: nrtric
 
 xapp-onboarder:
   xapponboarder:
