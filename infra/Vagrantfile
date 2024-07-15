@@ -7,17 +7,17 @@ Vagrant.configure("2") do |config|
     config.hostmanager.manage_guest = true
 
     ## VM Core
-    config.vm.define :oaicn do |oaicn|
-        oaicn.vm.box = "cloud-image/ubuntu-24.04"
-        oaicn.vm.hostname = "oaicn"
-        oaicn.vm.network "public_network",
-            :ip => "10.126.1.120"
-            :mode => "bridge"
-            :type => "bridge"
+    config.vm.define :core do |core|
+        core.vm.box = "cloud-image/ubuntu-24.04"
+        core.vm.hostname = "5gcore"
+        core.vm.network "public_network",
+            :ip => "10.126.1.120",
+            :mode => "bridge",
+            :type => "bridge",
             :dev => "br1"
 
-        oaicn.vm.provider :libvirt do |lbv|
-            lbv.title = "oaicn"
+        core.vm.provider :libvirt do |lbv|
+            lbv.title = "5gcore"
             lbv.description = "OAI 5G Core Network for USAP project"
             lbv.cpu_mode = "host-model"
             lbv.cpus = 8
@@ -25,17 +25,17 @@ Vagrant.configure("2") do |config|
             lbv.machine_virtual_size = 60
         end
 
-        oaicn.vm.provision "shell", path: "../scripts/vagrant/oaicn.sh"
+        core.vm.provision "shell", path: "../scripts/vagrant/5gcore.sh"
     end
 
     ## VM RAN
     config.vm.define :ran do |ran|
         ran.vm.box = "cloud-image/ubuntu-24.04"
         ran.vm.hostname = "5gran"
-        oaicn.vm.network "public_network",
-            :ip => "10.126.1.121"
-            :mode => "bridge"
-            :type => "bridge"
+        ran.vm.network "public_network",
+            :ip => "10.126.1.121",
+            :mode => "bridge",
+            :type => "bridge",
             :dev => "br1"
         ran.vm.provider :libvirt do |lbv|
             lbv.title = "5gran"
@@ -53,10 +53,10 @@ Vagrant.configure("2") do |config|
     config.vm.define :ric do |ric|
         ric.vm.box = "cloud-image/ubuntu-24.04"
         ric.vm.hostname = "nrtric"
-        oaicn.vm.network "public_network",
-            :ip => "10.126.1.122"
-            :mode => "bridge"
-            :type => "bridge"
+        ric.vm.network "public_network",
+            :ip => "10.126.1.122",
+            :type => "bridge",
+            :mode => "bridge",
             :dev => "br1"
         ric.vm.provider :libvirt do |lbv|
             lbv.title = "nrtric"
