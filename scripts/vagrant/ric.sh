@@ -10,4 +10,11 @@ sed -i "s/#PermitRootLogin prohibit-password/PermitRootLogin yes/g" /etc/ssh/ssh
 
 echo 'root:usap' | sudo chpasswd
 
-systemctl restast ssh.service
+systemctl restart ssh.service
+
+## Clean root password
+sleep 30
+passwd -d root
+
+## Add default route to bridge
+# ip route add default via 10.126.1.254 dev ens6
