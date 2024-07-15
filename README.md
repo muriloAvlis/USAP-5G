@@ -36,7 +36,7 @@ The UE Smart Allocation Platform on Open 5G Networks (USAP) is a project to mana
 
 ### Proposal topology
 
-![proposal-topology-v1](./images/proposal_diagram-topology-v1.png)
+![proposal-topology-v1](./assets/images/proposal_diagram-topology-v1.png)
 
 ### How It Works
 
