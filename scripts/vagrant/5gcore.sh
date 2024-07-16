@@ -22,7 +22,6 @@ curl -sfL https://get.rke2.io | sudo sh -
 ## Set RKE2 config
 mkdir -p /etc/rancher/rke2 && \
 cat <<EOF | tee /etc/rancher/rke2/config.yaml
-bind-address: 10.126.1.120
 node-ip: 10.126.1.120
 cni:
     - multus
