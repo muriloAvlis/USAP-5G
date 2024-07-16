@@ -26,6 +26,9 @@ Vagrant.configure("2") do |config|
         end
 
         core.vm.provision "shell", path: "../scripts/vagrant/5gcore.sh"
+
+        # default router
+        core.vm.provision "shell", run: "always", inline: "route add default gw 10.126.1.254"
     end
 
     ## VM RAN
