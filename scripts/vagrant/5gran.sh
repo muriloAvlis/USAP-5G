@@ -28,9 +28,6 @@ export NODE_TOKEN=$(</home/vagrant/node-token)
 sed -i "s/<server-addr>/${SERVER_ADDR}/g" /etc/rancher/rke2/config.yaml
 sed -i "s/<token-from-server-node>/${NODE_TOKEN}/g" /etc/rancher/rke2/config.yaml
 
-echo "#--------RKE2 Config--------#"
-cat /etc/rancher/rke2/config.yaml
-
 ## Start RKE2 agent
 sudo systemctl enable rke2-agent.service
 sudo systemctl start rke2-agent.service
