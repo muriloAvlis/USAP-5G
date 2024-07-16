@@ -45,5 +45,10 @@ kubectl completion bash | tee /etc/bash_completion.d/kubectl > /dev/null
 scp /var/lib/rancher/rke2/server/node-token vagrant@5gran:/home/vagrant/
 scp /var/lib/rancher/rke2/server/node-token vagrant@nrtric:/home/vagrant/
 
+## Install helm
+curl -fsSL -o get_helm.sh https://raw.githubusercontent.com/helm/helm/main/scripts/get-helm-3
+chmod 700 get_helm.sh
+./get_helm.sh
+
 ## Change vagrant default password
 echo 'vagrant:@admin123#' | chpasswd
