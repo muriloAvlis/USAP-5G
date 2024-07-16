@@ -32,7 +32,7 @@ EOF
 ## Start RKE2
 systemctl enable rke2-server.service
 systemctl start rke2-server.service
-sleep 30
+sleep 45
 
 ## Get K8s config
 mkdir -p /home/vagrant/.kube/
