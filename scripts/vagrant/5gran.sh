@@ -1,20 +1,39 @@
 #!/bin/bash
 
 export DEBIAN_FRONTEND=noninteractive
+export SERVER_ADDR="10.126.1.120"
 
 ## Install packages
 apt-get update
 apt-get install -y net-tools
 
-sed -i "s/#PermitRootLogin prohibit-password/PermitRootLogin yes/g" /etc/ssh/sshd_config
+## Set RKE2 config
+curl -sfL https://get.rke2.io | sudo INSTALL_RKE2_TYPE="agent" sh -
 
-echo 'root:usap' | sudo chpasswd
+sudo mkdir -p /etc/rancher/rke2 && \
+sudo cat <<EOF | sudo tee /etc/rancher/rke2/config.yaml
+server: https://<server-addr>:9345
+token: <token-from-server-node>
+EOF
 
-systemctl restart ssh.service
+## Wait for token from server
+while [ ! -f /home/vagrant/node-token  ]; do
+  echo "Waiting for K8s token file..."
+  sleep 20
+done
 
-## Clean root password
-sleep 30
-passwd -d root
+export NODE_TOKEN=$(</home/vagrant/node-token)
 
-## Add default route to bridge
-# ip route add default via 10.126.1.254 dev ens6
+## Apply configs
+sed -i "s/<server-addr>/${SERVER_ADDR}/g" /etc/rancher/rke2/config.yaml
+sed -i "s/<token-from-server-node>/${NODE_TOKEN}/g" /etc/rancher/rke2/config.yaml
+
+echo "#--------RKE2 Config--------#"
+cat /etc/rancher/rke2/config.yaml
+
+## Start RKE2 agent
+sudo systemctl enable rke2-agent.service
+sudo systemctl start rke2-agent.service
+
+## Change vagrant default password
+echo 'vagrant:@admin123#' | sudo chpasswd
