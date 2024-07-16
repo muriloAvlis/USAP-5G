@@ -1,4 +1,4 @@
-# Open5GS-CN Deployment
+# SRSRAN-5G Deployment
 
 ## Requirements
 
