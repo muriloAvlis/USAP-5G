@@ -12,6 +12,7 @@ curl -sfL https://get.rke2.io | sudo INSTALL_RKE2_TYPE="agent" sh -
 
 sudo mkdir -p /etc/rancher/rke2 && \
 sudo cat <<EOF | sudo tee /etc/rancher/rke2/config.yaml
+node-ip: 10.126.1.122
 server: https://<server-addr>:9345
 token: <token-from-server-node>
 EOF
