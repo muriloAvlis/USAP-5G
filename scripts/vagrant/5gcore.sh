@@ -22,6 +22,8 @@ curl -sfL https://get.rke2.io | sudo sh -
 ## Set RKE2 config
 mkdir -p /etc/rancher/rke2 && \
 cat <<EOF | tee /etc/rancher/rke2/config.yaml
+bind-address: 10.126.1.120
+node-ip: 10.126.1.120
 cni:
     - multus
     - calico
@@ -45,10 +47,15 @@ kubectl completion bash | tee /etc/bash_completion.d/kubectl > /dev/null
 scp /var/lib/rancher/rke2/server/node-token vagrant@5gran:/home/vagrant/
 scp /var/lib/rancher/rke2/server/node-token vagrant@nrtric:/home/vagrant/
 
-## Install helm
+## K8s Addons
+
+### Helm
 curl -fsSL -o get_helm.sh https://raw.githubusercontent.com/helm/helm/main/scripts/get-helm-3
 chmod 700 get_helm.sh
 ./get_helm.sh
+
+### Storage Class
+kubectl --kubeconfig=/home/vagrant/.kube/config apply -f https://raw.githubusercontent.com/rancher/local-path-provisioner/v0.0.28/deploy/local-path-storage.yaml
 
 ## Change vagrant default password
 echo 'vagrant:@admin123#' | chpasswd
