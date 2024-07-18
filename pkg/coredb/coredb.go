@@ -31,20 +31,24 @@ func (cdb *coreDB) Run() {
 	// In development
 	for {
 		queryTimeStart := time.Now()
-		AuthSubsTable, err := cdb.getAuthenticationSubscription()
+		authSubsTable, err := cdb.getAuthSubs()
+		// authSubsTable, err := cdb.getAuthSubsByUEId("01010101")
 		queryTime := time.Since(queryTimeStart)
+		time.Sleep(2 * time.Second)
 		if err != nil {
 			log.Println(err)
+			continue
 		}
 
-		for _, v := range AuthSubsTable {
+		for _, v := range authSubsTable {
 			fmt.Printf("UE-ID: %s\n", v.Ueid)
 		}
+
+		// fmt.Printf("UE-ID: %s\n", authSubsTable.Ueid)
+
 		fmt.Printf("Query time: %s\n", queryTime)
 
 		fmt.Println()
-
-		time.Sleep(2 * time.Second)
 	}
 }
 
