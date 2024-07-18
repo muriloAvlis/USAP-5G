@@ -4,4 +4,3 @@ Chart.lock
 .vagrant
 charts
 configs
-go.sum
