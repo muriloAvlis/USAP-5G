@@ -48,6 +48,9 @@ jobs:
         IMG_VER=$(git branch --show-current)
         IMG_BUILD_DATE=$(date -u +"%Y-%m-%dT%H:%M:%SZ")
         IMG_VCS_REF=$(git rev-parse --short HEAD)
+        echo "IMG_VER=${IMG_VER}" >> $GITHUB_ENV
+        echo "IMG_BUILD_DATE=${IMG_BUILD_DATE}" >> $GITHUB_ENV
+        echo "IMG_VCS_REF=${IMG_VCS_REF}" >> $GITHUB_ENV
 
     - name: Build and push
       uses: docker/build-push-action@v5
@@ -56,8 +59,8 @@ jobs:
         file: "docker/Dockerfile.usap"
         push: true
         build-args: |
-          VERSION=${IMG_VER}
-          BUILD_DATE=${IMG_BUILD_DATE}
-          VCS_REF=${IMG_VCS_REF}
+          VERSION=${{ env.IMG_VER }}
+          BUILD_DATE=${{ env.IMG_BUILD_DATE }}
+          VCS_REF=${{ env.IMG_VCS_REF }}
         tags: ${{ steps.meta.outputs.tags }}
         labels: ${{ steps.meta.outputs.labels }}
