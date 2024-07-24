@@ -24,14 +24,14 @@ ENV TZ=America/Belem
 RUN apk -U upgrade \
     && apk add --no-cache tzdata
 
-COPY --from=builder /builder/bin/usap /usr/local/bin/usap
+COPY --from=builder /builder/bin/usap /usr/local/bin/usap   
 
 ## Add labels
 LABEL br.ufpa.gercom.title="USAP" \
     br.ufpa.gercom.description="UE Smart Allocation Platform on Open 5G Networks (USAP)" \
     br.ufpa.gercom.source="https://github.com/muriloAvlis/USAP" \
     br.ufpa.gercom.authors="Murilo Silva" \ 
-    br.ufpa.gercom.maintainer="Murilo Silva <murilosilva@itec.ufpa.br>" \ 
+    br.ufpa.gercom.maintainer="Murilo Silva <murilosilva@itec.ufpa.br>" \
     br.ufpa.gercom.licenses=""
 
 ## Set environments
