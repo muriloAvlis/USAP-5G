@@ -21,7 +21,8 @@ FROM alpine:3.20
 ## Timezone
 ENV TZ=America/Belem
 
-RUN apk -U upgrade
+RUN apk -U upgrade \
+    && apk add --no-cache tzdata
 
 COPY --from=builder /builder/bin/usap /usr/local/bin/usap
 
