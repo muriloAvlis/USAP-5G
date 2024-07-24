@@ -29,11 +29,7 @@ The UE Smart Allocation Platform on Open 5G Networks (USAP) is a project to mana
 ### Build Docker Image
 
 ```sh
-docker image build --build-arg VERSION=$(git branch --show-current) \
-             --build-arg VCS_REF=$(git rev-parse --short HEAD) \
-             --build-arg BUILD_DATE=$(date -u +"%Y-%m-%dT%H:%M:%SZ") \
-             -t muriloavlis/usap:latest \
-             -f docker/Dockerfile.usap .
+docker image build -t muriloavlis/usap:latest -f docker/Dockerfile.usap .
 ```
 
 ### Network Configurations
