@@ -1,3 +1,7 @@
+/*------------------------------------------------------------------------*/
+/*----------------AuthenticationSubscription Table Handler----------------*/
+/*------------------------------------------------------------------------*/
+
 package coredb
 
 import (
@@ -6,7 +10,7 @@ import (
 	"fmt"
 )
 
-// Get AuthenticationSubscription Table
+// Get all Authentication Subscriptions
 func (cdb *coreDB) getAuthSubs() ([]AuthenticationSubscriptionTable, error) {
 	var authSubs []AuthenticationSubscriptionTable // stores table rows
 	rows, err := cdb.dbHdlr.Query("SELECT * FROM AuthenticationSubscription")
@@ -54,7 +58,7 @@ func (cdb *coreDB) getAuthSubs() ([]AuthenticationSubscriptionTable, error) {
 	return authSubs, nil // return table rows
 }
 
-// Get AuthenticationSubscription Table by UE ID
+// Get Authentication Subscription by UE ID
 func (cdb *coreDB) getAuthSubsByUEId(UeId string) (AuthenticationSubscriptionTable, error) {
 	var authSub AuthenticationSubscriptionTable // store result
 	// get row from AuthenticationSubscription Table

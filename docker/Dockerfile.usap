@@ -36,12 +36,12 @@ LABEL br.ufpa.gercom.title="USAP" \
     br.ufpa.gercom.source="https://github.com/muriloAvlis/USAP" \
     br.ufpa.gercom.authors="Murilo Silva" \ 
     br.ufpa.gercom.maintainer="Murilo Silva <murilosilva@itec.ufpa.br>" \ 
-    br.ufpa.gercom.licenses="N/A"
+    br.ufpa.gercom.licenses=""
 
 ## Set environments
 ENV CORE_DB_USER=test \
     CORE_DB_PASSWORD=test \
-    CORE_DB_ADDRESS=0.0.0.0 \
+    CORE_DB_ADDRESS=127.0.0.1 \
     CORE_DB_PORT=3306 \
     CORE_DB_NAME=oai_db
 
