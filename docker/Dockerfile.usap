@@ -2,29 +2,37 @@
 #--------------- Builder Stage ---------------#
 #---------------------------------------------#
 
-FROM golang:1.22.5-alpine3.20 AS builder
+FROM golang:1.22.5-bookworm AS builder
 
 WORKDIR /builder
+
+# # Install RMR lib
+COPY ./dependencies ./dependencies
+RUN dpkg -i ./dependencies/rmr-dev_4.9.4_amd64.deb \
+    && ldconfig
 
 COPY go.mod go.sum ./
 RUN go mod download && go mod verify
 COPY . .
 RUN mkdir -p bin
+## Build App
 RUN go build -v -o ./bin ./...
+
 
 #---------------------------------------------#
 #---------------- Final Stage ----------------#
 #---------------------------------------------#
 
-FROM alpine:3.20
+FROM bitnami/minideb:bookworm
 
 ## Timezone
 ENV TZ=America/Belem
 
-RUN apk -U upgrade \
-    && apk add --no-cache tzdata
+RUN install_packages tzdata
 
-COPY --from=builder /builder/bin/usap /usr/local/bin/usap   
+COPY --from=builder /builder/bin/usap /usr/local/bin/usap
+# COPY --from=builder /usr/local/include/rmr /usr/local/include/rmr
+# COPY --from=builder /usr/local/lib/librmr_si.a /usr/local/lib/librmr_si.a
 
 ## Add labels
 LABEL br.ufpa.gercom.title="USAP" \
