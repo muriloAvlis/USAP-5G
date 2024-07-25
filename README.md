@@ -34,11 +34,12 @@ docker image build -t muriloavlis/usap:latest -f docker/Dockerfile.usap .
 
 ### Network Configurations
 
-|                 | **sst** | **sd** | **dnn** | **Subnet**  | **MCC** | **MNC** |
-|-----------------|---------|--------|---------|-------------|---------|---------|
-| **embb_slice**  | 1       | 000001 | nongbr  | 12.1.1.0/24 |   724   |   70    |
-| **urllc_slice** | 2       | 000001 | gbr     | 13.1.1.0/24 |   724   |   70    |
-| **miot_slice**  | 3       | 000001 | iot     | 14.1.1.0/24 |   724   |   70    |
+|                    | **sst** | **sd** | **dnn** | **Subnet**  | **MCC** | **MNC** |
+|--------------------|---------|--------|---------|-------------|---------|---------|
+| **embb_slice**     | 1       | 000001 | nongbr  | 12.1.1.0/24 |   724   |   70    |
+| **urllc_slice**    | 2       | 000001 | gbr     | 12.1.2.0/24 |   724   |   70    |
+| **miot_slice**     | 3       | 000001 | iot     | 12.1.3.0/24 |   724   |   70    |
+| **default_slice**  | 128     | 000001 | default | 12.1.4.0/24 |   724   |   70    |
 
 ### Proposal topology
 

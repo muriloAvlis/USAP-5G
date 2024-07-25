@@ -4,6 +4,7 @@ import (
 	"database/sql"
 	"fmt"
 	"log"
+	"sync"
 	"time"
 
 	"github.com/go-sql-driver/mysql"
@@ -44,9 +45,9 @@ func connect(config Config) (*sql.DB, error) {
 	}
 
 	// Set important connection configs
-	db.SetConnMaxLifetime(2 * time.Minute)
-	db.SetMaxOpenConns(10)
-	db.SetMaxIdleConns(10)
+	db.SetConnMaxLifetime(1 * time.Minute)
+	db.SetMaxOpenConns(100)
+	db.SetMaxIdleConns(100)
 
 	// test DB connection
 	err = db.Ping()
@@ -60,29 +61,28 @@ func connect(config Config) (*sql.DB, error) {
 }
 
 // Run operations on the 5GC Database
-func (cdb *coreDB) Run() {
+func (cdb *coreDB) Run(wg *sync.WaitGroup) {
 	if err := cdb.start(); err != nil {
-		log.Fatal(err)
 		cdb.dbHdlr.Close() // close DB conn
+		wg.Done()
+		log.Fatal(err)
 	}
 }
 
 // Start 5GC DB processes
 func (cdb *coreDB) start() error {
-	// In development
-	for {
-		queryTimeStart := time.Now()
-		authSubsTable, err := cdb.getAuthSubs()
-		queryTime := time.Since(queryTimeStart)
-		time.Sleep(2 * time.Second)
-		if err != nil {
-			return fmt.Errorf("unable to run 5gc db operation: %v", err)
-		}
-
-		for _, v := range authSubsTable {
-			log.Printf("UE-ID: %s\n", v.Ueid)
-		}
-
-		log.Printf("Query time: %s\n", queryTime)
+	// Clean up tables used by App
+	err := cdb.TruncateAuthSubs()
+	if err != nil {
+		log.Fatal(err)
 	}
+
+	err = cdb.TruncateSubscriptionData()
+	if err != nil {
+		log.Fatal(err)
+	}
+
+	// Show status of UEs connected to 5GC (TODO)
+
+	return nil
 }
