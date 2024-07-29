@@ -1,0 +1,113 @@
+{
+    "xapp_name": "usap-xapp",
+    "version": "0.0.1",
+    "vendor": "Murilo Silva <murilosilva@itec.ufpa.br>",
+    "containers": [
+        {
+            "name": "usap",
+            "image": {
+                "registry": "registry.hub.docker.com",
+                "name": "muriloavlis/usap",
+                "tag": "latest"
+            }
+        }
+    ],
+    "livenessProbe": {
+        "httpGet": {
+            "path": "ric/v1/health/alive",
+            "port": 8080
+        },
+        "initialDelaySeconds": 5,
+        "periodSeconds": 15
+    },
+    "readinessProbe": {
+        "httpGet": {
+            "path": "ric/v1/health/ready",
+            "port": 8080
+        },
+        "initialDelaySeconds": 5,
+        "periodSeconds": 15
+    },
+    "messaging": {
+        "ports": [
+            {
+                "name": "http",
+                "container": "usap-xapp",
+                "port": 8080,
+                "description": "http service"
+            },
+            {
+                "name": "rmr-route",
+                "container": "usap-xapp",
+                "port": 4561,
+                "description": "rmr route port for usap-xapp"
+            },
+            {
+                "name": "rmrdata",
+                "container": "usap-xapp",
+                "port": 4560,
+                "protocol": "tcp",
+                "maxSize": 65536,
+                "numWorkers": 1,
+                "rxMessages": [
+                    "RIC_SUB_RESP",
+                    "RIC_SUB_FAILURE",
+                    "RIC_SUB_DEL_RESP",
+                    "RIC_INDICATION"
+                ],
+                "txMessages": [
+                    "RIC_SUB_REQ",
+                    "RIC_SUB_DEL_REQ"
+                ],
+                "policies": [],
+                "description": "rmr data port for usap-xapp"
+            }
+        ]
+    },
+    "controls": {
+        "active": true,
+        "measurement_interval": 1000,
+        "interfaceId": {
+            "globalGNBId": {
+                "plmnId": 72470
+            }
+        },
+        "logger": {
+            "level": 3
+        },
+        "subscription": {
+            "subscriptionActive": true
+        },
+        "localAddress": {
+            "host": ":8080"
+        }
+    },
+    "db": {
+        "waitForSdl": false,
+        "host": "service-ricplt-dbaas-tcp.ricplt:6379",
+        "protocol": "tcp",
+        "maxIdle": 50,
+        "maxActive": 100
+    },
+    "metrics": {
+        "url": "/ric/v1/metrics",
+        "namespace": "ricxapp"
+    },
+    "faults": {},
+    "measurements": [
+        {
+            "objectName": "DRB.UEThpDl",
+            "objectInstance": "DRB.UEThpDl",
+            "name": "ricxapp_usap_xapp_DRBUEThpDl",
+            "type": "int",
+            "description": "UE Downlink Throughput "
+        },
+        {
+            "objectName": "DRB.UEThpUl",
+            "objectInstance": "DRB.UEThpUl",
+            "name": "ricxapp_usap_xapp_DRBUEThpUl",
+            "type": "int",
+            "description": "UE Uplink Throughput"
+        }
+    ]
+}

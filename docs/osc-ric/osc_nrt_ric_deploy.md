@@ -27,7 +27,7 @@ kubectl create ns ricxapp
 - docker
 
 ```sh
-docker run --rm -it \
+docker run -d \
   -u 0 \
   -p 6873:8080 \
   -e DEBUG=1 \

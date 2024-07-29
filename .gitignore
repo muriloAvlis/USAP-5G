@@ -3,4 +3,3 @@ build/_output
 Chart.lock
 .vagrant
 charts
-configs
