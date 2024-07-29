@@ -69,6 +69,13 @@ data:
             "maxIdle": {{ index .Values "db" "maxIdle" | toJson }},
             "maxActive": {{ index .Values "db" "maxActive" | toJson }}
         },
+        "coredb": {
+            "username": {{ index .Values "coredb" "username" | toJson }},
+            "password": {{ index .Values "coredb" "password" | toJson }},
+            "hostname": {{ index .Values "coredb" "hostname" | toJson }},
+            "port": {{ index .Values "coredb" "port" | toJson }},
+            "dbname": {{ index .Values "coredb" "dbname" | toJson }}
+        },
         "metrics": {
             "url": {{ index .Values "metrics" "url" | toJson }},
             "namespace": {{ index .Values "metrics" "namespace" | toJson }}
