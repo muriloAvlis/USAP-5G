@@ -1,7 +1,6 @@
 package manager
 
 import (
-	"fmt"
 	"sync"
 
 	"gerrit.o-ran-sc.org/r/ric-plt/xapp-frame/pkg/xapp"
@@ -15,15 +14,15 @@ type UsapXapp struct {
 }
 
 func (u *UsapXapp) Consume(msg *xapp.RMRParams) (err error) {
-	// xapp.Logger.Debug("Message received - type=%d len=%d", msg.Mtype, msg.PayloadLen)
-
-	// xapp.SdlStorage.Store("myKey", "payload", msg.Payload)
-	// xapp.Rmr.Send(msg, true)
 	return nil
 }
 
 func (u *UsapXapp) Run(wg *sync.WaitGroup) {
 	defer wg.Done()
-	fmt.Println(u.WaitForSdl)
+	// Set MDC (read: name visible in the logs)
+	xapp.Logger.SetMdc("usap-xapp", "v1.0.0-alpha")
+
+	// xapp.SetReadyCB(func(i interface{}) { u.rmrReady = true })
+
 	xapp.RunWithParams(u, u.WaitForSdl)
 }

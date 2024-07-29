@@ -28,7 +28,7 @@ FROM bitnami/minideb:bookworm
 ## Set Timezone
 ENV TZ=America/Belem
 
-RUN install_packages tzdata dnsutils
+RUN install_packages tzdata dnsutils net-tools
 
 COPY --from=builder /builder/bin/usap /usr/local/bin/usap
 # COPY --from=builder /usr/local/include/rmr /usr/local/include/rmr
@@ -43,7 +43,7 @@ LABEL br.ufpa.gercom.title="USAP" \
     br.ufpa.gercom.licenses=""
 
 # xApp-framework stuff
-ENV CFG_FILE=/opt/xapp/config/config-file.json
-# ENV RMR_SEED_RT=/opt/xapp/config/uta_rtg.rt
+ENV CFG_FILE=/opt/ric/config/config-file.json
+# ENV RMR_SEED_RT=/opt/ric/config/uta_rtg.rt
 
 CMD ["usap"]

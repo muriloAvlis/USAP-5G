@@ -20,9 +20,8 @@ func main() {
 		CoreDBConfig: coredb.Config{
 			CoreDBUser:     xapp.Config.GetString("coredb.username"),
 			CoreDBPassword: xapp.Config.GetString("coredb.password"),
-			// CoreDBAddress:  xapp.Config.GetString("coredb.hostname"),
-			CoreDBPort: xapp.Config.GetString("coredb.port"),
-			CoreDBName: xapp.Config.GetString("coredb.dbname"),
+			CoreDBPort:     xapp.Config.GetString("coredb.port"),
+			CoreDBName:     xapp.Config.GetString("coredb.dbname"),
 		},
 	}
 
