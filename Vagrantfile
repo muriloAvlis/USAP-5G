@@ -25,7 +25,7 @@ Vagrant.configure("2") do |config|
             lbv.machine_virtual_size = 60
         end
 
-        core.vm.provision "shell", path: "../scripts/vagrant/5gcore.sh"
+        core.vm.provision "shell", path: "./scripts/vagrant/5gcore.sh"
 
         # default router
         core.vm.provision "shell", run: "always", inline: "route add default gw 10.126.1.254"
@@ -49,7 +49,7 @@ Vagrant.configure("2") do |config|
             lbv.machine_virtual_size = 40
         end
 
-        ran.vm.provision "shell", path: "../scripts/vagrant/5gran.sh"
+        ran.vm.provision "shell", path: "./scripts/vagrant/5gran.sh"
     end
 
     ## VM RIC
@@ -70,7 +70,7 @@ Vagrant.configure("2") do |config|
             lbv.machine_virtual_size = 40
         end
 
-        ric.vm.provision "shell", path: "../scripts/vagrant/ric.sh"
+        ric.vm.provision "shell", path: "./scripts/vagrant/ric.sh"
     end
 
     config.vm.provision :hostmanager

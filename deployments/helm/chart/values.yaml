@@ -76,6 +76,12 @@ controls:
   measurement_interval: 1000
   subscription:
     subscriptionActive: true
+coredb:
+  dbname: oai_db
+  hostname: mysql.oai5gcn
+  password: test
+  port: '3306'
+  username: test
 db:
   host: service-ricplt-dbaas-tcp.ricplt:6379
   maxActive: 100

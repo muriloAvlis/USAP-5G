@@ -89,6 +89,13 @@
         "maxIdle": 50,
         "maxActive": 100
     },
+    "coredb": {
+        "username": "test",
+        "password": "test",
+        "hostname": "mysql.oai5gcn",
+        "port": "3306",
+        "dbname": "oai_db"
+    },
     "metrics": {
         "url": "/ric/v1/metrics",
         "namespace": "ricxapp"
