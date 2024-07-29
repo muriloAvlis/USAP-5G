@@ -1,6 +1,7 @@
 package manager
 
 import (
+	"fmt"
 	"sync"
 
 	"gerrit.o-ran-sc.org/r/ric-plt/xapp-frame/pkg/xapp"
@@ -14,6 +15,7 @@ type UsapXapp struct {
 }
 
 func (u *UsapXapp) Consume(msg *xapp.RMRParams) (err error) {
+	fmt.Println("TODO: Consume UE KPMs")
 	return nil
 }
 
