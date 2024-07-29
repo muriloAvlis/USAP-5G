@@ -30,7 +30,7 @@ ricplt:
 
 # Location of the xApp config files injected from the xApp descriptor
 appconfig:
-    path: /opt/ric/config
+    path: /opt/xapp/config
 
 # Location of volume based on HostPath of type Directory
 storage:
@@ -61,7 +61,7 @@ fullname: "usap-xapp"
 containers:
 - image:
     name: muriloavlis/usap
-    registry: registry.hub.docker.com
+    registry: docker.io
     tag: latest
   name: usap
 controls:

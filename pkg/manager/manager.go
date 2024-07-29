@@ -1,6 +1,7 @@
 package manager
 
 import (
+	"fmt"
 	"sync"
 
 	"gerrit.o-ran-sc.org/r/ric-plt/xapp-frame/pkg/xapp"
@@ -23,5 +24,6 @@ func (u *UsapXapp) Consume(msg *xapp.RMRParams) (err error) {
 
 func (u *UsapXapp) Run(wg *sync.WaitGroup) {
 	defer wg.Done()
+	fmt.Println(u.WaitForSdl)
 	xapp.RunWithParams(u, u.WaitForSdl)
 }
