@@ -55,7 +55,7 @@ readinessProbe: {}
 name: {}
 
 # Full instance name. If empty, full name will be constructed from name
-fullname: {}
+fullname: "usap-xapp"
 
 ###############    The following are from the xApp descriptor     ###############
 containers:
