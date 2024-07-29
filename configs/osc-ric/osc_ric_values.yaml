@@ -98,10 +98,6 @@ appmgr:
         registry: "nexus3.o-ran-sc.org:10002/o-ran-sc"
         name: ric-plt-appmgr
         tag: 0.5.8
-      chartmuseum:
-        registry: "docker.io"
-        name: chartmuseum/chartmuseum
-        tag: v0.16.2
 
 
 dbaas:
@@ -209,6 +205,10 @@ xapp-onboarder:
         registry: "nexus3.o-ran-sc.org:10004/o-ran-sc"
         name: xapp-onboarder
         tag: 1.0.8
+      chartmuseum:
+        registry: "docker.io"
+        name: ghcr.io/helm/chartmuseum
+        tag: v0.16.2
 
 o1mediator:
   o1mediator:
