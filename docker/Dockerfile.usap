@@ -42,9 +42,8 @@ LABEL br.ufpa.gercom.title="USAP" \
     br.ufpa.gercom.maintainer="Murilo Silva <murilosilva@itec.ufpa.br>" \
     br.ufpa.gercom.licenses=""
 
-COPY scripts/usap_entrypoint.sh /entrypoint.sh
-
 # xApp-framework stuff
 ENV CFG_FILE=/opt/xapp/config/config-file.json
+# ENV RMR_SEED_RT=/opt/xapp/config/uta_rtg.rt
 
 CMD ["usap"]

@@ -15,6 +15,7 @@ cd appmgr/xapp_orchestrater/dev/xapp_onboarder
 
 ## Create a virtual environment
 python3 -m venv .venv
+. .venv/bin/activate
 
 #Install xapp_onboarder using following command
 pip install ./
