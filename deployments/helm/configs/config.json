@@ -84,8 +84,6 @@
     },
     "db": {
         "waitForSdl": false,
-        "host": "service-ricplt-dbaas-tcp.ricplt:6379",
-        "protocol": "tcp",
         "maxIdle": 50,
         "maxActive": 100
     },
