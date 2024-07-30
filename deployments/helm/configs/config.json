@@ -1,6 +1,7 @@
 {
     "name": "usap-xapp",
     "version": "0.0.1",
+    "appVersion": "v1.0.0-alpha",
     "vendor": "Murilo Silva <murilosilva@itec.ufpa.br>",
     "containers": [
         {
