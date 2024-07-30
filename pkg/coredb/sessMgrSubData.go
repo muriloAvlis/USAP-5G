@@ -8,7 +8,6 @@ import (
 	"database/sql"
 	"encoding/json"
 	"fmt"
-	"log"
 )
 
 // Default S-NSSAI configuration
@@ -189,7 +188,7 @@ func (cdb *coreDB) InsertSubscriptionData(subData *SessionManagementSubscription
 	}
 
 	// UE inserted successfully
-	log.Printf("UE session subscription data with ID %s created with success!\n", subData.Ueid)
+	logger.Info("UE session subscription data with ID %s created with success!\n", subData.Ueid)
 
 	return nil
 }
@@ -249,7 +248,7 @@ func (cdb *coreDB) UpdateSubscriptionData(subData *SessionManagementSubscription
 	}
 
 	// UE updated successfully
-	log.Printf("UE session subscription data with ID %s updated with success!\n", subData.Ueid)
+	logger.Info("UE session subscription data with ID %s updated with success!\n", subData.Ueid)
 
 	return nil
 }
@@ -276,7 +275,7 @@ func (cdb *coreDB) DeleteSubscriptionData(ueId string) error {
 	}
 
 	// UE deleted successfully
-	log.Printf("UE session subscription data with ID %s deleted with success!\n", ueId)
+	logger.Info("UE session subscription data with ID %s deleted with success!\n", ueId)
 
 	return nil
 }
@@ -288,7 +287,7 @@ func (cdb *coreDB) TruncateSubscriptionData() error {
 		return fmt.Errorf("could not truncate table SessionManagementSubscriptionData: %s", err.Error())
 	}
 
-	log.Printf("SessionManagementSubscriptionData table successfully cleared!")
+	logger.Info("SessionManagementSubscriptionData table successfully cleared!")
 
 	return nil
 }
