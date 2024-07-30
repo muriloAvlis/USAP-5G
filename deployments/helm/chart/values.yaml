@@ -142,3 +142,6 @@ readinessProbe:
   periodSeconds: 15
 vendor: Murilo Silva <murilosilva@itec.ufpa.br>
 version: 0.0.1
+
+nodeSelector:
+  kubernetes.io/hostname: nrtric
