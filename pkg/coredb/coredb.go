@@ -20,10 +20,12 @@ func NewManager(config Config) *coreDB {
 		logger.Error("The database configuration cannot be empty!")
 	}
 
-	// test 5GC DB connection
+	// establish 5GC DB connection
 	db, err := connect(config)
-	if err != nil {
+	for err != nil {
 		logger.Error(err.Error())
+		time.Sleep(1 * time.Second) // retry connection after 1 sec
+		db, err = connect(config)
 	}
 
 	return &coreDB{
