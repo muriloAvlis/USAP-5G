@@ -22,7 +22,7 @@ func (u *UsapXapp) Consume(msg *xapp.RMRParams) (err error) {
 func (u *UsapXapp) Run(wg *sync.WaitGroup) {
 	defer wg.Done()
 	// Set MDC (read: name visible in the logs)
-	xapp.Logger.SetMdc("usap-xapp", "v1.0.0-alpha")
+	xapp.Logger.SetMdc("VERSION", "v1.0.0-alpha")
 
 	// xapp.SetReadyCB(func(i interface{}) { u.rmrReady = true })
 

@@ -1,3 +1,18 @@
+################################################################################
+#   Copyright (c) 2019 AT&T Intellectual Property.                             #
+#                                                                              #
+#   Licensed under the Apache License, Version 2.0 (the "License");            #
+#   you may not use this file except in compliance with the License.           #
+#   You may obtain a copy of the License at                                    #
+#                                                                              #
+#       http://www.apache.org/licenses/LICENSE-2.0                             #
+#                                                                              #
+#   Unless required by applicable law or agreed to in writing, software        #
+#   distributed under the License is distributed on an "AS IS" BASIS,          #
+#   WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.   #
+#   See the License for the specific language governing permissions and        #
+#   limitations under the License.                                             #
+################################################################################'
 # This is a YAML-formatted file.
 # Declare variables to be passed into your templates.
 ricplt:
@@ -68,10 +83,8 @@ coredb:
   port: '3306'
   username: test
 db:
-  host: service-ricplt-dbaas-tcp.ricplt:6379
   maxActive: 100
   maxIdle: 50
-  protocol: tcp
   waitForSdl: false
 faults: {}
 livenessProbe:
@@ -104,7 +117,7 @@ messaging:
   - container: usap-xapp
     description: rmr data port for usap-xapp
     maxSize: 65536
-    name: rmrdata
+    name: rmr-data
     numWorkers: 1
     policies: []
     port: 4560
@@ -120,6 +133,7 @@ messaging:
 metrics:
   namespace: ricxapp
   url: /ric/v1/metrics
+name: usap-xapp
 readinessProbe:
   httpGet:
     path: ric/v1/health/ready
@@ -128,7 +142,3 @@ readinessProbe:
   periodSeconds: 15
 vendor: Murilo Silva <murilosilva@itec.ufpa.br>
 version: 0.0.1
-xapp_name: usap-xapp
-
-nodeSelector:
-  kubernetes.io/hostname: nrtric
