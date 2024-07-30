@@ -1,5 +1,5 @@
 {
-    "xapp_name": "usap-xapp",
+    "name": "usap-xapp",
     "version": "0.0.1",
     "vendor": "Murilo Silva <murilosilva@itec.ufpa.br>",
     "containers": [
@@ -43,7 +43,7 @@
                 "description": "rmr route port for usap-xapp"
             },
             {
-                "name": "rmrdata",
+                "name": "rmr-data",
                 "container": "usap-xapp",
                 "port": 4560,
                 "protocol": "tcp",
