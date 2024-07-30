@@ -28,7 +28,7 @@ nearrtric:
   installInfluxDB: true
   installJaegerAdapter: true
   installO1Mediator: true
-  installVespamgr: true
+  installVespamgr: false
   installXappOnboarder: true
 #-------------------------------------------------------------------------
 # Global common setting
@@ -57,8 +57,8 @@ global:
 # ricip should be the ingress controller listening IP for the platform cluster
 # auxip should be the ingress controller listening IP for the AUX cluster
 extsvcplt:
-  ricip: "192.168.122.11"
-  auxip: "192.168.122.11"
+  ricip: "10.126.1.120"
+  auxip: "10.126.1.120"
 
 
 # Specify the docker registry credential using the following
@@ -169,7 +169,7 @@ vespamgr:
   image:
     registry: "nexus3.o-ran-sc.org:10002/o-ran-sc"
     name: ric-plt-vespamgr
-    tag: 0.7.5
+    tag: 0.7.4
   prometheusurl: "http://r4-infrastructure-prometheus-server.ricplt"
 
 o1mediator:
