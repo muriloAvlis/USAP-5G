@@ -1,6 +1,7 @@
 package manager
 
 import (
+	"strings"
 	"sync"
 
 	"gerrit.o-ran-sc.org/r/ric-plt/xapp-frame/pkg/xapp"
@@ -13,13 +14,88 @@ type UsapXapp struct {
 	WaitForSdl bool
 }
 
-func (u *UsapXapp) Consume(msg *xapp.RMRParams) (err error) {
+func (app *UsapXapp) Consume(msg *xapp.RMRParams) (err error) {
 	xapp.Logger.Info("TODO: Consume UE KPMs")
 	return nil
 }
 
-func (u *UsapXapp) Run(wg *sync.WaitGroup) {
+// Get eNBs list
+func (app *UsapXapp) geteNBList() ([]*xapp.RNIBNbIdentity, error) {
+	eNBs, err := xapp.Rnib.GetListEnbIds()
+	if err != nil {
+		xapp.Logger.Error("Unable to get eNodeB list: %s", err.Error())
+		return nil, err
+	}
+
+	var eNB_names []string
+	for _, eNB := range eNBs {
+		eNB_names = append(eNB_names, eNB.InventoryName)
+	}
+
+	xapp.Logger.Info("List of connected eNodeBs: [%s]", strings.Join(eNB_names, ", "))
+
+	return eNBs, nil
+}
+
+// Get gNBs list
+func (app *UsapXapp) getgNBList() ([]*xapp.RNIBNbIdentity, error) {
+	gNBs, err := xapp.Rnib.GetListGnbIds()
+	if err != nil {
+		xapp.Logger.Error("Unable to get gNodeB list: %s", err.Error())
+		return nil, err
+	}
+
+	var gNB_names []string
+	for _, gNB := range gNBs {
+		gNB_names = append(gNB_names, gNB.InventoryName)
+	}
+
+	xapp.Logger.Info("List of connected gNodeBs: [%s]", strings.Join(gNB_names, ", "))
+
+	return gNBs, nil
+}
+
+// Get gNB and eNB list connected to RIC
+func (app *UsapXapp) getNbList() []*xapp.RNIBNbIdentity {
+	var nodeBs []*xapp.RNIBNbIdentity
+
+	if eNBs, err := app.geteNBList(); err == nil {
+		nodeBs = append(nodeBs, eNBs...)
+	}
+
+	if gNBs, err := app.getgNBList(); err == nil {
+		nodeBs = append(nodeBs, gNBs...)
+	}
+
+	return nodeBs
+}
+
+// Application callback
+func (app *UsapXapp) xAppCB(d interface{}) {
+	xapp.Logger.Info("Starting application callback...")
+
+	nodeBs := app.getNbList()
+
+	for _, nb := range nodeBs {
+		if nb.ConnectionStatus == 1 { // connected nodeB
+			xapp.Logger.Warn("NodeB %s is connected! Starting KPI extraction...", nb.InventoryName)
+			// TODO
+		} else {
+			xapp.Logger.Warn("NodeB %s not connected!", nb.InventoryName)
+		}
+	}
+}
+
+// Application Starting
+func (app *UsapXapp) Run(wg *sync.WaitGroup) {
 	defer wg.Done()
 
-	xapp.RunWithParams(u, u.WaitForSdl)
+	// set logger level
+	xapp.Logger.SetLevel(xapp.Config.GetInt("controls.logger.level"))
+
+	xapp.Logger.Info("Running USAP-xApp on version %s", xapp.Config.GetString("appVersion"))
+
+	xapp.SetReadyCB(app.xAppCB, true)
+
+	xapp.Run(app)
 }
