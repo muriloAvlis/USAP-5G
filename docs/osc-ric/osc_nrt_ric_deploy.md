@@ -28,6 +28,7 @@ kubectl create ns ricxapp
 
 ```sh
 docker run -d \
+  --name nrtric-chartmuseum \
   -u 0 \
   -p 6873:8080 \
   -e DEBUG=1 \
@@ -69,8 +70,7 @@ helm repo list
 ### Prepare Near-RT RIC Helm Charts
 
 ```sh
-cd ~/ric-dep/new-installer/helm/charts
-git checkout j-release
+cd ~/git/charts/osc-nearrtric
 make nearrtric
 ```
 
@@ -83,7 +83,7 @@ helm search repo local/nearrtric
 ### Deploy Near-RT RIC
 
 ```sh
-helm upgrade --install nearrtric -n ricplt local/nearrtric -f ~/USAP/configs/osc-ric/osc_ric_values.yaml --create-namespace
+helm upgrade --install nearrtric -n ricplt local/nearrtric -f ~/git/USAP/configs/osc-ric/osc_ric_values.yaml --create-namespace
 ```
 
 ## Clean up

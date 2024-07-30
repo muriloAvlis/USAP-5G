@@ -72,7 +72,7 @@ controls:
   localAddress:
     host: :8080
   logger:
-    level: 3
+    level: 4
   measurement_interval: 1000
   subscription:
     subscriptionActive: true
