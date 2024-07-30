@@ -8,7 +8,6 @@ import (
 	"database/sql"
 	"encoding/json"
 	"fmt"
-	"log"
 )
 
 // Default authentication values by OAI Core
@@ -166,7 +165,7 @@ func (cdb *coreDB) InsertAuthSub(ueId string) error {
 	}
 
 	// UE inserted successfully
-	log.Printf("UE with ID %s inserted with success into AuthenticationSubscription table\n", ueId)
+	logger.Info("UE with ID %s inserted with success into AuthenticationSubscription table\n", ueId)
 
 	return nil
 }
@@ -193,7 +192,7 @@ func (cdb *coreDB) DeleteAuthSub(ueId string) error {
 	}
 
 	// UE deleted successfully
-	log.Printf("UE with ID %s deleted from AuthenticationSubscription table\n", ueId)
+	logger.Info("UE with ID %s deleted from AuthenticationSubscription table\n", ueId)
 
 	return nil
 }
@@ -205,7 +204,7 @@ func (cdb *coreDB) TruncateAuthSubs() error {
 		return fmt.Errorf("could not truncate table AuthenticationSubscription: %s", err.Error())
 	}
 
-	log.Printf("AuthenticationSubscription table successfully cleared!")
+	logger.Info("AuthenticationSubscription table successfully cleared!")
 
 	return nil
 }

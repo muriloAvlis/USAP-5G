@@ -1,15 +1,17 @@
 package main
 
 import (
-	"log"
 	"sync"
 
 	"gerrit.o-ran-sc.org/r/ric-plt/xapp-frame/pkg/xapp"
 	"github.com/muriloAvlis/USAP/pkg/coredb"
+	"github.com/muriloAvlis/USAP/pkg/logging"
 	"github.com/muriloAvlis/USAP/pkg/manager"
 )
 
 var wg sync.WaitGroup
+
+var logger xapp.Log = *logging.GetLogger()
 
 func main() {
 	wg.Add(2)
@@ -28,7 +30,7 @@ func main() {
 	// Get DB IP address
 	coreDBAddr, err := coredb.GetDBIpbyHostname(xapp.Config.GetString("coredb.hostname"))
 	if err != nil {
-		log.Fatal(err.Error())
+		logger.Error(err.Error())
 	}
 	app.CoreDBConfig.CoreDBAddress = coreDBAddr
 

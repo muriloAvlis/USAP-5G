@@ -1,11 +1,11 @@
 package manager
 
 import (
-	"fmt"
 	"sync"
 
 	"gerrit.o-ran-sc.org/r/ric-plt/xapp-frame/pkg/xapp"
 	"github.com/muriloAvlis/USAP/pkg/coredb"
+	"github.com/muriloAvlis/USAP/pkg/logging"
 )
 
 type UsapXapp struct {
@@ -14,15 +14,15 @@ type UsapXapp struct {
 	WaitForSdl bool
 }
 
+var logger xapp.Log = *logging.GetLogger()
+
 func (u *UsapXapp) Consume(msg *xapp.RMRParams) (err error) {
-	fmt.Println("TODO: Consume UE KPMs")
+	logger.Info("TODO: Consume UE KPMs")
 	return nil
 }
 
 func (u *UsapXapp) Run(wg *sync.WaitGroup) {
 	defer wg.Done()
-	// Set MDC (read: name visible in the logs)
-	xapp.Logger.SetMdc("VERSION", "v1.0.0-alpha")
 
 	// xapp.SetReadyCB(func(i interface{}) { u.rmrReady = true })
 
