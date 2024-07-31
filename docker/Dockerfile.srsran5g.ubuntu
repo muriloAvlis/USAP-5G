@@ -1,4 +1,5 @@
 ARG UBUNTU_VERSION=24.04
+ARG SRSRAN_VERSION=release_24_04
 
 #----------------------------------------------------------------------#
 #------------------------- BUILDER STAGE ------------------------------#
@@ -8,7 +9,7 @@ FROM ubuntu:${UBUNTU_VERSION} AS builder
 
 ENV DEBIAN_FRONTEND=noninteractive
 ENV TZ=America/Belem
-ENV SRSRAN_VERSION=release_24_04
+ARG SRSRAN_VERSION
 
 LABEL org.opencontainers.image.authors="Murilo Silva <murilosilva@itec.ufpa.br>" \
     org.opencontainers.image.vendor="GERCOM/UFPA" \
@@ -100,8 +101,8 @@ FROM ubuntu:${UBUNTU_VERSION}
 
 ENV DEBIAN_FRONTEND=noninteractive
 ENV TZ=America/Belem
-ENV SRSRAN_VERSION=release_24_04
 ENV UHD_IMAGES_DIR=/usr/share/uhd/images/
+ARG SRSRAN_VERSION
 
 LABEL org.opencontainers.image.authors="Murilo Silva <murilosilva@itec.ufpa.br>" \
     org.opencontainers.image.vendor="GERCOM/UFPA" \
