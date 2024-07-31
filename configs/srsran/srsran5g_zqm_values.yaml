@@ -64,7 +64,7 @@ image:
   srsran:
     registry: docker.io
     repository: muriloavlis/srsran-5g
-    tag: "24_04"
+    tag: "latest"
     digest: ""
     ## Specify a imagePullPolicy
     ## Defaults to 'Always' if image tag is 'latest', else set to 'IfNotPresent'

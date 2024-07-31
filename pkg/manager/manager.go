@@ -78,10 +78,10 @@ func (app *UsapXapp) xAppCB(d interface{}) {
 
 	for _, nb := range nodeBs {
 		if nb.ConnectionStatus == 1 { // connected nodeB
-			xapp.Logger.Warn("NodeB %s is connected! Starting KPI extraction...", nb.InventoryName)
+			xapp.Logger.Info("NodeB %s is connected! Starting KPI extraction...", nb.InventoryName)
 			// TODO
 		} else {
-			xapp.Logger.Warn("NodeB %s not connected!", nb.InventoryName)
+			xapp.Logger.Warn("NodeB %s is disconnected!", nb.InventoryName)
 		}
 	}
 }
@@ -92,8 +92,6 @@ func (app *UsapXapp) Run(wg *sync.WaitGroup) {
 
 	// set logger level
 	xapp.Logger.SetLevel(xapp.Config.GetInt("controls.logger.level"))
-
-	xapp.Logger.Info("Running USAP-xApp on version %s", xapp.Config.GetString("appVersion"))
 
 	xapp.SetReadyCB(app.xAppCB, true)
 

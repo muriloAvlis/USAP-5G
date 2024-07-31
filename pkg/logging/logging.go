@@ -4,12 +4,12 @@ import (
 	"gerrit.o-ran-sc.org/r/ric-plt/xapp-frame/pkg/xapp"
 )
 
-// TODO: with issues
-func GetLogger() *xapp.Log {
+func SetLogger() {
 	logger := xapp.NewLogger("usap-xapp")
 
 	// logger configs
 	logger.SetLevel(xapp.Config.GetInt("controls.logger.level"))
+	logger.SetMdc("version", xapp.Config.GetString("appVersion"))
 
-	return logger
+	xapp.Logger = logger
 }

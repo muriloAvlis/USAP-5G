@@ -5,6 +5,7 @@ import (
 
 	"gerrit.o-ran-sc.org/r/ric-plt/xapp-frame/pkg/xapp"
 	"github.com/muriloAvlis/USAP/pkg/coredb"
+	"github.com/muriloAvlis/USAP/pkg/logging"
 	"github.com/muriloAvlis/USAP/pkg/manager"
 )
 
@@ -12,6 +13,9 @@ var wg sync.WaitGroup
 
 func main() {
 	wg.Add(2)
+
+	// Set xApp logger configuration
+	logging.SetLogger()
 
 	// Set configurations used by xApp
 	app := &manager.UsapXapp{
