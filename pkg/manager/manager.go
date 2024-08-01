@@ -78,11 +78,11 @@ func (app *UsapXapp) xAppCB(d interface{}) {
 			xapp.Logger.Info("NodeB %s is connected! Starting KPI extraction...", nb.GetInventoryName())
 
 			// get E2 Node infos from E2 Manager
-			e2NodeLink := os.Getenv("E2MGR_HTTP_SERVICE_HOST") + ":" + os.Getenv("E2MGR_HTTP_SERVICE_PORT") + "/v1/nodeb/" + nb.GetInventoryName()
+			e2NodeLink := "http://" + os.Getenv("E2MGR_HTTP_SERVICE_HOST") + ":" + os.Getenv("E2MGR_HTTP_SERVICE_PORT") + "/v1/nodeb/" + nb.GetInventoryName()
 			e2NodeInfo, err := http.Get(e2NodeLink)
 			if err != nil {
 				xapp.Logger.Error("Failed to get E2 Node informations from E2MGR: %s", err.Error())
-				os.Exit(1)
+				os.Exit(1) // TODO: is it necessary to close the App??
 			}
 			defer e2NodeInfo.Body.Close()
 			var e2Resp E2mgrResponse
@@ -103,7 +103,7 @@ func (app *UsapXapp) xAppCB(d interface{}) {
 
 			for {
 				xapp.Logger.Debug("KPM Index: %d", rf_idx)
-				time.Sleep(3 * time.Second)
+				time.Sleep(5 * time.Second)
 			}
 
 		} else { // disconnected nodeB

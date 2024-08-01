@@ -30,7 +30,7 @@ data:
   DBAAS_PORT_6379_TCP_PORT: "6379"
   SERVICE_METRICSDB_HOST: "{{ .Values.ricplt.metricsdbService }}"
   SERVICE_METRICSDB_PORT: "8086"
-  E2MGR_HTTP_SERVICE_HOST: "{{ .Values.e2mgrHttpService }}"
+  E2MGR_HTTP_SERVICE_HOST: "{{ .Values.ricplt.e2mgrHttpService }}"
   E2MGR_HTTP_SERVICE_PORT: "3800"
   CONTAINER_NAME: "usap"
   SYSTEM_NAME: "Debian GNU/Linux"
