@@ -1,18 +1,15 @@
 package manager
 
 import (
+	"encoding/json"
+	"net/http"
+	"os"
 	"strings"
 	"sync"
+	"time"
 
 	"gerrit.o-ran-sc.org/r/ric-plt/xapp-frame/pkg/xapp"
-	"github.com/muriloAvlis/USAP/pkg/coredb"
 )
-
-type UsapXapp struct {
-	CoreDBConfig coredb.Config
-
-	WaitForSdl bool
-}
 
 func (app *UsapXapp) Consume(msg *xapp.RMRParams) (err error) {
 	xapp.Logger.Info("TODO: Consume UE KPMs")
@@ -29,7 +26,7 @@ func (app *UsapXapp) geteNBList() ([]*xapp.RNIBNbIdentity, error) {
 
 	var eNB_names []string
 	for _, eNB := range eNBs {
-		eNB_names = append(eNB_names, eNB.InventoryName)
+		eNB_names = append(eNB_names, eNB.GetInventoryName())
 	}
 
 	xapp.Logger.Info("List of connected eNodeBs: [%s]", strings.Join(eNB_names, ", "))
@@ -47,7 +44,7 @@ func (app *UsapXapp) getgNBList() ([]*xapp.RNIBNbIdentity, error) {
 
 	var gNB_names []string
 	for _, gNB := range gNBs {
-		gNB_names = append(gNB_names, gNB.InventoryName)
+		gNB_names = append(gNB_names, gNB.GetInventoryName())
 	}
 
 	xapp.Logger.Info("List of connected gNodeBs: [%s]", strings.Join(gNB_names, ", "))
@@ -78,10 +75,39 @@ func (app *UsapXapp) xAppCB(d interface{}) {
 
 	for _, nb := range nodeBs {
 		if nb.ConnectionStatus == 1 { // connected nodeB
-			xapp.Logger.Info("NodeB %s is connected! Starting KPI extraction...", nb.InventoryName)
-			// TODO
-		} else {
-			xapp.Logger.Warn("NodeB %s is disconnected!", nb.InventoryName)
+			xapp.Logger.Info("NodeB %s is connected! Starting KPI extraction...", nb.GetInventoryName())
+
+			// get E2 Node infos from E2 Manager
+			e2NodeLink := os.Getenv("E2MGR_HTTP_SERVICE_HOST") + ":" + os.Getenv("E2MGR_HTTP_SERVICE_PORT") + "/v1/nodeb/" + nb.GetInventoryName()
+			e2NodeInfo, err := http.Get(e2NodeLink)
+			if err != nil {
+				xapp.Logger.Error("Failed to get E2 Node informations from E2MGR: %s", err.Error())
+				os.Exit(1)
+			}
+			defer e2NodeInfo.Body.Close()
+			var e2Resp E2mgrResponse
+			err = json.NewDecoder(e2NodeInfo.Body).Decode(&e2Resp)
+			if err != nil {
+				xapp.Logger.Error("Failed to decode E2 Node informations from E2MGR: %s", err.Error())
+				os.Exit(1)
+			}
+
+			// check if E2 Node has RAN function KPM == 2
+			rf_idx := 0
+			for idx, rf := range e2Resp.Gnb.RanFunctions {
+				if rf.RanFunctionId == 2 {
+					rf_idx = idx
+					break
+				}
+			}
+
+			for {
+				xapp.Logger.Debug("KPM Index: %d", rf_idx)
+				time.Sleep(3 * time.Second)
+			}
+
+		} else { // disconnected nodeB
+			xapp.Logger.Warn("NodeB %s is disconnected!", nb.GetInventoryName())
 		}
 	}
 }
@@ -89,9 +115,6 @@ func (app *UsapXapp) xAppCB(d interface{}) {
 // Application Starting
 func (app *UsapXapp) Run(wg *sync.WaitGroup) {
 	defer wg.Done()
-
-	// set logger level
-	xapp.Logger.SetLevel(xapp.Config.GetInt("controls.logger.level"))
 
 	xapp.SetReadyCB(app.xAppCB, true)
 
