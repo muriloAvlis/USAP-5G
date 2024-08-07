@@ -1,5 +1,5 @@
 {
-    "name": "usap-xapp",
+    "name": "usap",
     "version": "0.0.1",
     "appVersion": "v1.0.0-alpha",
     "vendor": "Murilo Silva <murilosilva@itec.ufpa.br>",
@@ -33,19 +33,19 @@
         "ports": [
             {
                 "name": "http",
-                "container": "usap-xapp",
+                "container": "usap",
                 "port": 8080,
                 "description": "http service"
             },
             {
                 "name": "rmr-route",
-                "container": "usap-xapp",
+                "container": "usap",
                 "port": 4561,
-                "description": "rmr route port for usap-xapp"
+                "description": "rmr route port for usap"
             },
             {
                 "name": "rmr-data",
-                "container": "usap-xapp",
+                "container": "usap",
                 "port": 4560,
                 "protocol": "tcp",
                 "maxSize": 65536,
@@ -61,7 +61,7 @@
                     "RIC_SUB_DEL_REQ"
                 ],
                 "policies": [],
-                "description": "rmr data port for usap-xapp"
+                "description": "rmr data port for usap"
             }
         ]
     },

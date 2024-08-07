@@ -1,5 +1,9 @@
 go.work*
-build/_output
 Chart.lock
 .vagrant
 charts
+cmake-build-debug
+build
+.idea
+.venv
+__pycache__

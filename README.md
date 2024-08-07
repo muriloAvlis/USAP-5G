@@ -2,7 +2,7 @@
 
 The UE Smart Allocation Platform on Open 5G Networks (USAP) is a project to manage and optimize the allocation of UEs and UE QoS, using slices on Open 5G Networks with support for the ORAN Alliance O-RAN standard.
 
-## Table of Content
+## Tutorials
 
 ### 5GC
 
@@ -13,10 +13,28 @@ The UE Smart Allocation Platform on Open 5G Networks (USAP) is a project to mana
 
 1. [OAI-RAN gNB Deployment](docs/oai-ran/gnb_deploy.md)
 2. [OAI-RAN NR-UE Deployment](docs/oai-ran/nr_ue_deploy.md)
+3. [SRS-RAN 5G gNB + UE Deployment](./docs/srsran/srsran5g_zmq_deploy.md)
 
 ### RIC
 
 1. [OSC Near-RT RIC Deployment](docs/osc-ric/osc_nrt_ric_deploy.md)
+
+## Standardizations
+
+### E2SM standard
+
+- [E2SM-KPM-v4.00](./e2sm/asn/e2sm-kpm-v4.00.asn)
+- [E2SM-RC-v5.00](./e2sm/asn/e2sm-rc-v5.00.asn)
+- [E2SM-v5.00](./e2sm/asn/e2sm-v5.00.asn)
+
+### 3GPP NG Application Protocol (NGAP) Release 18
+
+- [NGAP-CommonDataTypes](ngap/asn1/rel-18_2/NGAP-CommonDataTypes.asn)
+- [NGAP-Constants](ngap/asn1/rel-18_2/NGAP-Constants.asn)
+- [NGAP-Containers](ngap/asn1/rel-18_2/NGAP-Containers.asn)
+- [NGAP-IEs](ngap/asn1/rel-18_2/NGAP-IEs.asn)
+- [NGAP-PDU-Contents](ngap/asn1/rel-18_2/NGAP-PDU-Contents.asn)
+- [NGAP-PDU-Descriptions](ngap/asn1/rel-18_2/NGAP-PDU-Descriptions.asn)
 
 ## Getting Started
 

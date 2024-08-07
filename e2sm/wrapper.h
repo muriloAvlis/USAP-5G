@@ -2,8 +2,8 @@
 // Created by Murilo Silva on 05/08/24.
 //
 
-#ifndef WRAPPER_HPP
-#define WRAPPER_HPP
+#ifndef WRAPPER_H
+#define WRAPPER_H
 
 // event triggers
 #include <E2SM-KPM-EventTriggerDefinition.h>
@@ -61,22 +61,22 @@
 
 #include "asn_application.h"
 
-#include "include/defer.hpp"
+#include "defer.h"
 
-using actDefFmt_t = struct
+typedef struct actDefFmt
 {
-    std::vector<uint8_t*> act_def_format1; // E2 Node Measurement
-    std::vector<uint8_t*> act_def_format2; // E2 Node Measurement for a single UE
-    std::vector<uint8_t*> act_def_format3; // Condition-based, UE-level E2 Node Measuremen
-    std::vector<uint8_t*> act_def_format4; // Common Condition-based, UE-level Measurement
-    std::vector<uint8_t*> act_def_format5; // E2 Node Measurement for multiple UEs
+    char ** act_def_format1; // E2 Node Measurement
+    char ** act_def_format2; // E2 Node Measurement for a single UE
+    char ** act_def_format3; // Condition-based, UE-level E2 Node Measuremen
+    char ** act_def_format4; // Common Condition-based, UE-level Measurement
+    char ** act_def_format5; // E2 Node Measurement for multiple UEs
     int act_def_format1_size;
     int act_def_format2_size;
     int act_def_format3_size;
     int act_def_format4_size;
     int act_def_format5_size;
-};
+} actDefFmt_t;
 
 actDefFmt_t buildRanCellUeKpi(const char *ranFuncDefinition);
 
-#endif //WRAPPER_HPP
+#endif //WRAPPER_H

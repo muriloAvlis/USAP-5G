@@ -34,4 +34,4 @@ data:
   E2MGR_HTTP_SERVICE_PORT: "3800"
   CONTAINER_NAME: "usap"
   SYSTEM_NAME: "Debian GNU/Linux"
-  HOST_NAME: "usap-xapp"
+  HOST_NAME: "usap"
