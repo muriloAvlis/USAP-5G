@@ -1,11 +1,31 @@
 package manager
 
-import "github.com/muriloAvlis/USAP/pkg/coredb"
+import (
+	"gerrit.o-ran-sc.org/r/ric-plt/xapp-frame/pkg/clientmodel"
+	"gerrit.o-ran-sc.org/r/ric-plt/xapp-frame/pkg/xapp"
+	influxdb2 "github.com/influxdata/influxdb-client-go"
+	"github.com/muriloAvlis/USAP/pkg/coredb"
+)
+
+// Vars used on subscription
+var (
+	HttpPort     = int64(8080)
+	RMRPort      = int64(4560)
+	KpmRanFuncId = int64(2)
+	seqId        = int64(1) // XappEventInstanceID
+	ranUeKpis    = make(map[string][]string)
+)
 
 type UsapXapp struct {
 	CoreDBConfig coredb.Config
+	Config
+	RMR      chan *xapp.RMRParams
+	dbClient influxdb2.Client
+}
 
-	WaitForSdl bool
+type Config struct {
+	WaitForSdl     bool
+	ClientEndpoint clientmodel.SubscriptionParamsClientEndpoint
 }
 
 // -------- E2mgr HTTP SVC response -------- //
@@ -46,10 +66,10 @@ type RanFunctions struct {
 	RanFunctionOid        string
 }
 
-type E2nodeComponentInterfaceTypeE1 struct{}
-type E2nodeComponentInterfaceTypeXn struct{}
-type E2nodeComponentInterfaceTypeF1 struct{}
-type E2nodeComponentInterfaceTypeNG struct{}
+type E2nodeComponentInterfaceTypeE1 struct{} // CU-CP <-> CU-UP
+type E2nodeComponentInterfaceTypeXn struct{} // gNB <-> gNB | CU <-> CU | DU <-> DU
+type E2nodeComponentInterfaceTypeF1 struct{} // CU <-> DU
+type E2nodeComponentInterfaceTypeNG struct{} // CU-CP <-> AMF | CU-UP <-> UPF
 
 type NodeConfigs struct {
 	E2nodeComponentInterfaceTypeE1 E2nodeComponentInterfaceTypeE1 `json:"e2nodeComponentInterfaceTypeE1,omitempty"`

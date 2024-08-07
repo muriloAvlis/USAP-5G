@@ -3,6 +3,7 @@ package main
 import (
 	"sync"
 
+	"gerrit.o-ran-sc.org/r/ric-plt/xapp-frame/pkg/clientmodel"
 	"gerrit.o-ran-sc.org/r/ric-plt/xapp-frame/pkg/xapp"
 	"github.com/muriloAvlis/USAP/pkg/coredb"
 	"github.com/muriloAvlis/USAP/pkg/logging"
@@ -19,7 +20,14 @@ func main() {
 
 	// Set configurations used by xApp
 	app := &manager.UsapXapp{
-		WaitForSdl: xapp.Config.GetBool("db.waitForSdl"),
+		Config: manager.Config{
+			WaitForSdl: xapp.Config.GetBool("db.waitForSdl"),
+			ClientEndpoint: clientmodel.SubscriptionParamsClientEndpoint{
+				Host:     "service-ricxapp-usap-http.ricxapp",
+				HTTPPort: &manager.HttpPort,
+				RMRPort:  &manager.RMRPort},
+		},
+		RMR: make(chan *xapp.RMRParams),
 		CoreDBConfig: coredb.Config{
 			CoreDBUser:     xapp.Config.GetString("coredb.username"),
 			CoreDBPassword: xapp.Config.GetString("coredb.password"),

@@ -5,7 +5,7 @@ import (
 )
 
 func SetLogger() {
-	logger := xapp.NewLogger("usap-xapp")
+	logger := xapp.NewLogger("usap")
 
 	// logger configs
 	logger.SetLevel(xapp.Config.GetInt("controls.logger.level"))

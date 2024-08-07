@@ -63,7 +63,7 @@ curl -X DELETE http://<ingress-ricplt-xapp-onboarder-chartmuseum.ricplt>/helmrep
 ### Download the xApp Helm Charts
 
 ```sh
-export XAPP_CHART_NAME=usap-xapp
+export XAPP_CHART_NAME=usap
 export XAPP_CHART_VERSION=0.0.1
 export OUTPUT_PATH=~/git/USAP/deployments/helm
 dms_cli download_helm_chart --xapp_chart_name=${XAPP_CHART_NAME} --version=${XAPP_CHART_VERSION} --output_path=${OUTPUT_PATH}

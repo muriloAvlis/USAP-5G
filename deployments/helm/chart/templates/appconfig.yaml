@@ -581,7 +581,7 @@ data:
                 "default": {},
                 "examples": [
                     {
-                        "xapp_name": "usap-xapp"
+                        "xapp_name": "usap"
                     }
                 ],
                 "properties": {

@@ -1,5 +1,11 @@
 package manager
 
+/*
+#include <e2sm/wrapper.h>
+#cgo LDFLAGS: -lm -le2smwrapper
+#cgo CFLAGS:  -I /usr/local/include/e2sm
+*/
+import "C"
 import (
 	"encoding/json"
 	"net/http"
@@ -7,12 +13,23 @@ import (
 	"strings"
 	"sync"
 	"time"
+	"unsafe"
 
+	"gerrit.o-ran-sc.org/r/ric-plt/xapp-frame/pkg/clientmodel"
 	"gerrit.o-ran-sc.org/r/ric-plt/xapp-frame/pkg/xapp"
 )
 
 func (app *UsapXapp) Consume(msg *xapp.RMRParams) (err error) {
-	xapp.Logger.Info("TODO: Consume UE KPMs")
+	id := xapp.Rmr.GetRicMessageName(msg.Mtype)
+	xapp.Logger.Info("Received RIC message: name=%s | e2NodeID=%s | subID=%d | txID=%s | len=%d",
+		id,
+		msg.Meid.RanName,
+		msg.SubId,
+		msg.Xid,
+		msg.PayloadLen,
+	)
+	// send message to RMR channel to be processed
+	app.RMR <- msg
 	return nil
 }
 
@@ -67,12 +84,37 @@ func (app *UsapXapp) getNbList() []*xapp.RNIBNbIdentity {
 	return nodeBs
 }
 
+// Encode subscription actions
+func encode_actionsToBeSetup(e2NodeId string) clientmodel.ActionsToBeSetup {
+	return nil
+}
+
+// Send subscription to E2 Node
+func (app *UsapXapp) sendSubscription(e2NodeID string) {
+	// Create Subscription message and send it to RIC platform
+	xapp.Logger.Info("Sending subscription request for E2 Node: %s", e2NodeID)
+
+	// subscriptionParams := clientmodel.SubscriptionParams{
+	// 	ClientEndpoint: &app.ClientEndpoint,
+	// 	Meid:           &e2NodeID,
+	// 	RANFunctionID:  &KpmRanFuncId,
+	// 	SubscriptionDetails: clientmodel.SubscriptionDetailsList{
+	// 		&clientmodel.SubscriptionDetail{
+	// 			EventTriggers:       clientmodel.EventTriggerDefinition{},
+	// 			XappEventInstanceID: &seqId,
+	// 			ActionToBeSetupList: encode_actionsToBeSetup(e2NodeID),
+	// 		},
+	// 	},
+	// }
+}
+
 // Application callback
 func (app *UsapXapp) xAppCB(d interface{}) {
 	xapp.Logger.Info("Starting application callback...")
 
 	nodeBs := app.getNbList()
 
+	// prepare nodeBs data
 	for _, nb := range nodeBs {
 		if nb.ConnectionStatus == 1 { // connected nodeB
 			xapp.Logger.Info("NodeB %s is connected! Starting KPI extraction...", nb.GetInventoryName())
@@ -82,34 +124,65 @@ func (app *UsapXapp) xAppCB(d interface{}) {
 			e2NodeInfo, err := http.Get(e2NodeLink)
 			if err != nil {
 				xapp.Logger.Error("Failed to get E2 Node informations from E2MGR: %s", err.Error())
-				os.Exit(1) // TODO: is it necessary to close the App??
+				continue
 			}
 			defer e2NodeInfo.Body.Close()
 			var e2Resp E2mgrResponse
 			err = json.NewDecoder(e2NodeInfo.Body).Decode(&e2Resp)
 			if err != nil {
 				xapp.Logger.Error("Failed to decode E2 Node informations from E2MGR: %s", err.Error())
-				os.Exit(1)
+				continue
 			}
 
-			// check if E2 Node has RAN function KPM == 2
-			rf_idx := 0
+			// check if E2 Node has KPM RAN function == 2
+			kpm_idx := 0
 			for idx, rf := range e2Resp.Gnb.RanFunctions {
 				if rf.RanFunctionId == 2 {
-					rf_idx = idx
-					break
+					kpm_idx = idx
+					xapp.Logger.Debug("NodeB %s has KPM RF index: %d", nb.GetInventoryName(), kpm_idx)
+					continue
 				}
 			}
 
-			for {
-				xapp.Logger.Debug("KPM Index: %d", rf_idx)
-				time.Sleep(5 * time.Second)
+			if kpm_idx == 0 {
+				xapp.Logger.Debug("NodeB %s does not have KPM RF, finalizing KPI extraction process...", nb.GetInventoryName())
+				continue
 			}
+
+			// get KPM RF definition
+			RfDefCString := C.CString(e2Resp.Gnb.RanFunctions[kpm_idx].RanFunctionDefinition)
+			defer C.free(unsafe.Pointer(RfDefCString))     // free buffer
+			rfActDefs := C.buildRanCellUeKpi(RfDefCString) // get RAN Function definitions from C wrapper
+
+			// For E2SM-KPM Action Definition Format 4
+			rfActDef4 := make([]string, rfActDefs.act_def_format4_size)
+
+			for _, v := range unsafe.Slice(rfActDefs.act_def_format4, rfActDefs.act_def_format4_size) {
+				rfActDef4 = append(rfActDef4, C.GoString(v))
+			}
+
+			ranUeKpis[nb.GetInventoryName()] = rfActDef4
+
+			// TODO: prepare variable to receive cell KPIs
+
+			// loop to check if xApp is registered
+			for {
+				time.Sleep(5 * time.Second)
+				if xapp.IsRegistered() {
+					xapp.Logger.Info("xApp registration is done, ready to send subscription request")
+					break
+				}
+				xapp.Logger.Debug("xApp registration is not done yet, sleep 5s and check again")
+			}
+
+			// send subscription request
+			app.sendSubscription(nb.GetInventoryName())
 
 		} else { // disconnected nodeB
 			xapp.Logger.Warn("NodeB %s is disconnected!", nb.GetInventoryName())
 		}
 	}
+
 }
 
 // Application Starting

@@ -108,16 +108,16 @@ measurements:
   type: int
 messaging:
   ports:
-  - container: usap-xapp
+  - container: usap
     description: http service
     name: http
     port: 8080
-  - container: usap-xapp
-    description: rmr route port for usap-xapp
+  - container: usap
+    description: rmr route port for usap
     name: rmr-route
     port: 4561
-  - container: usap-xapp
-    description: rmr data port for usap-xapp
+  - container: usap
+    description: rmr data port for usap
     maxSize: 65536
     name: rmr-data
     numWorkers: 1
@@ -135,7 +135,7 @@ messaging:
 metrics:
   namespace: ricxapp
   url: /ric/v1/metrics
-name: usap-xapp
+name: usap
 readinessProbe:
   httpGet:
     path: ric/v1/health/ready
