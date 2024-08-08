@@ -133,6 +133,7 @@ eventTriggerFmt_t encodeEventTriggerDefinitionFormat1(u_int64_t reportingPeriod)
 {Deferral
     eventTriggerFmt_t res = {NULL, 0};
     E2SM_KPM_EventTriggerDefinition_t *evTriggerDef = (E2SM_KPM_EventTriggerDefinition_t *)calloc(1, sizeof(E2SM_KPM_EventTriggerDefinition_t));
+    Defer(ASN_STRUCT_FREE(asn_DEF_E2SM_KPM_EventTriggerDefinition, evTriggerDef));
     if (evTriggerDef == NULL)
     {
         fprintf(stderr, "[ERROR] E2SM_KPM_EventTriggerDefinition memory allocation failure");
@@ -144,7 +145,6 @@ eventTriggerFmt_t encodeEventTriggerDefinitionFormat1(u_int64_t reportingPeriod)
     if (evTriggerDef->eventDefinition_formats.choice.eventDefinition_Format1 == NULL)
     {
         fprintf(stderr, "[ERROR] E2SM_KPM_EventTriggerDefinition_Format1 memory allocation failure!");
-        ASN_STRUCT_FREE(asn_DEF_E2SM_KPM_EventTriggerDefinition, evTriggerDef);
         return res;
     }
 
@@ -164,7 +164,6 @@ eventTriggerFmt_t encodeEventTriggerDefinitionFormat1(u_int64_t reportingPeriod)
     }
 
     asn_enc_rval_t enc_res = aper_encode_to_buffer(&asn_DEF_E2SM_KPM_EventTriggerDefinition, NULL, evTriggerDef, buffer, buffer_size);
-    ASN_STRUCT_FREE(asn_DEF_E2SM_KPM_EventTriggerDefinition, evTriggerDef);
     if (enc_res.encoded == -1)
     {
         fprintf(stderr, "[ERROR] Failed to encode EventTriggerDefinition!\n");
