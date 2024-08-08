@@ -78,7 +78,7 @@ typedef struct actDefFmt
 
 typedef struct eventTriggerFmt
 {
-    int64_t * buffer;
+    char ** buffer;
     ssize_t size;
 } eventTriggerFmt_t;
 
