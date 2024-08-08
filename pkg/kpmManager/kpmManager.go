@@ -20,6 +20,7 @@ func EncodeEventTriggerDefinitionFormat1(reportingPeriod uint64) ([]int64, error
 	if encoded.buffer == nil {
 		return nil, errors.New("failed to encode EventTriggerDefinitionFormat1")
 	}
+	defer C.free(unsafe.Pointer(encoded.buffer))
 
 	size := int(encoded.size)
 	eventTriggerFmt1 := make([]int64, size)
