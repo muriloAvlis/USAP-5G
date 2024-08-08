@@ -21,20 +21,22 @@ The UE Smart Allocation Platform on Open 5G Networks (USAP) is a project to mana
 
 ## Standardizations
 
+Definitions used by the application to interact with the RIC
+
 ### E2SM standard
 
 - [E2SM-KPM-v4.00](e2sm/asn1/e2sm-kpm-v4.00.asn)
 - [E2SM-RC-v5.00](e2sm/asn1/e2sm-rc-v5.00.asn)
 - [E2SM-v5.00](e2sm/asn1/e2sm-v5.00.asn)
 
-### 3GPP NG Application Protocol (NGAP) Release 18
+<!-- ### 3GPP NG Application Protocol (NGAP) Release 17
 
 - [NGAP-CommonDataTypes](ngap/asn1/rel-18_2/NGAP-CommonDataTypes.asn)
 - [NGAP-Constants](ngap/asn1/rel-18_2/NGAP-Constants.asn)
 - [NGAP-Containers](ngap/asn1/rel-18_2/NGAP-Containers.asn)
 - [NGAP-IEs](ngap/asn1/rel-18_2/NGAP-IEs.asn)
 - [NGAP-PDU-Contents](ngap/asn1/rel-18_2/NGAP-PDU-Contents.asn)
-- [NGAP-PDU-Descriptions](ngap/asn1/rel-18_2/NGAP-PDU-Descriptions.asn)
+- [NGAP-PDU-Descriptions](ngap/asn1/rel-18_2/NGAP-PDU-Descriptions.asn) -->
 
 ## Getting Started
 
