@@ -138,6 +138,16 @@ eventTriggerFmt_t encodeEventTriggerDefinitionFormat1(u_int64_t reportingPeriod)
         fprintf(stderr, "[ERROR] E2SM_KPM_EventTriggerDefinition memory allocation failure");
         return res;
     }
+
+    // allocate memory to EventTriggerDefinitionFormat1
+    evTriggerDef->eventDefinition_formats.choice.eventDefinition_Format1 = (E2SM_KPM_EventTriggerDefinition_Format1_t *)calloc(1, sizeof(E2SM_KPM_EventTriggerDefinition_Format1_t));
+    if (evTriggerDef->eventDefinition_formats.choice.eventDefinition_Format1 == NULL)
+    {
+        fprintf(stderr, "[ERROR] E2SM_KPM_EventTriggerDefinition_Format1 memory allocation failure!");
+        ASN_STRUCT_FREE(asn_DEF_E2SM_KPM_EventTriggerDefinition, evTriggerDef);
+        return res;
+    }
+
     // set format 1
     evTriggerDef->eventDefinition_formats.present = E2SM_KPM_EventTriggerDefinition__eventDefinition_formats_PR_eventDefinition_Format1;
     // set reporting period

@@ -7,23 +7,26 @@ package kpmmanager
 */
 import "C"
 import (
-	"fmt"
+	"errors"
 	"unsafe"
 )
 
 // Encode Event Trigger Definition (only format 1 is available on KPM)
-func EncodeEventTriggerDefinitionFormat1(reportingPeriod uint64) ([]string, error) {
+func EncodeEventTriggerDefinitionFormat1(reportingPeriod uint64) ([]int64, error) {
 	encoded := C.encodeEventTriggerDefinitionFormat1(C.u_int64_t(reportingPeriod))
 	defer C.free(unsafe.Pointer(&encoded))
 
-	if encoded.size == 0 {
-		return nil, fmt.Errorf("failed to encode EventTriggerDefinition")
+	// Check if buffer is null
+	if encoded.buffer == nil {
+		return nil, errors.New("failed to encode EventTriggerDefinitionFormat1")
 	}
 
-	eventTriggerFmt1 := make([]string, encoded.size)
+	size := int(encoded.size)
+	eventTriggerFmt1 := make([]int64, size)
+	cBuffer := (*[1 << 30]C.u_int64_t)(unsafe.Pointer(encoded.buffer))[:size:size]
 
-	for _, v := range unsafe.Slice(encoded.buffer, encoded.size) {
-		eventTriggerFmt1 = append(eventTriggerFmt1, C.GoString(v))
+	for i := 0; i < size; i++ {
+		eventTriggerFmt1[i] = int64(cBuffer[i])
 	}
 
 	return eventTriggerFmt1, nil
