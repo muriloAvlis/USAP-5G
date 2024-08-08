@@ -129,7 +129,7 @@ actDefFmt_t buildRanCellUeKpi(const char* ranFuncDefinition)
     return res;
 }
 
-eventTriggerFmt_t encodeEventTriggerDefinitionFormat1(const unsigned long reportingPeriod)
+eventTriggerFmt_t encodeEventTriggerDefinitionFormat1(u_int64_t reportingPeriod)
 {Deferral
     eventTriggerFmt_t res = {NULL, 0};
     E2SM_KPM_EventTriggerDefinition_t *evTriggerDef = (E2SM_KPM_EventTriggerDefinition_t *)calloc(1, sizeof(E2SM_KPM_EventTriggerDefinition_t));
