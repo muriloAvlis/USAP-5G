@@ -12,7 +12,7 @@ import (
 )
 
 // Encode Event Trigger Definition (only format 1 is available on KPM)
-func EncodeEventTriggerDefinitionFormat1(reportingPeriod uint64) ([]int64, error) {
+func EncodeEventTriggerDefinitionFormat1(reportingPeriod uint64) ([]string, error) {
 	encoded := C.encodeEventTriggerDefinitionFormat1(C.ulong(reportingPeriod))
 	defer C.free(unsafe.Pointer(&encoded))
 
@@ -20,10 +20,10 @@ func EncodeEventTriggerDefinitionFormat1(reportingPeriod uint64) ([]int64, error
 		return nil, fmt.Errorf("failed to encode EventTriggerDefinition")
 	}
 
-	eventTriggerFmt1 := make([]int64, encoded.size)
+	eventTriggerFmt1 := make([]string, encoded.size)
 
 	for _, v := range unsafe.Slice(encoded.buffer, encoded.size) {
-		eventTriggerFmt1 = append(eventTriggerFmt1, int64(v))
+		eventTriggerFmt1 = append(eventTriggerFmt1, C.GoString(v))
 	}
 
 	return eventTriggerFmt1, nil
