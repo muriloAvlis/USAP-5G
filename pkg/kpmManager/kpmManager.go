@@ -7,8 +7,6 @@ package kpmmanager
 */
 import "C"
 import (
-	"bytes"
-	"encoding/binary"
 	"fmt"
 	"unsafe"
 )
@@ -22,19 +20,10 @@ func EncodeEventTriggerDefinitionFormat1(reportingPeriod uint64) ([]int64, error
 		return nil, fmt.Errorf("failed to encode EventTriggerDefinition")
 	}
 
-	// convert C buffer to Go slice
-	goBuffer := C.GoBytes(unsafe.Pointer(&encoded.buffer), C.int(encoded.size))
+	eventTriggerFmt1 := make([]int64, encoded.size)
 
-	var eventTriggerFmt1 []int64
-	buffer := bytes.NewBuffer(goBuffer)
-
-	for {
-		var val int64
-		err := binary.Read(buffer, binary.BigEndian, &val)
-		if err != nil {
-			break
-		}
-		eventTriggerFmt1 = append(eventTriggerFmt1, val)
+	for _, v := range unsafe.Slice(encoded.buffer, encoded.size) {
+		eventTriggerFmt1 = append(eventTriggerFmt1, int64(v))
 	}
 
 	return eventTriggerFmt1, nil
