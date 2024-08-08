@@ -85,6 +85,6 @@ typedef struct eventTriggerFmt
 actDefFmt_t buildRanCellUeKpi(const char *ranFuncDefinition);
 
 // Encode Event Trigger Definition (only format 1 is available on KPM)
-eventTriggerFmt_t encodeEventTriggerDefinitionFormat1(unsigned long reportingPeriod);
+eventTriggerFmt_t encodeEventTriggerDefinitionFormat1(u_int64_t reportingPeriod);
 
 #endif //WRAPPER_H

@@ -13,7 +13,7 @@ import (
 
 // Encode Event Trigger Definition (only format 1 is available on KPM)
 func EncodeEventTriggerDefinitionFormat1(reportingPeriod uint64) ([]string, error) {
-	encoded := C.encodeEventTriggerDefinitionFormat1(C.ulong(reportingPeriod))
+	encoded := C.encodeEventTriggerDefinitionFormat1(C.u_int64_t(reportingPeriod))
 	defer C.free(unsafe.Pointer(&encoded))
 
 	if encoded.size == 0 {
