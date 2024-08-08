@@ -145,16 +145,16 @@ func (app *UsapXapp) xAppCB(d interface{}) {
 			}
 
 			// check if E2 Node has KPM RAN function == 2
-			kpm_idx := 0
+			kpm_idx := -1
 			for idx, rf := range e2Resp.Gnb.RanFunctions {
 				if rf.RanFunctionId == 2 {
 					kpm_idx = idx
 					xapp.Logger.Debug("NodeB %s has KPM RF index: %d", nb.GetInventoryName(), kpm_idx)
-					continue
+					break
 				}
 			}
 
-			if kpm_idx == 0 {
+			if kpm_idx == -1 {
 				xapp.Logger.Debug("NodeB %s does not have KPM RF, finalizing KPI extraction process...", nb.GetInventoryName())
 				continue
 			}
