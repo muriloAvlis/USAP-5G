@@ -13,8 +13,9 @@ RUN apt-get update && \
 
 ## Install RMR lib
 COPY ./dependencies ./dependencies
-RUN dpkg -i ./dependencies/rmr-dev_4.9.4_amd64.deb \
-    && ldconfig
+RUN dpkg -i ./dependencies/rmr-dev_4.9.4_amd64.deb
+
+RUN ldconfig
 
 ## Intall libe2sm
 COPY CMakeLists.txt CMakeLists.txt
@@ -47,6 +48,8 @@ RUN install_packages tzdata dnsutils net-tools
 ## Copy compiled dependencies from builder stage
 COPY --from=builder /usr/local/lib/libe2smwrapper.so /usr/local/lib/libe2smwrapper.so
 COPY --from=builder /usr/local/include/e2sm/ /usr/local/include/e2sm/
+
+RUN ldconfig
 
 ## Copy app bin
 COPY --from=builder /builder/bin/usap /usr/local/bin/usap
