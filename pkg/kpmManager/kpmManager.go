@@ -13,9 +13,7 @@ import (
 
 // Encode Event Trigger Definition (only format 1 is available on KPM)
 func EncodeEventTriggerDefinitionFormat1(reportingPeriod uint64) ([]int64, error) {
-	cuint := C.u_int64_t(reportingPeriod)
-	encoded := C.encodeEventTriggerDefinitionFormat1(cuint)
-	defer C.free(unsafe.Pointer(&cuint))
+	encoded := C.encodeEventTriggerDefinitionFormat1(C.u_int64_t(reportingPeriod))
 	// Check if buffer is null
 	if encoded.buffer == nil {
 		return nil, errors.New("failed to encode EventTriggerDefinitionFormat1")
