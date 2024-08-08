@@ -76,15 +76,15 @@ typedef struct actDefFmt
     int act_def_format5_size;
 } actDefFmt_t;
 
-typedef struct encodeMessage
+typedef struct eventTriggerFmt
 {
-    u_int64_t *buffer;
+    void *buffer;
     ssize_t size;
-} encodeMessage_t;
+} eventTriggerFmt_t;
 
 actDefFmt_t buildRanCellUeKpi(const char *ranFuncDefinition);
 
 // Encode Event Trigger Definition (only format 1 is available on KPM)
-ssize_t encodeEventTriggerDefinitionFormat1(unsigned long reportingPeriod, uint8_t **encoded_buffer);
+eventTriggerFmt_t encodeEventTriggerDefinitionFormat1(unsigned long reportingPeriod);
 
 #endif //WRAPPER_H
