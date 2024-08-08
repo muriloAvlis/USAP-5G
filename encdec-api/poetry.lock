@@ -226,6 +226,24 @@ files = [
 ]
 
 [[package]]
+name = "pycrate"
+version = "0.7.7"
+description = "A software suite to handle various data and protocol formats"
+optional = false
+python-versions = "*"
+files = [
+    {file = "pycrate-0.7.7-py2.py3-none-any.whl", hash = "sha256:b5651068817e297b3f0513d85c517a2f773dfb05d1ac289287ae23d84196e7bc"},
+    {file = "pycrate-0.7.7.tar.gz", hash = "sha256:72f86a9a50497342fb2a940b1398a46e0aa2401a90cf77405074f2264b0e3734"},
+]
+
+[package.extras]
+corenet = ["CryptoMobile", "pysctp"]
+diameter-dict = ["lxml"]
+nas5g = ["CryptoMobile"]
+naslte = ["CryptoMobile"]
+sedebugmux = ["crcmod"]
+
+[[package]]
 name = "pyparsing"
 version = "3.1.2"
 description = "pyparsing module - Classes and methods to define and execute parsing grammars"
@@ -259,4 +277,4 @@ watchdog = ["watchdog (>=2.3)"]
 [metadata]
 lock-version = "2.0"
 python-versions = "^3.10"
-content-hash = "19fcb9419468fa604119d09a2492efa1b0966a413f657dc52f8e3d406ed84c03"
+content-hash = "99d8fc04991732eb3bc423171d2d2921674db96cc8093ba93775d8581f3e432b"

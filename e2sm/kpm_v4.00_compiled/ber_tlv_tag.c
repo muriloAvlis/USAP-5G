@@ -42,7 +42,7 @@ ber_fetch_tag(const void *ptr, size_t size, ber_tlv_tag_t *tag_r) {
 			 */
 			if(val >> ((8 * sizeof(val)) - 9)) {
 				/*
-				 * We would not be able to accomodate
+				 * We would not be able to accommodate
 				 * any more tag bits.
 				 */
 				return -1;
@@ -74,7 +74,7 @@ ber_tlv_tag_fwrite(ber_tlv_tag_t tag, FILE *f) {
 
 ssize_t
 ber_tlv_tag_snprint(ber_tlv_tag_t tag, char *buf, size_t size) {
-	char *type = 0;
+	const char *type = 0;
 	int ret;
 
 	switch(tag & 0x3) {

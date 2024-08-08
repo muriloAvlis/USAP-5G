@@ -1,9 +1,9 @@
 package manager
 
 /*
+#cgo LDFLAGS: -L/usr/local/lib -le2smwrapper -lm
+#cgo CFLAGS: -I/usr/local/include/e2sm
 #include <e2sm/wrapper.h>
-#cgo LDFLAGS: -lm -le2smwrapper
-#cgo CFLAGS:  -I /usr/local/include/e2sm
 */
 import "C"
 import (
@@ -15,8 +15,8 @@ import (
 	"time"
 	"unsafe"
 
-	"gerrit.o-ran-sc.org/r/ric-plt/xapp-frame/pkg/clientmodel"
 	"gerrit.o-ran-sc.org/r/ric-plt/xapp-frame/pkg/xapp"
+	kpmmanager "github.com/muriloAvlis/USAP/pkg/kpmManager"
 )
 
 func (app *UsapXapp) Consume(msg *xapp.RMRParams) (err error) {
@@ -85,15 +85,25 @@ func (app *UsapXapp) getNbList() []*xapp.RNIBNbIdentity {
 }
 
 // Encode subscription actions
-func encode_actionsToBeSetup(e2NodeId string) clientmodel.ActionsToBeSetup {
-	return nil
-}
+// func encode_actionsToBeSetup(e2NodeId string) clientmodel.ActionsToBeSetup {
+// 	return nil
+// }
 
 // Send subscription to E2 Node
 func (app *UsapXapp) sendSubscription(e2NodeID string) {
 	// Create Subscription message and send it to RIC platform
 	xapp.Logger.Info("Sending subscription request for E2 Node: %s", e2NodeID)
 
+	eventTrigger := kpmmanager.EncodeEventTriggerDefinitionFormat1(reportingPeriod)
+
+	xapp.Logger.Debug("Event Trigger Def: %v", eventTrigger)
+
+	// // Set subscription details
+	// subsDetail := clientmodel.SubscriptionDetail{
+	// 	XappEventInstanceID: &seqId,
+	// }
+
+	// Set subscription parameters
 	// subscriptionParams := clientmodel.SubscriptionParams{
 	// 	ClientEndpoint: &app.ClientEndpoint,
 	// 	Meid:           &e2NodeID,
@@ -162,6 +172,8 @@ func (app *UsapXapp) xAppCB(d interface{}) {
 			}
 
 			ranUeKpis[nb.GetInventoryName()] = rfActDef4
+
+			xapp.Logger.Info("Available UE KPIs: %v", ranUeKpis)
 
 			// TODO: prepare variable to receive cell KPIs
 

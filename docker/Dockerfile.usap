@@ -4,12 +4,26 @@
 
 FROM golang:1.22.5-bookworm AS builder
 
+ARG DEBIAN_FRONTEND=noninteractive
 WORKDIR /builder
 
-# # Install RMR lib
+## Install dependencies
+RUN apt-get update && \
+    apt-get install -y build-essential cmake ccache
+
+## Install RMR lib
 COPY ./dependencies ./dependencies
 RUN dpkg -i ./dependencies/rmr-dev_4.9.4_amd64.deb \
     && ldconfig
+
+## Intall libe2sm
+COPY CMakeLists.txt CMakeLists.txt
+COPY e2sm e2sm
+RUN mkdir -p build && \
+    cd build && \
+    cmake .. && \
+    make -j8 && \
+    make install
 
 COPY go.mod go.sum ./
 RUN go mod download && go mod verify
@@ -30,9 +44,12 @@ ENV TZ=America/Belem
 
 RUN install_packages tzdata dnsutils net-tools
 
+## Copy compiled dependencies from builder stage
+COPY --from=builder /usr/local/lib/libe2smwrapper.so /usr/local/lib/libe2smwrapper.so
+COPY --from=builder /usr/local/include/e2sm/ /usr/local/include/e2sm/
+
+## Copy app bin
 COPY --from=builder /builder/bin/usap /usr/local/bin/usap
-# COPY --from=builder /usr/local/include/rmr /usr/local/include/rmr
-# COPY --from=builder /usr/local/lib/librmr_si.a /usr/local/lib/librmr_si.a
 
 ## Add labels
 LABEL br.ufpa.gercom.title="USAP" \

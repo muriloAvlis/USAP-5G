@@ -1,81 +1,139 @@
 /*-
- * Copyright (c) 2004-2013 Lev Walkin <vlm@lionet.info>. All rights reserved.
+ * Copyright (c) 2004-2017 Lev Walkin <vlm@lionet.info>. All rights reserved.
  * Redistribution and modifications are permitted subject to BSD license.
  */
-#define	_ISOC99_SOURCE		/* For ilogb() and quiet NAN */
-#define	_DEFAULT_SOURCE		/* To reintroduce finite(3) */
-#if	defined(__alpha)
-#include <sys/resource.h>	/* For INFINITY */
-#endif
 #include <asn_internal.h>
 #include <stdlib.h>	/* for strtod(3) */
-#include <math.h>
 #include <errno.h>
 #include <REAL.h>
-#include <OCTET_STRING.h>
 
 #undef	INT_MAX
 #define	INT_MAX	((int)(((unsigned int)-1) >> 1))
 
-#if	!(defined(NAN) || defined(INFINITY))
-static volatile double real_zero GCC_NOTUSED = 0.0;
-#endif
-#ifndef	NAN
-#define	NAN	(real_zero/real_zero)
-#endif
-#ifndef	INFINITY
-#define	INFINITY	(1.0/real_zero)
-#endif
+struct specialRealValue_s specialRealValue[] = {
+#define SRV_SET(foo, val) { (char *)foo, sizeof(foo) - 1, val }
+    SRV_SET("<NOT-A-NUMBER/>", 0),
+    SRV_SET("<MINUS-INFINITY/>", -1),
+    SRV_SET("<PLUS-INFINITY/>", 1),
+#undef SRV_SET
+};
 
+#if defined(__clang__)
+/*
+ * isnan() is defined using generic selections and won't compile in
+ * strict C89 mode because of too fancy system's standard library.
+ * However, prior to C11 the math had a perfectly working isnan()
+ * in the math library.
+ * Disable generic selection warning so we can test C89 mode with newer libc.
+ */
+#pragma clang diagnostic push
+#pragma clang diagnostic ignored "-Wc11-extensions"
+static int asn_isnan(double d) {
+    return isnan(d);
+}
+static int asn_isfinite(double d) {
 #ifdef isfinite
-#define _asn_isfinite(d)   isfinite(d)  /* ISO C99 */
+    return isfinite(d);  /* ISO C99 */
 #else
-#define _asn_isfinite(d)   finite(d)    /* Deprecated on Mac OS X 10.9 */
+    return finite(d);    /* Deprecated on Mac OS X 10.9 */
 #endif
+}
+#pragma clang diagnostic pop
+#else   /* !clang */
+#define asn_isnan(v)    isnan(v)
+#ifdef isfinite
+#define asn_isfinite(d)   isfinite(d)  /* ISO C99 */
+#else
+#define asn_isfinite(d)   finite(d)    /* Deprecated on Mac OS X 10.9 */
+#endif
+#endif  /* clang */
 
 /*
  * REAL basic type description.
  */
 static const ber_tlv_tag_t asn_DEF_REAL_tags[] = {
-	(ASN_TAG_CLASS_UNIVERSAL | (9 << 2))
+    (ASN_TAG_CLASS_UNIVERSAL | (9 << 2))
+};
+asn_TYPE_operation_t asn_OP_REAL = {
+    ASN__PRIMITIVE_TYPE_free,
+#if !defined(ASN_DISABLE_PRINT_SUPPORT)
+    REAL_print,
+#else
+    0,
+#endif  /* !defined(ASN_DISABLE_PRINT_SUPPORT) */
+    REAL_compare,
+    REAL_copy,
+#if !defined(ASN_DISABLE_BER_SUPPORT)
+    ber_decode_primitive,
+    der_encode_primitive,
+#else
+    0,
+    0,
+#endif  /* !defined(ASN_DISABLE_BER_SUPPORT) */
+#if !defined(ASN_DISABLE_XER_SUPPORT)
+    REAL_decode_xer,
+    REAL_encode_xer,
+#else
+    0,
+    0,
+#endif  /* !defined(ASN_DISABLE_XER_SUPPORT) */
+#if !defined(ASN_DISABLE_JER_SUPPORT)
+    REAL_decode_jer,
+    REAL_encode_jer,
+#else
+	0,
+    0,
+#endif  /* !defined(ASN_DISABLE_JER_SUPPORT) */
+#if !defined(ASN_DISABLE_OER_SUPPORT)
+    REAL_decode_oer,
+    REAL_encode_oer,
+#else
+    0,
+    0,
+#endif  /* !defined(ASN_DISABLE_OER_SUPPORT) */
+#if !defined(ASN_DISABLE_UPER_SUPPORT)
+    REAL_decode_uper,
+    REAL_encode_uper,
+#else
+    0,
+    0,
+#endif  /* !defined(ASN_DISABLE_UPER_SUPPORT) */
+#if !defined(ASN_DISABLE_APER_SUPPORT)
+    REAL_decode_aper,
+    REAL_encode_aper,
+#else
+    0,
+    0,
+#endif  /* !defined(ASN_DISABLE_APER_SUPPORT) */
+#if !defined(ASN_DISABLE_RFILL_SUPPORT)
+    REAL_random_fill,
+#else
+    0,
+#endif  /* !defined(ASN_DISABLE_RFILL_SUPPORT) */
+    0  /* Use generic outmost tag fetcher */
 };
 asn_TYPE_descriptor_t asn_DEF_REAL = {
-	"REAL",
-	"REAL",
-	ASN__PRIMITIVE_TYPE_free,
-	REAL_print,
-	asn_generic_no_constraint,
-	ber_decode_primitive,
-	der_encode_primitive,
-	REAL_decode_xer,
-	REAL_encode_xer,
-	REAL_decode_uper,
-	REAL_encode_uper,
-	0, /* Use generic outmost tag fetcher */
-	asn_DEF_REAL_tags,
-	sizeof(asn_DEF_REAL_tags) / sizeof(asn_DEF_REAL_tags[0]),
-	asn_DEF_REAL_tags,	/* Same as above */
-	sizeof(asn_DEF_REAL_tags) / sizeof(asn_DEF_REAL_tags[0]),
-	0,	/* No PER visible constraints */
-	0, 0,	/* No members */
-	0	/* No specifics */
-};
-
-typedef enum specialRealValue {
-	SRV__NOT_A_NUMBER,
-	SRV__MINUS_INFINITY,
-	SRV__PLUS_INFINITY
-} specialRealValue_e;
-static struct specialRealValue_s {
-	char *string;
-	size_t length;
-	long dv;
-} specialRealValue[] = {
-#define	SRV_SET(foo, val)	{ foo, sizeof(foo) - 1, val }
-	SRV_SET("<NOT-A-NUMBER/>", 0),
-	SRV_SET("<MINUS-INFINITY/>", -1),
-	SRV_SET("<PLUS-INFINITY/>", 1),
-#undef	SRV_SET
+    "REAL",
+    "REAL",
+    &asn_OP_REAL,
+    asn_DEF_REAL_tags,
+    sizeof(asn_DEF_REAL_tags) / sizeof(asn_DEF_REAL_tags[0]),
+    asn_DEF_REAL_tags,  /* Same as above */
+    sizeof(asn_DEF_REAL_tags) / sizeof(asn_DEF_REAL_tags[0]),
+    {
+#if !defined(ASN_DISABLE_OER_SUPPORT)
+        0,
+#endif  /* !defined(ASN_DISABLE_OER_SUPPORT) */
+#if !defined(ASN_DISABLE_UPER_SUPPORT) || !defined(ASN_DISABLE_APER_SUPPORT)
+        0,
+#endif  /* !defined(ASN_DISABLE_UPER_SUPPORT) || !defined(ASN_DISABLE_APER_SUPPORT) */
+#if !defined(ASN_DISABLE_JER_SUPPORT)
+        0,
+#endif  /* !defined(ASN_DISABLE_JER_SUPPORT) */
+        asn_generic_no_constraint
+    },
+    0, 0,  /* No members */
+    0  /* No specifics */
 };
 
 ssize_t
@@ -83,18 +141,17 @@ REAL__dump(double d, int canonical, asn_app_consume_bytes_f *cb, void *app_key) 
 	char local_buf[64];
 	char *buf = local_buf;
 	ssize_t buflen = sizeof(local_buf);
-	const char *fmt = canonical?"%.15E":"%.15f";
 	ssize_t ret;
 
 	/*
 	 * Check whether it is a special value.
 	 */
 	/* fpclassify(3) is not portable yet */
-	if(isnan(d)) {
+	if(asn_isnan(d)) {
 		buf = specialRealValue[SRV__NOT_A_NUMBER].string;
 		buflen = specialRealValue[SRV__NOT_A_NUMBER].length;
 		return (cb(buf, buflen, app_key) < 0) ? -1 : buflen;
-	} else if(!_asn_isfinite(d)) {
+	} else if(!asn_isfinite(d)) {
 		if(copysign(1.0, d) < 0.0) {
 			buf = specialRealValue[SRV__MINUS_INFINITY].string;
 			buflen = specialRealValue[SRV__MINUS_INFINITY].length;
@@ -118,9 +175,18 @@ REAL__dump(double d, int canonical, asn_app_consume_bytes_f *cb, void *app_key) 
 	 * Use the libc's double printing, hopefully they got it right.
 	 */
 	do {
-		ret = snprintf(buf, buflen, fmt, d);
+        ret = snprintf(buf,
+                       buflen,
+                       canonical ? "%.17E" /* Precise */ : "%.15f" /* Pleasant*/,
+                       d);
 		if(ret < 0) {
+			/* There are some old broken APIs. */
 			buflen <<= 1;
+			if(buflen > 4096) {
+				/* Should be plenty. */
+				if(buf != local_buf) FREEMEM(buf);
+				return -1;
+			}
 		} else if(ret >= buflen) {
 			buflen = ret + 1;
 		} else {
@@ -140,12 +206,12 @@ REAL__dump(double d, int canonical, asn_app_consume_bytes_f *cb, void *app_key) 
 		char *dot;
 		char *end = buf + buflen;
 		char *last_zero;
-		char *prev_zero;
+		char *first_zero_in_run;
         char *s;
 
         enum {
             LZSTATE_NOTHING,
-            LZSTATE_SEEN_ZERO
+            LZSTATE_ZEROES
         } lz_state = LZSTATE_NOTHING;
 
 		dot = (buf[0] == 0x2d /* '-' */) ? (buf + 2) : (buf + 1);
@@ -156,16 +222,14 @@ REAL__dump(double d, int canonical, asn_app_consume_bytes_f *cb, void *app_key) 
 		}
 		*dot = 0x2e;		/* Replace possible comma */
 
-		for(prev_zero = last_zero = s = dot + 2; s < end; s++) {
+        for(first_zero_in_run = last_zero = s = dot + 2; s < end; s++) {
             switch(*s) {
             case 0x45: /* 'E' */
-                if(lz_state == LZSTATE_SEEN_ZERO)
-                    last_zero = prev_zero;
+                if(lz_state == LZSTATE_ZEROES) last_zero = first_zero_in_run;
                 break;
-            case 0x30:  /* '0' */
-                if(lz_state == LZSTATE_NOTHING)
-                    prev_zero = s;
-                lz_state = LZSTATE_SEEN_ZERO;
+            case 0x30: /* '0' */
+                if(lz_state == LZSTATE_NOTHING) first_zero_in_run = s;
+                lz_state = LZSTATE_ZEROES;
                 continue;
             default:
                 lz_state = LZSTATE_NOTHING;
@@ -182,10 +246,11 @@ REAL__dump(double d, int canonical, asn_app_consume_bytes_f *cb, void *app_key) 
 
         assert(*s == 0x45);
         {
+            int sign;
             char *E = s;
             char *expptr = ++E;
-            char *s = expptr;
-            int sign;
+
+            s = expptr;
 
             if(*expptr == 0x2b /* '+' */) {
                 /* Skip the "+" */
@@ -205,7 +270,7 @@ REAL__dump(double d, int canonical, asn_app_consume_bytes_f *cb, void *app_key) 
                 buflen--;
                 expptr++;
             }
-            if(*last_zero == 0x30) {
+            if(lz_state == LZSTATE_ZEROES) {
                 *last_zero = 0x45;	/* E */
                 buflen -= s - (last_zero + 1);
                 s = last_zero + 1;
@@ -258,136 +323,81 @@ REAL__dump(double d, int canonical, asn_app_consume_bytes_f *cb, void *app_key) 
 }
 
 int
-REAL_print(asn_TYPE_descriptor_t *td, const void *sptr, int ilevel,
-	asn_app_consume_bytes_f *cb, void *app_key) {
-	const REAL_t *st = (const REAL_t *)sptr;
-	ssize_t ret;
-	double d;
+REAL_compare(const asn_TYPE_descriptor_t *td, const void *aptr,
+             const void *bptr) {
+    const REAL_t *a = aptr;
+    const REAL_t *b = bptr;
 
-	(void)td;	/* Unused argument */
-	(void)ilevel;	/* Unused argument */
+    (void)td;
 
-	if(!st || !st->buf)
-		ret = cb("<absent>", 8, app_key);
-	else if(asn_REAL2double(st, &d))
-		ret = cb("<error>", 7, app_key);
-	else
-		ret = REAL__dump(d, 0, cb, app_key);
-
-	return (ret < 0) ? -1 : 0;
+    if(a && b) {
+        double adbl, bdbl;
+        int ra, rb;
+        ra = asn_REAL2double(a, &adbl);
+        rb = asn_REAL2double(b, &bdbl);
+        if(ra == 0 && rb == 0) {
+            if(asn_isnan(adbl)) {
+                if(asn_isnan(bdbl)) {
+                    return 0;
+                } else {
+                    return -1;
+                }
+            } else if(asn_isnan(bdbl)) {
+                return 1;
+            }
+            /* Value comparison. */
+            if(adbl < bdbl) {
+                return -1;
+            } else if(adbl > bdbl) {
+                return 1;
+            } else {
+                return 0;
+            }
+        } else if(ra) {
+            return -1;
+        } else {
+            return 1;
+        }
+    } else if(!a) {
+        return -1;
+    } else {
+        return 1;
+    }
 }
 
-asn_enc_rval_t
-REAL_encode_xer(asn_TYPE_descriptor_t *td, void *sptr,
-	int ilevel, enum xer_encoder_flags_e flags,
-		asn_app_consume_bytes_f *cb, void *app_key) {
-	REAL_t *st = (REAL_t *)sptr;
-	asn_enc_rval_t er;
-	double d;
+int
+REAL_copy(const asn_TYPE_descriptor_t *td, void **aptr,
+          const void *bptr) {
+    REAL_t *a = *aptr;
+    const REAL_t *b = bptr;
 
-	(void)ilevel;
+    (void)td;
 
-	if(!st || !st->buf || asn_REAL2double(st, &d))
-		ASN__ENCODE_FAILED;
+    if(!b) {
+        if(a) {
+            FREEMEM(a->buf);
+            FREEMEM(a);
+            *aptr = 0;
+        }
+        return 0;
+    }
 
-	er.encoded = REAL__dump(d, flags & XER_F_CANONICAL, cb, app_key);
-	if(er.encoded < 0) ASN__ENCODE_FAILED;
+    if(!a) {
+        a = *aptr = CALLOC(1, sizeof(*a));
+        if(!a) return -1;
+    }
 
-	ASN__ENCODED_OK(er);
-}
+    if(b->size) {
+        uint8_t* buf = (uint8_t*)MALLOC(b->size);
+        if(!buf) return -1;
+        memcpy(buf, b->buf, b->size);
 
+        FREEMEM(a->buf);
+        a->buf = buf;
+        a->size = b->size;
+    }
 
-/*
- * Decode the chunk of XML text encoding REAL.
- */
-static enum xer_pbd_rval
-REAL__xer_body_decode(asn_TYPE_descriptor_t *td, void *sptr, const void *chunk_buf, size_t chunk_size) {
-	REAL_t *st = (REAL_t *)sptr;
-	double value;
-	const char *xerdata = (const char *)chunk_buf;
-	char *endptr = 0;
-	char *b;
-
-	(void)td;
-
-	if(!chunk_size) return XPBD_BROKEN_ENCODING;
-
-	/*
-	 * Decode an XMLSpecialRealValue: <MINUS-INFINITY>, etc.
-	 */
-	if(xerdata[0] == 0x3c /* '<' */) {
-		size_t i;
-		for(i = 0; i < sizeof(specialRealValue)
-				/ sizeof(specialRealValue[0]); i++) {
-			struct specialRealValue_s *srv = &specialRealValue[i];
-			double dv;
-
-			if(srv->length != chunk_size
-			|| memcmp(srv->string, chunk_buf, chunk_size))
-				continue;
-
-			/*
-			 * It could've been done using
-			 * (double)srv->dv / real_zero,
-			 * but it summons fp exception on some platforms.
-			 */
-			switch(srv->dv) {
-			case -1: dv = - INFINITY; break;
-			case 0: dv = NAN;	break;
-			case 1: dv = INFINITY;	break;
-			default: return XPBD_SYSTEM_FAILURE;
-			}
-
-			if(asn_double2REAL(st, dv))
-				return XPBD_SYSTEM_FAILURE;
-
-			return XPBD_BODY_CONSUMED;
-		}
-		ASN_DEBUG("Unknown XMLSpecialRealValue");
-		return XPBD_BROKEN_ENCODING;
-	}
-
-	/*
-	 * Copy chunk into the nul-terminated string, and run strtod.
-	 */
-	b = (char *)MALLOC(chunk_size + 1);
-	if(!b) return XPBD_SYSTEM_FAILURE;
-	memcpy(b, chunk_buf, chunk_size);
-	b[chunk_size] = 0;	/* nul-terminate */
-
-	value = strtod(b, &endptr);
-	FREEMEM(b);
-	if(endptr == b) return XPBD_BROKEN_ENCODING;
-
-	if(asn_double2REAL(st, value))
-		return XPBD_SYSTEM_FAILURE;
-
-	return XPBD_BODY_CONSUMED;
-}
-
-asn_dec_rval_t
-REAL_decode_xer(asn_codec_ctx_t *opt_codec_ctx,
-	asn_TYPE_descriptor_t *td, void **sptr, const char *opt_mname,
-		const void *buf_ptr, size_t size) {
-
-	return xer_decode_primitive(opt_codec_ctx, td,
-		sptr, sizeof(REAL_t), opt_mname,
-		buf_ptr, size, REAL__xer_body_decode);
-}
-
-asn_dec_rval_t
-REAL_decode_uper(asn_codec_ctx_t *opt_codec_ctx,
-	asn_TYPE_descriptor_t *td, asn_per_constraints_t *constraints,
-	void **sptr, asn_per_data_t *pd) {
-	(void)constraints;	/* No PER visible constraints */
-	return OCTET_STRING_decode_uper(opt_codec_ctx, td, 0, sptr, pd);
-}
-
-asn_enc_rval_t
-REAL_encode_uper(asn_TYPE_descriptor_t *td,
-	asn_per_constraints_t *constraints, void *sptr, asn_per_outp_t *po) {
-	(void)constraints;	/* No PER visible constraints */
-	return OCTET_STRING_encode_uper(td, 0, sptr, po);
+    return 0;
 }
 
 int
@@ -440,7 +450,7 @@ asn_REAL2double(const REAL_t *st, double *dbl_value) {
 		 * NR3: [ ]*[+-]?([0-9]+\.[0-9]*|[0-9]*\.[0-9]+)[Ee][+-]?[0-9]+
 		 */
 		double d;
-		char *buf;
+		char *source = 0;
 		char *endptr;
 		int used_malloc = 0;
 
@@ -450,44 +460,39 @@ asn_REAL2double(const REAL_t *st, double *dbl_value) {
 			return -1;
 		}
 
-
-		/* 1. By contract, an input buffer should be null-terminated.
+		/* 1. By contract, an input buffer should be '\0'-terminated.
 		 * OCTET STRING decoder ensures that, as is asn_double2REAL().
 		 * 2. ISO 6093 specifies COMMA as a possible decimal separator.
 		 * However, strtod() can't always deal with COMMA.
 		 * So her we fix both by reallocating, copying and fixing.
 		 */
-		if(st->buf[st->size] || memchr(st->buf, ',', st->size)) {
-			uint8_t *p, *end;
+		if(st->buf[st->size] != '\0' || memchr(st->buf, ',', st->size)) {
+			const uint8_t *p, *end;
 			char *b;
-			if(st->size > 100) {
-				/* Avoid malicious stack overflow in alloca() */
-				buf = (char *)MALLOC(st->size);
-				if(!buf) return -1;
-				used_malloc = 1;
-			} else {
-				buf = alloca(st->size);
-			}
-			b = buf;
+
+            b = source = (char *)MALLOC(st->size + 1);
+            if(!source) return -1;
+            used_malloc = 1;
+
 			/* Copy without the first byte and with 0-termination */
 			for(p = st->buf + 1, end = st->buf + st->size;
 					p < end; b++, p++)
 				*b = (*p == ',') ? '.' : *p;
 			*b = '\0';
 		} else {
-			buf = (char *)&st->buf[1];
+			source = (char *)&st->buf[1];
 		}
 
-		endptr = buf;
-		d = strtod(buf, &endptr);
+		endptr = source;
+		d = strtod(source, &endptr);
 		if(*endptr != '\0') {
 			/* Format is not consistent with ISO 6093 */
-			if(used_malloc) FREEMEM(buf);
+			if(used_malloc) FREEMEM(source);
 			errno = EINVAL;
 			return -1;
 		}
-		if(used_malloc) FREEMEM(buf);
-		if(_asn_isfinite(d)) {
+		if(used_malloc) FREEMEM(source);
+		if(asn_isfinite(d)) {
 			*dbl_value = d;
 			return 0;
 		} else {
@@ -502,10 +507,10 @@ asn_REAL2double(const REAL_t *st, double *dbl_value) {
 	 */
     {
 	double m;
-	int expval;		/* exponent value */
+	int32_t expval;		/* exponent value */
 	unsigned int elen;	/* exponent value length, in octets */
-	unsigned int scaleF;
-	unsigned int baseF;
+	int scaleF;
+	int baseF;
 	uint8_t *ptr;
 	uint8_t *end;
 	int sign;
@@ -523,7 +528,7 @@ asn_REAL2double(const REAL_t *st, double *dbl_value) {
 	sign = (octv & 0x40);	/* bit 7 */
 	scaleF = (octv & 0x0C) >> 2;	/* bits 4 to 3 */
 
-	if(st->size <= (int)(1 + (octv & 0x03))) {
+	if(st->size <= 1 + (octv & 0x03)) {
 		errno = EINVAL;
 		return -1;
 	}
@@ -531,7 +536,7 @@ asn_REAL2double(const REAL_t *st, double *dbl_value) {
 	elen = (octv & 0x03);	/* bits 2 to 1; 8.5.6.4 */
 	if(elen == 0x03) {	/* bits 2 to 1 = 11; 8.5.6.4, case d) */
 		elen = st->buf[1];	/* unsigned binary number */
-		if(elen == 0 || st->size <= (int)(2 + elen)) {
+		if(elen == 0 || st->size <= (2 + elen)) {
 			errno = EINVAL;
 			return -1;
 		}
@@ -543,6 +548,10 @@ asn_REAL2double(const REAL_t *st, double *dbl_value) {
 
 	/* Fetch the multibyte exponent */
 	expval = (int)(*(int8_t *)ptr);
+	if(elen >= sizeof(expval)-1) {
+		errno = ERANGE;
+		return -1;
+	}
 	end = ptr + elen + 1;
 	for(ptr++; ptr < end; ptr++)
 		expval = (expval * 256) + *ptr;
@@ -564,10 +573,10 @@ asn_REAL2double(const REAL_t *st, double *dbl_value) {
 	/*
 	 * (S * N * 2^F) * B^E
 	 * Essentially:
-	m = ldexp(m, scaleF) * pow(pow(2, base), expval);
+	m = ldexp(m, scaleF) * pow(pow(2, baseF), expval);
 	 */
 	m = ldexp(m, expval * baseF + scaleF);
-	if(_asn_isfinite(m)) {
+	if(asn_isfinite(m)) {
 		*dbl_value = sign ? -m : m;
 	} else {
 		errno = ERANGE;
@@ -585,17 +594,13 @@ asn_REAL2double(const REAL_t *st, double *dbl_value) {
  */
 int
 asn_double2REAL(REAL_t *st, double dbl_value) {
-#ifdef	WORDS_BIGENDIAN		/* Known to be big-endian */
-	int littleEndian = 0;
-#else				/* need to test: have no explicit information */
-	unsigned int LE = 1;
-	int littleEndian = *(unsigned char *)&LE;
-#endif
+    double test = -0.0;
+    int float_big_endian = *(const char *)&test != 0;
 	uint8_t buf[16];	/* More than enough for 8-byte dbl_value */
 	uint8_t dscr[sizeof(dbl_value)];	/* double value scratch pad */
 	/* Assertion guards: won't even compile, if unexpected double size */
-	char assertion_buffer1[9 - sizeof(dbl_value)] GCC_NOTUSED;
-	char assertion_buffer2[sizeof(dbl_value) - 7] GCC_NOTUSED;
+	char assertion_buffer1[9 - sizeof(dbl_value)] CC_NOTUSED;
+	char assertion_buffer2[sizeof(dbl_value) - 7] CC_NOTUSED;
 	uint8_t *ptr = buf;
 	uint8_t *mstop;		/* Last byte of mantissa */
 	unsigned int mval;	/* Value of the last byte of mantissa */
@@ -621,14 +626,15 @@ asn_double2REAL(REAL_t *st, double dbl_value) {
 		if(!st->buf || st->size < 2) {
 			ptr = (uint8_t *)MALLOC(2);
 			if(!ptr) return -1;
+			if(st->buf) FREEMEM(st->buf);
 			st->buf = ptr;
 		}
 		/* fpclassify(3) is not portable yet */
-		if(isnan(dbl_value)) {
+		if(asn_isnan(dbl_value)) {
 			st->buf[0] = 0x42;	/* NaN */
 			st->buf[1] = 0;
 			st->size = 1;
-		} else if(!_asn_isfinite(dbl_value)) {
+		} else if(!asn_isfinite(dbl_value)) {
 			if(copysign(1.0, dbl_value) < 0.0) {
 				st->buf[0] = 0x41;	/* MINUS-INFINITY */
 			} else {
@@ -644,23 +650,14 @@ asn_double2REAL(REAL_t *st, double dbl_value) {
 			} else {
 				/* Negative zero. #8.5.3, 8.5.9 */
 				st->buf[0] = 0x43;
+				st->buf[1] = 0;
 				st->size = 1;
 			}
 		}
 		return 0;
 	}
 
-	if(littleEndian) {
-		uint8_t *s = ((uint8_t *)&dbl_value) + sizeof(dbl_value) - 2;
-		uint8_t *start = ((uint8_t *)&dbl_value);
-		uint8_t *d;
-
-		bmsign = 0x80 | ((s[1] >> 1) & 0x40);	/* binary mask & - */
-		for(mstop = d = dscr; s >= start; d++, s--) {
-			*d = *s;
-			if(*d) mstop = d;
-		}
-	} else {
+	if(float_big_endian) {
 		uint8_t *s = ((uint8_t *)&dbl_value) + 1;
 		uint8_t *end = ((uint8_t *)&dbl_value) + sizeof(double);
 		uint8_t *d;
@@ -670,7 +667,17 @@ asn_double2REAL(REAL_t *st, double dbl_value) {
 			*d = *s;
 			if(*d) mstop = d;
 		}
-	}
+    } else {
+		uint8_t *s = ((uint8_t *)&dbl_value) + sizeof(dbl_value) - 2;
+		uint8_t *start = ((uint8_t *)&dbl_value);
+		uint8_t *d;
+
+		bmsign = 0x80 | ((s[1] >> 1) & 0x40);	/* binary mask & - */
+		for(mstop = d = dscr; s >= start; d++, s--) {
+			*d = *s;
+			if(*d) mstop = d;
+		}
+    }
 
 	/* Remove parts of the exponent, leave mantissa and explicit 1. */
 	dscr[0] = 0x10 | (dscr[0] & 0x0f);
@@ -681,8 +688,8 @@ asn_double2REAL(REAL_t *st, double dbl_value) {
 	/* This loop ensures DER conformance by forcing mantissa odd: 11.3.1 */
 	mval = *mstop;
 	if(mval && !(mval & 1)) {
-		unsigned int shift_count = 1;
-		unsigned int ishift;
+		int shift_count = 1;
+		int ishift;
 		uint8_t *mptr;
 
 		/*
@@ -752,4 +759,17 @@ asn_double2REAL(REAL_t *st, double dbl_value) {
 	st->size = buflen;
 
 	return 0;
+}
+
+int CC_ATTR_NO_SANITIZE("float-cast-overflow")
+asn_double2float(double d, float *outcome) {
+    float f = d;
+
+    *outcome = f;
+
+    if(asn_isfinite(d) == asn_isfinite(f)) {
+        return 0;
+    } else {
+        return -1;
+    }
 }
