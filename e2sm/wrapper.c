@@ -129,13 +129,14 @@ actDefFmt_t buildRanCellUeKpi(const char* ranFuncDefinition)
     return res;
 }
 
-ssize_t encodeEventTriggerDefinitionFormat1(const unsigned long reportingPeriod, uint8_t **encoded_buffer)
+eventTriggerFmt_t encodeEventTriggerDefinitionFormat1(const unsigned long reportingPeriod)
 {Deferral
+    eventTriggerFmt_t res = {NULL, 0};
     E2SM_KPM_EventTriggerDefinition_t *evTriggerDef = (E2SM_KPM_EventTriggerDefinition_t *)calloc(1, sizeof(E2SM_KPM_EventTriggerDefinition_t));
     if (evTriggerDef == NULL)
     {
         fprintf(stderr, "[ERROR] E2SM_KPM_EventTriggerDefinition memory allocation failure");
-        return -1;
+        return res;
     }
     // set format 1
     evTriggerDef->eventDefinition_formats.present = E2SM_KPM_EventTriggerDefinition__eventDefinition_formats_PR_eventDefinition_Format1;
@@ -149,7 +150,7 @@ ssize_t encodeEventTriggerDefinitionFormat1(const unsigned long reportingPeriod,
     if (buffer == NULL)
     {
         fprintf(stderr, "[ERROR] Memory allocation failed!\n");
-        return EXIT_FAILURE;
+        return res;
     }
 
     asn_enc_rval_t enc_res = aper_encode_to_buffer(&asn_DEF_E2SM_KPM_EventTriggerDefinition, NULL, evTriggerDef, buffer, buffer_size);
@@ -157,17 +158,19 @@ ssize_t encodeEventTriggerDefinitionFormat1(const unsigned long reportingPeriod,
     if (enc_res.encoded == -1)
     {
         fprintf(stderr, "[ERROR] Failed to encode EventTriggerDefinition!\n");
-        return EXIT_FAILURE;
+        return res;
     }
 
-    *encoded_buffer = malloc(enc_res.encoded);
-    if (*encoded_buffer == NULL)
+    // alloc to correct size
+    void * f_buf = realloc(buffer, enc_res.encoded);
+    if (f_buf == NULL)
     {
-        fprintf(stderr, "[ERROR] Memory allocation for encoded_buffer failed!\n");
-        return EXIT_FAILURE;
+        fprintf(stderr, "[ERROR] Memory reallocation failed!\n");
+        return res;
     }
 
-    memcpy(*encoded_buffer, buffer, enc_res.encoded);
+    res.buffer = f_buf;
+    res.size = enc_res.encoded;
 
-    return enc_res.encoded;
+    return res;
 }
