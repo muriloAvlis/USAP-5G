@@ -79,7 +79,7 @@ typedef struct actDefFmt
 typedef struct eventTriggerFmt
 {
     char ** buffer;
-    ssize_t size;
+    int size;
 } eventTriggerFmt_t;
 
 actDefFmt_t buildRanCellUeKpi(const char *ranFuncDefinition);
