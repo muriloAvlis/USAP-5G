@@ -1,12 +1,19 @@
-add_library(e2smwrapper STATIC wrapper.c)
+## add -fPIC
+set(CMAKE_POSITION_INDEPENDENT_CODE ON)
+
+file(GLOB KPM_SRC "${CMAKE_CURRENT_SOURCE_DIR}/kpm_v4.00_compiled/*.c")
+file(GLOB KPM_HEADERS "${CMAKE_CURRENT_SOURCE_DIR}/kpm_v4.00_compiled/*.h")
+file(GLOB INCLUDE_HEADERS "include/*.h")
+
+add_library(e2smwrapper SHARED wrapper.c ${KPM_SRC})
 
 target_include_directories(e2smwrapper PUBLIC
         kpm_v4.00_compiled
-        ../include
+        include
 )
 
-file(GLOB KPM_HEADERS "${CMAKE_CURRENT_SOURCE_DIR}/kpm_v4.00_compiled/*.h")
-file(GLOB INCLUDE_HEADERS "../include/*.h")
+## define PDU macro
+target_compile_definitions(e2smwrapper PRIVATE -DPDU)
 
 install(TARGETS e2smwrapper ARCHIVE DESTINATION lib)
 install(FILES wrapper.h ${KPM_HEADERS} ${INCLUDE_HEADERS} DESTINATION include/e2sm)

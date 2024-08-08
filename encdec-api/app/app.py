@@ -1,4 +1,3 @@
-import asn1tools
 from flask import Flask, jsonify
 
 app = Flask("usap-enc-dec-api")
@@ -12,5 +11,9 @@ def root():
     }), 200
 
 
-if __name__ == '__main__':
+def run():
     app.run(debug=True, port=8081)
+
+
+if __name__ == '__main__':
+    run()

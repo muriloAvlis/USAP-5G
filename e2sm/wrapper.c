@@ -128,3 +128,46 @@ actDefFmt_t buildRanCellUeKpi(const char* ranFuncDefinition)
     res.act_def_format5_size = act_def_format5_size;
     return res;
 }
+
+ssize_t encodeEventTriggerDefinitionFormat1(const unsigned long reportingPeriod, uint8_t **encoded_buffer)
+{Deferral
+    E2SM_KPM_EventTriggerDefinition_t *evTriggerDef = (E2SM_KPM_EventTriggerDefinition_t *)calloc(1, sizeof(E2SM_KPM_EventTriggerDefinition_t));
+    if (evTriggerDef == NULL)
+    {
+        fprintf(stderr, "[ERROR] E2SM_KPM_EventTriggerDefinition memory allocation failure");
+        return -1;
+    }
+    // set format 1
+    evTriggerDef->eventDefinition_formats.present = E2SM_KPM_EventTriggerDefinition__eventDefinition_formats_PR_eventDefinition_Format1;
+    // set reporting period
+    evTriggerDef->eventDefinition_formats.choice.eventDefinition_Format1->reportingPeriod = reportingPeriod;
+
+    // create a buffer
+    size_t buffer_size = 1024; // is a correct value?
+    void *buffer = malloc(buffer_size);
+    Defer(free(buffer));
+    if (buffer == NULL)
+    {
+        fprintf(stderr, "[ERROR] Memory allocation failed!\n");
+        return EXIT_FAILURE;
+    }
+
+    asn_enc_rval_t enc_res = aper_encode_to_buffer(&asn_DEF_E2SM_KPM_EventTriggerDefinition, NULL, evTriggerDef, buffer, buffer_size);
+    ASN_STRUCT_FREE(asn_DEF_E2SM_KPM_EventTriggerDefinition, evTriggerDef);
+    if (enc_res.encoded == -1)
+    {
+        fprintf(stderr, "[ERROR] Failed to encode EventTriggerDefinition!\n");
+        return EXIT_FAILURE;
+    }
+
+    *encoded_buffer = malloc(enc_res.encoded);
+    if (*encoded_buffer == NULL)
+    {
+        fprintf(stderr, "[ERROR] Memory allocation for encoded_buffer failed!\n");
+        return EXIT_FAILURE;
+    }
+
+    memcpy(*encoded_buffer, buffer, enc_res.encoded);
+
+    return enc_res.encoded;
+}

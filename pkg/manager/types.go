@@ -9,11 +9,12 @@ import (
 
 // Vars used on subscription
 var (
-	HttpPort     = int64(8080)
-	RMRPort      = int64(4560)
-	KpmRanFuncId = int64(2)
-	seqId        = int64(1) // XappEventInstanceID
-	ranUeKpis    = make(map[string][]string)
+	HttpPort        = int64(8080)
+	RMRPort         = int64(4560)
+	KpmRanFuncId    = int64(2)
+	seqId           = int64(1) // XappEventInstanceID
+	ranUeKpis       = make(map[string][]string)
+	reportingPeriod = uint64(1000) // in ms
 )
 
 type UsapXapp struct {
