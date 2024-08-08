@@ -9,18 +9,21 @@ import "C"
 import (
 	"bytes"
 	"encoding/binary"
+	"fmt"
 	"unsafe"
 )
 
 // Encode Event Trigger Definition (only format 1 is available on KPM)
-func EncodeEventTriggerDefinitionFormat1(reportingPeriod uint64) []int64 {
-	var encodedBuffer *C.uint8_t
+func EncodeEventTriggerDefinitionFormat1(reportingPeriod uint64) ([]int64, error) {
+	encoded := C.encodeEventTriggerDefinitionFormat1(C.ulong(reportingPeriod))
+	defer C.free(unsafe.Pointer(&encoded))
 
-	bufferSize := C.encodeEventTriggerDefinitionFormat1(C.ulong(reportingPeriod), &encodedBuffer)
-	defer C.free(unsafe.Pointer(&bufferSize))
+	if encoded.size == 0 {
+		return nil, fmt.Errorf("failed to encode EventTriggerDefinition")
+	}
 
 	// convert C buffer to Go slice
-	goBuffer := C.GoBytes(unsafe.Pointer(encodedBuffer), C.int(bufferSize))
+	goBuffer := C.GoBytes(unsafe.Pointer(&encoded.buffer), C.int(encoded.size))
 
 	var eventTriggerFmt1 []int64
 	buffer := bytes.NewBuffer(goBuffer)
@@ -34,5 +37,5 @@ func EncodeEventTriggerDefinitionFormat1(reportingPeriod uint64) []int64 {
 		eventTriggerFmt1 = append(eventTriggerFmt1, val)
 	}
 
-	return eventTriggerFmt1
+	return eventTriggerFmt1, nil
 }

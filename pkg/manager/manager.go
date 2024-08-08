@@ -8,6 +8,7 @@ package manager
 import "C"
 import (
 	"encoding/json"
+	"log"
 	"net/http"
 	"os"
 	"strings"
@@ -94,7 +95,10 @@ func (app *UsapXapp) sendSubscription(e2NodeID string) {
 	// Create Subscription message and send it to RIC platform
 	xapp.Logger.Info("Sending subscription request for E2 Node: %s", e2NodeID)
 
-	eventTrigger := kpmmanager.EncodeEventTriggerDefinitionFormat1(reportingPeriod)
+	eventTrigger, err := kpmmanager.EncodeEventTriggerDefinitionFormat1(reportingPeriod)
+	if err != nil {
+		log.Fatal(err)
+	}
 
 	xapp.Logger.Debug("Event Trigger Def: %v", eventTrigger)
 
