@@ -20,14 +20,16 @@ func EncodeEventTriggerDefinitionFormat1(reportingPeriod uint64) ([]int64, error
 	if encoded.buffer == nil {
 		return nil, errors.New("failed to encode EventTriggerDefinitionFormat1")
 	}
+
+	// free C buffer
 	defer C.free(unsafe.Pointer(encoded.buffer))
 
-	eventTriggerFmt1 := make([]int64, encoded.size)
-
-	for _, v := range unsafe.Slice(encoded.buffer, encoded.size) {
-		eventTriggerFmt1 = append(eventTriggerFmt1, int64(v))
+	// Convert the buffer to Go slice
+	bufferSize := int(encoded.size)
+	eventTriggerFmt1 := make([]int64, bufferSize)
+	for idx, v := range unsafe.Slice(encoded.buffer, encoded.size) {
+		eventTriggerFmt1[idx] = int64(v)
 	}
-
 	return eventTriggerFmt1, nil
 }
 

@@ -19,7 +19,7 @@ class e2sm_kpm_packer(object):
 test = e2sm_kpm_packer()
 
 event_trigger_def = test.pack_event_trigger_def_fmt_1(
-    reportingPeriod=100000000)
+    reportingPeriod=10000)
 print(event_trigger_def)
 print(f"Encoded {len(event_trigger_def)} bytes")
 event_trigger_def = [event_trigger_def[i]
