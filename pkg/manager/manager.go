@@ -16,6 +16,7 @@ import (
 	"time"
 	"unsafe"
 
+	"gerrit.o-ran-sc.org/r/ric-plt/xapp-frame/pkg/clientmodel"
 	"gerrit.o-ran-sc.org/r/ric-plt/xapp-frame/pkg/xapp"
 	"github.com/muriloAvlis/USAP/pkg/kpmpacker"
 )
@@ -95,17 +96,21 @@ func (app *UsapXapp) sendSubscription(e2NodeID string) {
 	// Create Subscription message and send it to RIC platform
 	xapp.Logger.Info("Sending subscription request for E2 Node: %s", e2NodeID)
 
-	eventTrigger, err := kpmpacker.EncodeEventTriggerDefinitionFormat1(reportingPeriod)
+	// Encode eventTriggerDefinitionFormat1 using C encoder
+	evTriggerDefFmt1, err := kpmpacker.EncodeEventTriggerDefinitionFormat1(reportingPeriod)
 	if err != nil {
-		log.Fatal(err)
+		log.Fatal(err) // critical process
 	}
 
-	xapp.Logger.Debug("Event Trigger Def: %v", eventTrigger)
+	xapp.Logger.Debug("Encoded eventTriggerDefinitionFormat1: %v", evTriggerDefFmt1)
 
-	// // Set subscription details
-	// subsDetail := clientmodel.SubscriptionDetail{
-	// 	XappEventInstanceID: &seqId,
-	// }
+	// Set subscription details
+	subsDetail := clientmodel.SubscriptionDetail{
+		XappEventInstanceID: &seqId,
+		EventTriggers:       evTriggerDefFmt1,
+	}
+
+	xapp.Logger.Debug("Subscription detail to E2Node %s: %v", e2NodeID, subsDetail)
 
 	// Set subscription parameters
 	// subscriptionParams := clientmodel.SubscriptionParams{
