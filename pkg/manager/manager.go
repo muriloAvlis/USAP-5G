@@ -17,7 +17,7 @@ import (
 	"unsafe"
 
 	"gerrit.o-ran-sc.org/r/ric-plt/xapp-frame/pkg/xapp"
-	kpmmanager "github.com/muriloAvlis/USAP/pkg/kpmManager"
+	"github.com/muriloAvlis/USAP/pkg/kpmpacker"
 )
 
 func (app *UsapXapp) Consume(msg *xapp.RMRParams) (err error) {
@@ -95,7 +95,7 @@ func (app *UsapXapp) sendSubscription(e2NodeID string) {
 	// Create Subscription message and send it to RIC platform
 	xapp.Logger.Info("Sending subscription request for E2 Node: %s", e2NodeID)
 
-	eventTrigger, err := kpmmanager.EncodeEventTriggerDefinitionFormat1(reportingPeriod)
+	eventTrigger, err := kpmpacker.EncodeEventTriggerDefinitionFormat1(reportingPeriod)
 	if err != nil {
 		log.Fatal(err)
 	}

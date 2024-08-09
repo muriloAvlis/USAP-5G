@@ -56,16 +56,16 @@
 #include "defer.h"
 
 
-typedef struct eventTriggerFmt
+typedef struct test
 {
     u_int8_t * buffer;
     size_t size;
-} eventTriggerFmt_t;
+} test_t;
 
-eventTriggerFmt_t encodeEventTriggerDefinitionFormat1(u_int64_t reportingPeriod)
+test_t test(u_int64_t reportingPeriod)
 {Deferral
     // Initialize the result
-    eventTriggerFmt_t encoded = {NULL, 0};
+    test_t encoded = {NULL, 0};
 
     // E2SM_KPM_EventTriggerDefinition allocation
     E2SM_KPM_EventTriggerDefinition_t *eventTriggerDef = (E2SM_KPM_EventTriggerDefinition_t *)calloc(1, sizeof(E2SM_KPM_EventTriggerDefinition_t));
@@ -121,13 +121,14 @@ eventTriggerFmt_t encodeEventTriggerDefinitionFormat1(u_int64_t reportingPeriod)
     return encoded;
 }
 
-int main() {Deferral
-    eventTriggerFmt_t eventTriggerFmt1 = encodeEventTriggerDefinitionFormat1(100000000);
-    printf("%zu bytes encodeds\n", eventTriggerFmt1.size);
-    for (size_t i = 0; i < eventTriggerFmt1.size; i++) {
-        printf("%d ", eventTriggerFmt1.buffer[i]);
-    }
-    printf("\n");
+// Don't compile with this
+// int main() {Deferral
+//     test_t eventTriggerFmt1 = test(1000);
+//     printf("%zu bytes encoded\n", eventTriggerFmt1.size);
+//     for (size_t i = 0; i < eventTriggerFmt1.size; i++) {
+//         printf("%d ", eventTriggerFmt1.buffer[i]);
+//     }
+//     printf("\n");
 
-    return 0;
-}
+//     return 0;
+// }

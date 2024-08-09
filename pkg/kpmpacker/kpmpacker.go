@@ -1,4 +1,4 @@
-package kpmmanager
+package kpmpacker
 
 /*
 #include <e2sm/wrapper.h>
@@ -24,12 +24,9 @@ func EncodeEventTriggerDefinitionFormat1(reportingPeriod uint64) ([]int64, error
 
 	// Convert the buffer to Go slice
 	bufferSize := int(encoded.size)
-	buffer := C.GoBytes(unsafe.Pointer(encoded.buffer), C.int(bufferSize))
-
 	eventTriggerFmt1 := make([]int64, bufferSize)
-
-	for i := 0; i < bufferSize; i++ {
-		eventTriggerFmt1[i] = int64(buffer[i])
+	for idx, v := range unsafe.Slice(encoded.buffer, encoded.size) {
+		eventTriggerFmt1[idx] = int64(v)
 	}
 
 	return eventTriggerFmt1, nil

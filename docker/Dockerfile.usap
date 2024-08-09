@@ -15,7 +15,6 @@ RUN apt-get update && \
 COPY ./dependencies ./dependencies
 RUN dpkg -i ./dependencies/rmr-dev_4.9.4_amd64.deb
 
-RUN ldconfig
 
 ## Intall libe2sm
 COPY CMakeLists.txt CMakeLists.txt
@@ -25,6 +24,8 @@ RUN mkdir -p build && \
     cmake .. && \
     make -j8 && \
     make install
+
+RUN ldconfig
 
 COPY go.mod go.sum ./
 RUN go mod download && go mod verify
