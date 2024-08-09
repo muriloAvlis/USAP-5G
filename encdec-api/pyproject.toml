@@ -10,7 +10,6 @@ packages = [{include = "app"}]
 python = "^3.10"
 asn1tools = "^0.167.0"
 flask = "^3.0.3"
-pycrate = "^0.7.7"
 
 [tool.poetry.scripts]
 start = "app.app:run"

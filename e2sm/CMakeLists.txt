@@ -14,6 +14,8 @@ target_include_directories(e2smwrapper PUBLIC
 
 ## define PDU macro
 target_compile_definitions(e2smwrapper PRIVATE -DPDU)
+## link libm
+target_link_libraries(e2smwrapper PUBLIC m)
 
 install(TARGETS e2smwrapper ARCHIVE DESTINATION lib)
 install(FILES wrapper.h ${KPM_HEADERS} ${INCLUDE_HEADERS} DESTINATION include/e2sm)
