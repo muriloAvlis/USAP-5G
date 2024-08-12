@@ -38,8 +38,6 @@ func EncodeActionDefinitionFormat4(metricNames []string, granularityPeriod uint6
 	// Convert []string to [][]byte
 	byteSlices := make([][]byte, len(metricNames))
 	for i, name := range metricNames {
-		fmt.Printf("Go Metric Name: %v\n", name)
-		fmt.Printf("Go Metric Names length: %v\n", len(name))
 		byteSlices[i] = []byte(name)
 	}
 
