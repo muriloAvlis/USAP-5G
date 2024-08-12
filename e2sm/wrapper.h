@@ -91,6 +91,6 @@ actFmtType_t buildRanCellUeKpi(const char *ranFuncDefinition);
 encodedData_t encodeEventTriggerDefinitionFormat1(u_int64_t reportingPeriod);
 
 // Encode event Action Definition 4
-encodedData_t encodeActionDefinitionFormat4(unsigned char **metricNames, size_t numOfMetrics, u_int64_t granularityPeriod);
+encodedData_t encodeActionDefinitionFormat4(char **metricNames, size_t numOfMetrics, u_int64_t granularityPeriod);
 
 #endif //WRAPPER_H

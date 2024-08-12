@@ -190,7 +190,7 @@ encodedData_t encodeEventTriggerDefinitionFormat1(const u_int64_t reportingPerio
     return encoded;
 }
 
-encodedData_t encodeActionDefinitionFormat4(unsigned char **metricNames, size_t numOfMetrics, u_int64_t granularityPeriod)
+encodedData_t encodeActionDefinitionFormat4(char **metricNames, size_t numOfMetrics, u_int64_t granularityPeriod)
 {Deferral
     // Initialize the result
     encodedData_t encoded = {NULL, 0};
@@ -223,7 +223,6 @@ encodedData_t encodeActionDefinitionFormat4(unsigned char **metricNames, size_t 
         fprintf(stderr, "[ERROR] Memory allocation failure for MatchingUeCondPerSubItem_t array!\n");
         return encoded;
     }
-    Defer(free(actDefFmt4->matchingUeCondList.list.array));
     actDefFmt4->matchingUeCondList.list.count = 0;
     actDefFmt4->matchingUeCondList.list.size = numOfTestsCond;
 
@@ -234,7 +233,6 @@ encodedData_t encodeActionDefinitionFormat4(unsigned char **metricNames, size_t 
             fprintf(stderr, "[ERROR] Memory allocation failure for MatchingUeCondPerSubItem_t at index %zu!\n", i);
             return encoded;
         }
-        Defer(free(actDefFmt4->matchingUeCondList.list.array[i]));
 
         // alloc memory for test conditions
         //// testValue
@@ -243,14 +241,12 @@ encodedData_t encodeActionDefinitionFormat4(unsigned char **metricNames, size_t 
             fprintf(stderr, "[ERROR] Memory allocation failure for TestCond_Value_t at index %zu!\n", i);
             return encoded;
         }
-        Defer(free(actDefFmt4->matchingUeCondList.list.array[i]->testCondInfo.testValue));
         //// Test Expression
         actDefFmt4->matchingUeCondList.list.array[i]->testCondInfo.testExpr = (long *)malloc(sizeof(long));
         if (actDefFmt4->matchingUeCondList.list.array[i]->testCondInfo.testExpr == NULL) {
             fprintf(stderr, "[ERROR] Memory allocation failure for testExpr at index %zu!\n", i);
             return encoded;
         }
-        Defer(free(actDefFmt4->matchingUeCondList.list.array[i]->testCondInfo.testExpr));
 
         // Set conditions
         *(actDefFmt4->matchingUeCondList.list.array[i]->testCondInfo.testExpr) = TestCond_Expression_lessthan;
@@ -269,9 +265,11 @@ encodedData_t encodeActionDefinitionFormat4(unsigned char **metricNames, size_t 
         fprintf(stderr, "[ERROR] Memory allocation failure for MeasurementInfoItem_t array!\n");
         return encoded;
     }
-    Defer(free(actDefFmt4->subscriptionInfo.measInfoList.list.array));
     actDefFmt4->subscriptionInfo.measInfoList.list.count = 0;
     actDefFmt4->subscriptionInfo.measInfoList.list.size = numOfMetrics;
+
+    // set number of labels by meas_name
+    size_t numOfLabels = 1;
 
     for (size_t i = 0; i < numOfMetrics; i++)
     {
@@ -281,35 +279,30 @@ encodedData_t encodeActionDefinitionFormat4(unsigned char **metricNames, size_t 
             fprintf(stderr, "[ERROR] Memory allocation failure for MatchingUeCondPerSubItem_t at index %zu!\n", i);
             return encoded;
         }
-        Defer(free(actDefFmt4->subscriptionInfo.measInfoList.list.array[i]));
 
         // Set meas name
         actDefFmt4->subscriptionInfo.measInfoList.list.array[i]->measType.present = MeasurementType_PR_measName;
-        size_t measNameSize = strlen((const char*)metricNames[i]);
-        actDefFmt4->subscriptionInfo.measInfoList.list.array[i]->measType.choice.measName.buf = (uint8_t *)malloc((measNameSize) * sizeof(uint8_t)); // +1 for null terminator
+        size_t measNameSize = strlen(metricNames[i]);
+        actDefFmt4->subscriptionInfo.measInfoList.list.array[i]->measType.choice.measName.buf = (uint8_t *)malloc(measNameSize * sizeof(uint8_t));
         if(actDefFmt4->subscriptionInfo.measInfoList.list.array[i]->measType.choice.measName.buf == NULL) {
             fprintf(stderr, "[ERROR] Meas name buffer memory allocation failure!\n");
             return encoded;
         }
-        Defer(free(actDefFmt4->subscriptionInfo.measInfoList.list.array[i]->measType.choice.measName.buf));
         memcpy(actDefFmt4->subscriptionInfo.measInfoList.list.array[i]->measType.choice.measName.buf, metricNames[i], measNameSize);
         actDefFmt4->subscriptionInfo.measInfoList.list.array[i]->measType.choice.measName.size = measNameSize;
 
-        // set label info lst
-        size_t n_of_labels = 1;
         //// alloc memory for labelInfoLst
-        actDefFmt4->subscriptionInfo.measInfoList.list.array[i]->labelInfoList.list.array = (LabelInfoItem_t **)calloc(n_of_labels, sizeof(LabelInfoItem_t));
+        actDefFmt4->subscriptionInfo.measInfoList.list.array[i]->labelInfoList.list.array = (LabelInfoItem_t **)calloc(numOfLabels, sizeof(LabelInfoItem_t *));
         if (actDefFmt4->subscriptionInfo.measInfoList.list.array[i]->labelInfoList.list.array == NULL)
         {
             fprintf(stderr, "[ERROR] Memory allocation failure for LabelInfoItem_t at index %zu!\n", i);
             return encoded;
         }
-        Defer(free(actDefFmt4->subscriptionInfo.measInfoList.list.array[i]->labelInfoList.list.array));
 
         actDefFmt4->subscriptionInfo.measInfoList.list.array[i]->labelInfoList.list.count = 0;
-        actDefFmt4->subscriptionInfo.measInfoList.list.array[i]->labelInfoList.list.size = n_of_labels;
+        actDefFmt4->subscriptionInfo.measInfoList.list.array[i]->labelInfoList.list.size = numOfLabels;
 
-        for (size_t j = 0; j < n_of_labels; j++)
+        for (size_t j = 0; j < numOfLabels; j++)
         {
             // Allocate memory for LabelInfoItem
             actDefFmt4->subscriptionInfo.measInfoList.list.array[i]->labelInfoList.list.array[j] = (LabelInfoItem_t *)calloc(1, sizeof(LabelInfoItem_t));
@@ -317,7 +310,6 @@ encodedData_t encodeActionDefinitionFormat4(unsigned char **metricNames, size_t 
                 fprintf(stderr, "[ERROR] Memory allocation failure for LabelInfoItem_t at index %zu, label index %zu!\n", i, j);
                 return encoded;
             }
-            Defer(free(actDefFmt4->subscriptionInfo.measInfoList.list.array[i]->labelInfoList.list.array[j]));
 
             // Initialize labelInfoItem
             actDefFmt4->subscriptionInfo.measInfoList.list.array[i]->labelInfoList.list.array[j]->measLabel.noLabel = (long *)calloc(1, sizeof(long));
@@ -325,7 +317,6 @@ encodedData_t encodeActionDefinitionFormat4(unsigned char **metricNames, size_t 
                 fprintf(stderr, "[ERROR] Memory allocation failure for noLabel at index %zu, label index %zu!\n", i, j);
                 return encoded;
             }
-            Defer(free(actDefFmt4->subscriptionInfo.measInfoList.list.array[i]->labelInfoList.list.array[j]->measLabel.noLabel));
 
             *(actDefFmt4->subscriptionInfo.measInfoList.list.array[i]->labelInfoList.list.array[j]->measLabel.noLabel) = MeasurementLabel__noLabel_true;
         }
