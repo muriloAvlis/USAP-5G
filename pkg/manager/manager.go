@@ -162,6 +162,7 @@ func (app *UsapXapp) sendSubscription(e2NodeID string) {
 	xapp.Logger.Info("Subscription completed successfully for E2 Node %s, subscription ID: %s", e2NodeID, *resp.SubscriptionID)
 }
 
+// TODO
 func (app *UsapXapp) handleRicIndication(msg *xapp.RMRParams) {
 	xapp.Logger.Debug("Everything Already until here :) %v", msg.Meid)
 }
@@ -170,8 +171,7 @@ func (app *UsapXapp) controlLoop() {
 	// Handle receiving message based on message type
 	for {
 		// consume message from RMR chan
-		xapp.Logger.Debug("test 1,2,3...")
-		msg := <-app.RMR
+		msg := <-app.RMR // wait here until receive a message
 		xapp.Logger.Debug("Received message type: %d", msg.Mtype)
 		switch msg.Mtype {
 		case xapp.RIC_INDICATION:
