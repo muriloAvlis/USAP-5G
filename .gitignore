@@ -7,3 +7,4 @@ build
 .idea
 .venv
 __pycache__
+e2sm/test.*
