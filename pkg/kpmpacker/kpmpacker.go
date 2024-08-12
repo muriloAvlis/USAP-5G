@@ -34,7 +34,6 @@ func EncodeEventTriggerDefinitionFormat1(reportingPeriod uint64) ([]int64, error
 }
 
 // O-RAN E2SM_KPM 7.4.1: Common Condition-based, UE-level Measurement
-// EncodeActionDefinitionFormat4 chama a função C e converte os resultados
 func EncodeActionDefinitionFormat4(metricNames []string, granularityPeriod uint64) ([]int64, error) {
 	// Convert []string to [][]byte
 	byteSlices := make([][]byte, len(metricNames))
@@ -56,6 +55,9 @@ func EncodeActionDefinitionFormat4(metricNames []string, granularityPeriod uint6
 
 	// Convert array of pointers to char ** array
 	cMetricNamesPtr := (**C.uchar)(unsafe.Pointer(&cMetricNames[0]))
+
+	fmt.Printf("Testesssssssss: %v\n", cMetricNames)
+	fmt.Printf("Testesssssssss: %v\n", cNumOfMetrics)
 
 	// Call C encoder
 	encoded := C.encodeActionDefinitionFormat4(
