@@ -170,6 +170,7 @@ func (app *UsapXapp) controlLoop() {
 	// Handle receiving message based on message type
 	for {
 		// consume message from RMR chan
+		xapp.Logger.Debug("test 1,2,3...")
 		msg := <-app.RMR
 		xapp.Logger.Debug("Received message type: %d", msg.Mtype)
 		switch msg.Mtype {

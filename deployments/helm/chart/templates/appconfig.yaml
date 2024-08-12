@@ -19,7 +19,7 @@ kind: ConfigMap
 metadata:
   name: {{ include "ricxapp.configmapname" . }}-appconfig
 data:
-  routes.rt: |
+  uta_rtg.rt: |
     newrt|start
         rte|1080|service-ricplt-e2mgr-rmr.ricplt:3801           # RIC_SCTP_CONNECTION_FAILURE
         rte|1090|service-ricplt-e2term-rmr-alpha.ricplt:38000   # RIC_SCTP_CLEAR_ALL
