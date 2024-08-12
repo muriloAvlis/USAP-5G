@@ -56,8 +56,8 @@ func EncodeActionDefinitionFormat4(metricNames []string, granularityPeriod uint6
 	// Convert array of pointers to char ** array
 	cMetricNamesPtr := (**C.uchar)(unsafe.Pointer(&cMetricNames[0]))
 
-	fmt.Printf("Go Metric Names: %v", metricNames)
-	fmt.Printf("Go Metric Names length: %v", len(metricNames))
+	fmt.Printf("Go Metric Names: %v\n", metricNames)
+	fmt.Printf("Go Metric Names length: %v\n", len(metricNames))
 	fmt.Printf("C Metric Names: %v\n", cMetricNames)
 	fmt.Printf("C Metric names length: %v\n", cNumOfMetrics)
 
