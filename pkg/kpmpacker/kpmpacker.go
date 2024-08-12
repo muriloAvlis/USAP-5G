@@ -57,8 +57,9 @@ func EncodeActionDefinitionFormat4(metricNames []string, granularityPeriod uint6
 	cMetricNamesPtr := (**C.uchar)(unsafe.Pointer(&cMetricNames[0]))
 
 	fmt.Printf("Go Metric Names: %v", metricNames)
-	fmt.Printf("Testesssssssss: %v\n", cMetricNames)
-	fmt.Printf("Testesssssssss: %v\n", cNumOfMetrics)
+	fmt.Printf("Go Metric Names length: %v", len(metricNames))
+	fmt.Printf("C Metric Names: %v\n", cMetricNames)
+	fmt.Printf("C Metric names length: %v\n", cNumOfMetrics)
 
 	// Call C encoder
 	encoded := C.encodeActionDefinitionFormat4(
