@@ -3,7 +3,6 @@ package manager
 import (
 	"gerrit.o-ran-sc.org/r/ric-plt/xapp-frame/pkg/clientmodel"
 	"gerrit.o-ran-sc.org/r/ric-plt/xapp-frame/pkg/xapp"
-	influxdb2 "github.com/influxdata/influxdb-client-go"
 	"github.com/muriloAvlis/USAP/pkg/coredb"
 )
 
@@ -12,7 +11,7 @@ var (
 	HttpPort             = int64(8080)
 	RMRPort              = int64(4560)
 	KpmRanFuncId         = int64(2)
-	seqId                = int64(1)                  // XappEventInstanceID
+	seqId                = int64(1234)               // XappEventInstanceID
 	ranUeKpis            = make(map[string][]string) // map to [E2NodeID]:[RF_Def_Fmt]
 	reportingPeriod      = uint64(10000)             // in ms
 	actionId             = int64(1)                  // What is this??
@@ -25,8 +24,7 @@ var (
 type UsapXapp struct {
 	CoreDBConfig coredb.Config
 	Config
-	RMR      chan *xapp.RMRParams
-	dbClient influxdb2.Client
+	RMR chan *xapp.RMRParams
 }
 
 type Config struct {

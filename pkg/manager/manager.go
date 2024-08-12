@@ -24,6 +24,11 @@ import (
 // Listen RIC messages and send them to the RMR channel
 func (app *UsapXapp) Consume(msg *xapp.RMRParams) (err error) {
 	id := xapp.Rmr.GetRicMessageName(msg.Mtype)
+	defer func() {
+		xapp.Rmr.Free(msg.Mbuf)
+		msg.Mbuf = nil
+	}()
+
 	xapp.Logger.Info("Received RIC message: name=%s | e2NodeID=%s | subID=%d | txID=%s | len=%d",
 		id,
 		msg.Meid.RanName,
@@ -176,14 +181,23 @@ func (app *UsapXapp) controlLoop() {
 		switch msg.Mtype {
 		case xapp.RIC_INDICATION:
 			go app.handleRicIndication(msg) // TODO: Is it necessary to control this routine?
+		case xapp.RIC_HEALTH_CHECK_REQ:
+			xapp.Logger.Info("Received health check request")
+		case xapp.A1_POLICY_REQ:
+			xapp.Logger.Info("Received policy request")
 		default:
 			xapp.Logger.Error("Unknow message type %d, discarding...", msg.Mtype)
 		}
 	}
 }
 
+// TODO
+func (u *UsapXapp) ConfigChangeHandler(f string) {
+	xapp.Logger.Info("Config file changed, do something meaningful!")
+}
+
 // xApp callback (start here)
-func (app *UsapXapp) xAppCB(d interface{}) {
+func (app *UsapXapp) xAppStartCB(d interface{}) {
 	xapp.Logger.Info("Starting application callback...")
 
 	nodeBs := app.getNbList()
@@ -268,7 +282,12 @@ func (app *UsapXapp) xAppCB(d interface{}) {
 func (app *UsapXapp) Run(wg *sync.WaitGroup) {
 	defer wg.Done()
 
-	xapp.SetReadyCB(app.xAppCB, true)
+	xapp.SetReadyCB(app.xAppStartCB, true)
+	xapp.AddConfigChangeListener(app.ConfigChangeHandler)
 
-	xapp.Run(app)
+	// reading configuration from config file
+	waitForSdl := xapp.Config.GetBool("db.waitForSdl")
+
+	// start xapp
+	xapp.RunWithParams(app, waitForSdl)
 }
