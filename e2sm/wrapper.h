@@ -15,6 +15,9 @@
 #include <E2SM-KPM-ActionDefinition-Format3.h>
 #include <E2SM-KPM-ActionDefinition-Format4.h>
 #include <E2SM-KPM-ActionDefinition-Format5.h>
+// Ue cond
+#include <MatchingUeCondPerSubItem.h>
+#include <TestCondInfo.h>
 // Measurements
 #include <MeasurementInfoList.h>
 #include <GranularityPeriod.h>
@@ -62,29 +65,32 @@
 #include "asn_application.h"
 #include "defer.h"
 
-typedef struct actDefFmt
+typedef struct actFmtType
 {
-    char ** act_def_format1; // E2 Node Measurement
-    char ** act_def_format2; // E2 Node Measurement for a single UE
-    char ** act_def_format3; // Condition-based, UE-level E2 Node Measuremen
-    char ** act_def_format4; // Common Condition-based, UE-level Measurement
-    char ** act_def_format5; // E2 Node Measurement for multiple UEs
-    int act_def_format1_size;
-    int act_def_format2_size;
-    int act_def_format3_size;
-    int act_def_format4_size;
-    int act_def_format5_size;
-} actDefFmt_t;
+    char ** act_fmt_type1; // E2 Node Measurement
+    char ** act_fmt_type2; // E2 Node Measurement for a single UE
+    char ** act_fmt_type3; // Condition-based, UE-level E2 Node Measuremen
+    char ** act_fmt_type4; // Common Condition-based, UE-level Measurement
+    char ** act_fmt_type5; // E2 Node Measurement for multiple UEs
+    int act_fmt_type1_size;
+    int act_fmt_type2_size;
+    int act_fmt_type3_size;
+    int act_fmt_type4_size;
+    int act_fmt_type5_size;
+} actFmtType_t;
 
-typedef struct eventTriggerFmt
+typedef struct encodedData
 {
     u_int64_t * buffer;
     int size;
-} eventTriggerFmt_t;
+} encodedData_t;
 
-actDefFmt_t buildRanCellUeKpi(const char *ranFuncDefinition);
+actFmtType_t buildRanCellUeKpi(const char *ranFuncDefinition);
 
 // Encode Event Trigger Definition (only format 1 is available on KPM)
-eventTriggerFmt_t encodeEventTriggerDefinitionFormat1(u_int64_t reportingPeriod);
+encodedData_t encodeEventTriggerDefinitionFormat1(u_int64_t reportingPeriod);
+
+// Encode event Action Definition 4
+encodedData_t encodeActionDefinitionFormat4(unsigned char **metricNames, size_t numOfMetrics, u_int64_t granularityPeriod);
 
 #endif //WRAPPER_H

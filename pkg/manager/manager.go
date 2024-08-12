@@ -21,6 +21,7 @@ import (
 	"github.com/muriloAvlis/USAP/pkg/kpmpacker"
 )
 
+// Listen RIC messages and send them to the RMR channel
 func (app *UsapXapp) Consume(msg *xapp.RMRParams) (err error) {
 	id := xapp.Rmr.GetRicMessageName(msg.Mtype)
 	xapp.Logger.Info("Received RIC message: name=%s | e2NodeID=%s | subID=%d | txID=%s | len=%d",
@@ -101,33 +102,86 @@ func (app *UsapXapp) sendSubscription(e2NodeID string) {
 	if err != nil {
 		log.Fatal(err) // critical process
 	}
-
 	xapp.Logger.Debug("Encoded eventTriggerDefinitionFormat1: %v", evTriggerDefFmt1)
+
+	// Encode actionDefinitionFormat4 using C encoder
+	actionDefinitionFormat4, err := kpmpacker.EncodeActionDefinitionFormat4(ranUeKpis[e2NodeID], granularityPeriod)
+	if err != nil {
+		log.Fatal(err) // critical process
+	}
+
+	xapp.Logger.Debug("Encoded actionDefinitionFormat4: %v", actionDefinitionFormat4)
+
+	// Set actionToBeSetup
+	actionToBeSetup := &clientmodel.ActionToBeSetup{
+		ActionID:         &actionId,
+		ActionDefinition: actionDefinitionFormat4,
+		ActionType:       &actionType,
+		SubsequentAction: &clientmodel.SubsequentAction{
+			SubsequentActionType: &subsequentActionType,
+			TimeToWait:           &timeToWait,
+		},
+	}
 
 	// Set subscription details
 	subsDetail := clientmodel.SubscriptionDetail{
-		XappEventInstanceID: &seqId,
+		ActionToBeSetupList: clientmodel.ActionsToBeSetup{
+			actionToBeSetup,
+		},
 		EventTriggers:       evTriggerDefFmt1,
+		XappEventInstanceID: &seqId,
 	}
 
-	xapp.Logger.Debug("Subscription detail to E2Node %s: %v", e2NodeID, subsDetail)
+	xapp.Logger.Debug("Subscription detail to E2 Node %s: %v", e2NodeID, subsDetail)
 
 	// Set subscription parameters
-	// subscriptionParams := clientmodel.SubscriptionParams{
-	// 	ClientEndpoint: &app.ClientEndpoint,
-	// 	Meid:           &e2NodeID,
-	// 	RANFunctionID:  &KpmRanFuncId,
-	// 	SubscriptionDetails: clientmodel.SubscriptionDetailsList{
-	// 		&clientmodel.SubscriptionDetail{
-	// 			EventTriggers:       clientmodel.EventTriggerDefinition{},
-	// 			XappEventInstanceID: &seqId,
-	// 			ActionToBeSetupList: encode_actionsToBeSetup(e2NodeID),
-	// 		},
-	// 	},
-	// }
+	subscriptionParams := clientmodel.SubscriptionParams{
+		ClientEndpoint: &app.ClientEndpoint,
+		Meid:           &e2NodeID,
+		RANFunctionID:  &KpmRanFuncId,
+		SubscriptionDetails: clientmodel.SubscriptionDetailsList{
+			&subsDetail,
+		},
+	}
+
+	// indent subs parameters (just to print beautifully)
+	b, err := json.MarshalIndent(subscriptionParams, "", " ")
+	if err != nil {
+		xapp.Logger.Error("Json marshaling failed: %v", err)
+	}
+
+	xapp.Logger.Info("Subscription parameters to E2 Node %s: %s", e2NodeID, string(b))
+
+	// send subscription
+	resp, err := xapp.Subscription.Subscribe(&subscriptionParams)
+	if err != nil {
+		xapp.Logger.Error("Subscription to E2 Node (%s) failed with error: %s", e2NodeID, err)
+		return
+	}
+
+	xapp.Logger.Info("Subscription completed successfully for E2 Node %s, subscription ID: %s", e2NodeID, *resp.SubscriptionID)
 }
 
-// Application callback
+func (app *UsapXapp) handleRicIndication(msg *xapp.RMRParams) {
+	xapp.Logger.Debug("Everything Already until here :) %v", msg.Meid)
+}
+
+func (app *UsapXapp) controlLoop() {
+	// Handle receiving message based on message type
+	for {
+		// consume message from RMR chan
+		msg := <-app.RMR
+		xapp.Logger.Debug("Received message type: %d", msg.Mtype)
+		switch msg.Mtype {
+		case xapp.RIC_INDICATION:
+			go app.handleRicIndication(msg) // TODO: Is it necessary to control this routine?
+		default:
+			xapp.Logger.Error("Unknow message type %d, discarding...", msg.Mtype)
+		}
+	}
+}
+
+// xApp callback (start here)
 func (app *UsapXapp) xAppCB(d interface{}) {
 	xapp.Logger.Info("Starting application callback...")
 
@@ -168,21 +222,19 @@ func (app *UsapXapp) xAppCB(d interface{}) {
 				continue
 			}
 
-			// get KPM RF definition
+			// decode KPM RF definition format types
 			RfDefCString := C.CString(e2Resp.Gnb.RanFunctions[kpm_idx].RanFunctionDefinition)
-			defer C.free(unsafe.Pointer(RfDefCString))     // free buffer
-			rfActDefs := C.buildRanCellUeKpi(RfDefCString) // get RAN Function definitions from C wrapper
+			defer C.free(unsafe.Pointer(RfDefCString))         // free buffer
+			rfDefFmtTypes := C.buildRanCellUeKpi(RfDefCString) // get RAN Function definitions from C wrapper
 
-			// For E2SM-KPM Action Definition Format 4
-			rfActDef4 := make([]string, rfActDefs.act_def_format4_size)
+			// For E2SM-KPM report style 4
+			rfDefFmtType4 := make([]string, rfDefFmtTypes.act_fmt_type4_size)
 
-			for _, v := range unsafe.Slice(rfActDefs.act_def_format4, rfActDefs.act_def_format4_size) {
-				rfActDef4 = append(rfActDef4, C.GoString(v))
+			for _, v := range unsafe.Slice(rfDefFmtTypes.act_fmt_type4, rfDefFmtTypes.act_fmt_type4_size) {
+				rfDefFmtType4 = append(rfDefFmtType4, C.GoString(v))
 			}
 
-			ranUeKpis[nb.GetInventoryName()] = rfActDef4
-
-			xapp.Logger.Info("Available UE KPIs: %v", ranUeKpis)
+			ranUeKpis[nb.GetInventoryName()] = rfDefFmtType4
 
 			// TODO: prepare variable to receive cell KPIs
 
@@ -196,14 +248,19 @@ func (app *UsapXapp) xAppCB(d interface{}) {
 				xapp.Logger.Debug("xApp registration is not done yet, sleep 5s and check again")
 			}
 
+			// print RAN UEs Kpis available by E2 Node
+			xapp.Logger.Debug("Available UE KPIs on E2 Node %s: %v", nb.GetInventoryName(), ranUeKpis[nb.GetInventoryName()])
+
 			// send subscription request
 			app.sendSubscription(nb.GetInventoryName())
+
+			// run controlLoop to receive RIC indication messages
+			go app.controlLoop() // TODO: Is it necessary to control this routine?
 
 		} else { // disconnected nodeB
 			xapp.Logger.Warn("NodeB %s is disconnected!", nb.GetInventoryName())
 		}
 	}
-
 }
 
 // Application Starting

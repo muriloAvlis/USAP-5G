@@ -9,12 +9,17 @@ import (
 
 // Vars used on subscription
 var (
-	HttpPort        = int64(8080)
-	RMRPort         = int64(4560)
-	KpmRanFuncId    = int64(2)
-	seqId           = int64(1) // XappEventInstanceID
-	ranUeKpis       = make(map[string][]string)
-	reportingPeriod = uint64(10000) // in ms
+	HttpPort             = int64(8080)
+	RMRPort              = int64(4560)
+	KpmRanFuncId         = int64(2)
+	seqId                = int64(1)                  // XappEventInstanceID
+	ranUeKpis            = make(map[string][]string) // map to [E2NodeID]:[RF_Def_Fmt]
+	reportingPeriod      = uint64(10000)             // in ms
+	actionId             = int64(1)                  // What is this??
+	granularityPeriod    = uint64(1000)
+	actionType           = "report"
+	subsequentActionType = "continue"
+	timeToWait           = "w10ms"
 )
 
 type UsapXapp struct {

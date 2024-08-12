@@ -33,11 +33,62 @@ func EncodeEventTriggerDefinitionFormat1(reportingPeriod uint64) ([]int64, error
 	return eventTriggerFmt1, nil
 }
 
+// EncodeActionDefinitionFormat4 chama a função C e converte os resultados
+func EncodeActionDefinitionFormat4(metricNames []string, granularityPeriod uint64) ([]int64, error) {
+	// Convert []string to [][]byte
+	byteSlices := make([][]byte, len(metricNames))
+	for i, name := range metricNames {
+		byteSlices[i] = []byte(name)
+	}
+
+	numOfMetrics := len(byteSlices)
+
+	// Create a char array to metricNames
+	cMetricNames := make([]*C.uchar, numOfMetrics)
+	for i := 0; i < numOfMetrics; i++ {
+		cMetricNames[i] = (*C.uchar)(C.CBytes(byteSlices[i]))
+		defer C.free(unsafe.Pointer(cMetricNames[i]))
+	}
+
+	// Convert n_of_metrics to size_t
+	cNumOfMetrics := C.size_t(numOfMetrics)
+
+	// Convert array of pointers to char ** array
+	cMetricNamesPtr := (**C.uchar)(unsafe.Pointer(&cMetricNames[0]))
+
+	// Call C encoder
+	encoded := C.encodeActionDefinitionFormat4(
+		cMetricNamesPtr,
+		cNumOfMetrics,
+		C.uint64_t(granularityPeriod),
+	)
+
+	// Check encode buffer
+	if encoded.buffer == nil {
+		return nil, fmt.Errorf("failed to encode ActionDefinitionFormat4")
+	}
+	defer C.free(unsafe.Pointer(encoded.buffer))
+
+	// Convert encoded buffer to Go []int64
+	// Convert the buffer to Go slice
+	bufferSize := int(encoded.size)
+	actionDefFmt4 := make([]int64, bufferSize)
+	for idx, v := range unsafe.Slice(encoded.buffer, encoded.size) {
+		actionDefFmt4[idx] = int64(v)
+	}
+	return actionDefFmt4, nil
+}
+
 func main() {
-	res, err := EncodeEventTriggerDefinitionFormat1(10000)
+	metricNames := []string{"Metric1"}
+
+	encodedData, err := EncodeActionDefinitionFormat4(metricNames, 1000)
+
 	if err != nil {
 		log.Fatal(err)
 	}
 
-	fmt.Println(res)
+	// Exiba os resultados
+	fmt.Printf("Encoded data size: %d\n", len(encodedData))
+	fmt.Printf("Encoded data: %v\n", encodedData)
 }
