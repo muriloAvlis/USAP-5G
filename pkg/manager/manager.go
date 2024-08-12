@@ -150,7 +150,7 @@ func (app *UsapXapp) sendSubscription(e2NodeID string) {
 		xapp.Logger.Error("Json marshaling failed: %v", err)
 	}
 
-	xapp.Logger.Info("Subscription parameters to E2 Node %s: %s", e2NodeID, string(b))
+	xapp.Logger.Debug("Subscription parameters to E2 Node %s: %s", e2NodeID, string(b))
 
 	// send subscription
 	resp, err := xapp.Subscription.Subscribe(&subscriptionParams)

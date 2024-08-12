@@ -6,6 +6,7 @@
 
 #include <TestCond-Value.h>
 
+// TODO: fix empty metrics return when call this func
 actFmtType_t buildRanCellUeKpi(const char* ranFuncDefinition)
 {Deferral
     actFmtType_t res;
