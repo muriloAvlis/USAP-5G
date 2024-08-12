@@ -38,6 +38,8 @@ func EncodeActionDefinitionFormat4(metricNames []string, granularityPeriod uint6
 	// Convert []string to [][]byte
 	byteSlices := make([][]byte, len(metricNames))
 	for i, name := range metricNames {
+		fmt.Printf("Go Metric Name: %v\n", name)
+		fmt.Printf("Go Metric Names length: %v\n", len(name))
 		byteSlices[i] = []byte(name)
 	}
 
@@ -55,11 +57,6 @@ func EncodeActionDefinitionFormat4(metricNames []string, granularityPeriod uint6
 
 	// Convert array of pointers to char ** array
 	cMetricNamesPtr := (**C.char)(unsafe.Pointer(&cMetricNames[0]))
-
-	fmt.Printf("Go Metric Names: %v\n", metricNames)
-	fmt.Printf("Go Metric Names length: %v\n", len(metricNames))
-	fmt.Printf("C Metric Names: %v\n", cMetricNames)
-	fmt.Printf("C Metric names length: %v\n", cNumOfMetrics)
 
 	// Call C encoder
 	encoded := C.encodeActionDefinitionFormat4(
