@@ -25,7 +25,7 @@ ricplt:
   appmgrRMRService: "service-ricplt-appmgr-rmr.ricplt.svc.cluster.local"
   e2mgrRMRService: "service-ricplt-e2mgr-rmr.ricplt.svc.cluster.local"
   e2mgrHttpService: "service-ricplt-e2mgr-http.ricplt.svc.cluster.local"
-  e2termRMRService: "service-ricplt-e2term-rmr.ricplt.svc.cluster.local"
+  e2termRMRService: "service-ricplt-e2term-rmr-alpha.ricplt.svc.cluster.local"
   rtmgrRMRService: "service-ricplt-rtmgr-rmr.ricplt.svc.cluster.local"
   a1mediatorRMRService: "service-ricplt-a1mediator-rmr.ricplt.svc.cluster.local"
 
