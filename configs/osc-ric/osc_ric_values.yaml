@@ -29,7 +29,7 @@ nearrtric:
   installJaegerAdapter: true
   installO1Mediator: true
   installVespamgr: false
-  installXappOnboarder: true
+  installXappOnboarder: false
 #-------------------------------------------------------------------------
 # Global common setting
 #-------------------------------------------------------------------------
@@ -202,7 +202,7 @@ xapp-onboarder:
   xapponboarder:
     image:
       xapponboarder:
-        registry: "nexus3.o-ran-sc.org:10004/o-ran-sc"
+        registry: "nexus3.o-ran-sc.org:10002/o-ran-sc"
         name: xapp-onboarder
         tag: 1.0.8
       chartmuseum:
