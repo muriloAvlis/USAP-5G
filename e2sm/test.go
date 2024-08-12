@@ -80,7 +80,24 @@ func EncodeActionDefinitionFormat4(metricNames []string, granularityPeriod uint6
 }
 
 func main() {
-	metricNames := []string{"Metric1"}
+	metricNames := []string{
+		"CQI",
+		"DRB.AirIfDelayUl",
+		"DRB.PacketSuccessRateUlgNBUu",
+		"DRB.RlcDelayUl",
+		"DRB.RlcPacketDropRateDl",
+		"DRB.RlcSduDelayDl",
+		"DRB.RlcSduTransmittedVolumeDL",
+		"DRB.RlcSduTransmittedVolumeUL",
+		"DRB.UEThpDl",
+		"DRB.UEThpUl",
+		"RRU.PrbAvailDl",
+		"RRU.PrbAvailUl",
+		"RRU.PrbTotDl",
+		"RRU.PrbTotUl",
+		"RSRP",
+		"RSRQ",
+	}
 
 	encodedData, err := EncodeActionDefinitionFormat4(metricNames, 1000)
 
