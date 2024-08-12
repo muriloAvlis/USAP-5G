@@ -67,7 +67,7 @@ typedef struct test
     size_t size;
 } test_t;
 
-test_t encodeActionDefinitionFormat4(unsigned char **metricNames, size_t numOfMetrics, u_int64_t granularityPeriod)
+test_t testFunc(unsigned char **metricNames, size_t numOfMetrics, u_int64_t granularityPeriod)
 {Deferral
     // Initialize the result
     test_t encoded = {NULL, 0};
