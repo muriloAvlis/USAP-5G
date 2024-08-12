@@ -44,9 +44,9 @@ func EncodeActionDefinitionFormat4(metricNames []string, granularityPeriod uint6
 	numOfMetrics := len(byteSlices)
 
 	// Create a char array to metricNames
-	cMetricNames := make([]*C.uchar, numOfMetrics)
+	cMetricNames := make([]*C.char, numOfMetrics)
 	for i := 0; i < numOfMetrics; i++ {
-		cMetricNames[i] = (*C.uchar)(C.CBytes(byteSlices[i]))
+		cMetricNames[i] = (*C.char)(C.CBytes(byteSlices[i]))
 		defer C.free(unsafe.Pointer(cMetricNames[i]))
 	}
 
@@ -54,7 +54,7 @@ func EncodeActionDefinitionFormat4(metricNames []string, granularityPeriod uint6
 	cNumOfMetrics := C.size_t(numOfMetrics)
 
 	// Convert array of pointers to char ** array
-	cMetricNamesPtr := (**C.uchar)(unsafe.Pointer(&cMetricNames[0]))
+	cMetricNamesPtr := (**C.char)(unsafe.Pointer(&cMetricNames[0]))
 
 	fmt.Printf("Go Metric Names: %v\n", metricNames)
 	fmt.Printf("Go Metric Names length: %v\n", len(metricNames))
