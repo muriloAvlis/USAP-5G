@@ -101,13 +101,6 @@ func (app *UsapXapp) subscriptionCB(resp *clientmodel.SubscriptionResponse) {
 
 // Send subscription to E2 Node
 func (app *UsapXapp) sendSubscription(e2NodeID string) {
-	// Set subscription callback
-	xapp.Subscription.SetResponseCB(func(resp *clientmodel.SubscriptionResponse) {
-		if *app.subscriptionId == *resp.SubscriptionID {
-			app.subscriptionInstances = append(app.subscriptionInstances, resp.SubscriptionInstances...)
-		}
-	})
-
 	// Create Subscription message and send it to RIC platform
 	xapp.Logger.Info("Sending subscription request for E2 Node: %s", e2NodeID)
 
