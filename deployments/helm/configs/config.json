@@ -65,6 +65,21 @@
             }
         ]
     },
+    "rmr": {
+        "protPort": "tcp:4560",
+        "maxSize": 2072,
+        "numWorkers": 1,
+        "rxMessages": [
+            "RIC_SUB_RESP",
+            "RIC_INDICATION",
+            "RIC_HEALTH_CHECK_REQ"
+        ],
+        "txMessages": [
+            "RIC_SUB_REQ",
+            "RIC_HEALTH_CHECK_RESP"
+        ],
+        "policies": []
+    },
     "controls": {
         "active": true,
         "measurement_interval": 1000,

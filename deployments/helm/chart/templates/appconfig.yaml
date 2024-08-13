@@ -63,6 +63,14 @@ data:
         "messaging": {
             "ports": {{ index .Values "messaging" "ports" | toJson }}
         },
+        "rmr": {
+            "protPort": {{ index .Values "rmr" "protPort" | toJson }},
+            "maxSize": {{ index .Values "rmr" "maxSize" | toJson }},
+            "numWorkers": {{ index .Values "rmr" "numWorkers" | toJson }},
+            "rxMessages": {{ index .Values "rmr" "rxMessages" | toJson }},
+            "txMessages": {{ index .Values "rmr" "txMessages" | toJson }},
+            "policies": {{ index .Values "rmr" "policies" | toJson }}
+        },
         "controls": {
             "active": {{ index .Values "controls" "active" | toJson }},
             "measurement_interval": {{ index .Values "controls" "measurement_interval" | toJson }},

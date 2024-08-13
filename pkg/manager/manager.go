@@ -92,10 +92,12 @@ func (app *UsapXapp) getNbList() []*xapp.RNIBNbIdentity {
 	return nodeBs
 }
 
-// Encode subscription actions
-// func encode_actionsToBeSetup(e2NodeId string) clientmodel.ActionsToBeSetup {
-// 	return nil
-// }
+// Setup response callback to handle subscription response from SubMgr
+func (app *UsapXapp) subscriptionCB(resp *clientmodel.SubscriptionResponse) {
+	if *app.subscriptionId == *resp.SubscriptionID {
+		app.subscriptionInstances = append(app.subscriptionInstances, resp.SubscriptionInstances...)
+	}
+}
 
 // Send subscription to E2 Node
 func (app *UsapXapp) sendSubscription(e2NodeID string) {
@@ -255,12 +257,12 @@ func (app *UsapXapp) xAppStartCB(d interface{}) {
 
 			// loop to check if xApp is registered
 			for {
-				time.Sleep(5 * time.Second)
+				time.Sleep(10 * time.Second)
 				if xapp.IsRegistered() {
 					xapp.Logger.Info("xApp registration is done, ready to send subscription request")
 					break
 				}
-				xapp.Logger.Debug("xApp registration is not done yet, sleep 5s and check again")
+				xapp.Logger.Debug("xApp registration is not done yet, sleep 10s and check again")
 			}
 
 			// print RAN UEs Kpis available by E2 Node
@@ -282,12 +284,15 @@ func (app *UsapXapp) xAppStartCB(d interface{}) {
 func (app *UsapXapp) Run(wg *sync.WaitGroup) {
 	defer wg.Done()
 
+	// set Start callback
 	xapp.SetReadyCB(app.xAppStartCB, true)
+
+	// set config change listener
 	xapp.AddConfigChangeListener(app.ConfigChangeHandler)
 
-	// reading configuration from config file
-	waitForSdl := xapp.Config.GetBool("db.waitForSdl")
+	// set subscription callback
+	xapp.Subscription.SetResponseCB(app.subscriptionCB)
 
 	// start xapp
-	xapp.RunWithParams(app, waitForSdl)
+	xapp.RunWithParams(app, app.Config.WaitForSdl)
 }
