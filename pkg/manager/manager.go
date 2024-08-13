@@ -92,9 +92,16 @@ func (app *UsapXapp) getNbList() []*xapp.RNIBNbIdentity {
 	return nodeBs
 }
 
+// Setup response callback to handle subscription response from SubMgr
+func (app *UsapXapp) subscriptionCB(resp *clientmodel.SubscriptionResponse) {
+	if app.subscriptionId == resp.SubscriptionID {
+		app.subscriptionInstances = append(app.subscriptionInstances, resp.SubscriptionInstances...)
+	}
+}
+
 // Send subscription to E2 Node
 func (app *UsapXapp) sendSubscription(e2NodeID string) {
-	// Setup response callback to handle subscription response from SubMgr
+	// Set subscription callback
 	xapp.Subscription.SetResponseCB(func(resp *clientmodel.SubscriptionResponse) {
 		if *app.subscriptionId == *resp.SubscriptionID {
 			app.subscriptionInstances = append(app.subscriptionInstances, resp.SubscriptionInstances...)
@@ -289,6 +296,9 @@ func (app *UsapXapp) Run(wg *sync.WaitGroup) {
 
 	// set config change listener
 	xapp.AddConfigChangeListener(app.ConfigChangeHandler)
+
+	// set subscription callback
+	xapp.Subscription.SetResponseCB(app.subscriptionCB)
 
 	// start xapp
 	xapp.RunWithParams(app, app.Config.WaitForSdl)
