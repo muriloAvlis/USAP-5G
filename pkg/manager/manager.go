@@ -112,7 +112,7 @@ func (app *UsapXapp) sendSubscription(e2NodeID string) {
 	xapp.Logger.Debug("Encoded eventTriggerDefinitionFormat1: %v", evTriggerDefFmt1)
 
 	// convert eventTriggerDefinitionFormat1 to correct type
-	eventTriggerDef := make(clientmodel.EventTriggerDefinition, len(evTriggerDefFmt1))
+	eventTriggerDef := make(clientmodel.EventTriggerDefinition, 0)
 	eventTriggerDef = append(eventTriggerDef, evTriggerDefFmt1...)
 
 	// Encode actionDefinitionFormat4 using C encoder
@@ -124,7 +124,7 @@ func (app *UsapXapp) sendSubscription(e2NodeID string) {
 	xapp.Logger.Debug("Encoded actionDefinitionFormat4: %v", actionDefinitionFormat4)
 
 	// convert actionDefinitionFormat4 to correct type
-	actionDefinition := make(clientmodel.ActionDefinition, len(actionDefinitionFormat4))
+	actionDefinition := make(clientmodel.ActionDefinition, 0)
 	actionDefinition = append(actionDefinition, actionDefinitionFormat4...)
 
 	// Set actionToBeSetup
