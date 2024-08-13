@@ -142,5 +142,17 @@ readinessProbe:
     port: 8080
   initialDelaySeconds: 5
   periodSeconds: 15
+rmr:
+  maxSize: 2072
+  numWorkers: 1
+  policies: []
+  protPort: tcp:4560
+  rxMessages:
+  - RIC_SUB_RESP
+  - RIC_INDICATION
+  - RIC_HEALTH_CHECK_REQ
+  txMessages:
+  - RIC_SUB_REQ
+  - RIC_HEALTH_CHECK_RESP
 vendor: Murilo Silva <murilosilva@itec.ufpa.br>
 version: 0.0.1

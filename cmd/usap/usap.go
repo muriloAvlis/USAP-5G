@@ -13,6 +13,7 @@ import (
 var wg sync.WaitGroup
 
 func main() {
+	// Number of App routines
 	wg.Add(2)
 
 	// Set xApp logger configuration

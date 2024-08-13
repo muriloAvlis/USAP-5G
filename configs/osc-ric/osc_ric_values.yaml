@@ -29,7 +29,7 @@ nearrtric:
   installJaegerAdapter: true
   installO1Mediator: true
   installVespamgr: false
-  installXappOnboarder: false
+  installXappOnboarder: true
 #-------------------------------------------------------------------------
 # Global common setting
 #-------------------------------------------------------------------------
@@ -202,12 +202,12 @@ xapp-onboarder:
   xapponboarder:
     image:
       xapponboarder:
-        registry: "nexus3.o-ran-sc.org:10002/o-ran-sc"
+        registry: "nexus3.o-ran-sc.org:10004/o-ran-sc"
         name: xapp-onboarder
         tag: 1.0.8
       chartmuseum:
-        registry: "docker.io"
-        name: ghcr.io/helm/chartmuseum
+        registry: "ghcr.io"
+        name: helm/chartmuseum
         tag: v0.16.2
 
 o1mediator:

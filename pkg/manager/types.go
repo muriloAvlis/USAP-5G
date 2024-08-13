@@ -24,7 +24,9 @@ var (
 type UsapXapp struct {
 	CoreDBConfig coredb.Config
 	Config
-	RMR chan *xapp.RMRParams
+	RMR                   chan *xapp.RMRParams
+	subscriptionId        *string
+	subscriptionInstances []*clientmodel.SubscriptionInstance
 }
 
 type Config struct {
