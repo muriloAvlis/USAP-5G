@@ -11,6 +11,8 @@ import (
 	"fmt"
 	"strings"
 	"unsafe"
+
+	"gerrit.o-ran-sc.org/r/ric-plt/xapp-frame/pkg/xapp"
 )
 
 // Encode Event Trigger Definition (only format 1 is available on KPM)
@@ -36,7 +38,7 @@ func EncodeEventTriggerDefinitionFormat1(reportingPeriod uint64) ([]int64, error
 
 // O-RAN E2SM_KPM 7.4.1: Common Condition-based, UE-level Measurement
 func EncodeActionDefinitionFormat4(metricNames []string, granularityPeriod uint64) ([]int64, error) {
-	// TEMP: check if metrics if empty
+	// TEMP: check if metrics is not empty
 	validNames := make([]string, 0)
 	for _, v := range metricNames {
 		if len(strings.TrimSpace(v)) > 0 {
@@ -44,7 +46,7 @@ func EncodeActionDefinitionFormat4(metricNames []string, granularityPeriod uint6
 		}
 	}
 
-	fmt.Println(validNames)
+	xapp.Logger.Debug("Valid metric names %v", validNames)
 
 	// Convert []string to [][]byte
 	byteSlices := make([][]byte, len(validNames))
