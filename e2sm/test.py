@@ -52,7 +52,7 @@ test = e2sm_kpm_packer()
 
 event_trigger_def = test.pack_action_def_format4(
     granulPeriod=1000,
-    metric_names="Metric1",
+    metric_names="CQI",
     matchingUeConds=[{'testCondInfo': {'testType': (
         'ul-rSRP', 'true'), 'testExpr': 'lessthan', 'testValue': ('valueInt', 1000)}}]
 )

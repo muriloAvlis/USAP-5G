@@ -197,172 +197,116 @@ encodedData_t encodeActionDefinitionFormat4(char **metricNames, size_t numOfMetr
     encodedData_t encoded = {NULL, 0};
 
     // E2SM_KPM_ActionDefinition allocation
-    E2SM_KPM_ActionDefinition_t *actDef = (E2SM_KPM_ActionDefinition_t *)calloc(1, sizeof(E2SM_KPM_ActionDefinition_t));
+    E2SM_KPM_ActionDefinition_t *actDef = calloc(1, sizeof(E2SM_KPM_ActionDefinition_t));
     if (actDef == NULL) {
         fprintf(stderr, "[ERROR] E2SM_KPM_ActionDefinition memory allocation failure!\n");
+        ASN_STRUCT_FREE(asn_DEF_E2SM_KPM_ActionDefinition, actDef);
         return encoded;
     }
-    Defer(ASN_STRUCT_FREE(asn_DEF_E2SM_KPM_ActionDefinition, actDef)); // free memory in the end
-
-    // ActionDefinitionFormat1 memory allocation
-    E2SM_KPM_ActionDefinition_Format4_t * actDefFmt4 = (E2SM_KPM_ActionDefinition_Format4_t *)calloc(1, sizeof(E2SM_KPM_ActionDefinition_Format4_t));
-    if(actDefFmt4 == NULL) {
-        fprintf(stderr, "[ERROR] E2SM_KPM_ActionDefinition_Format1 memory allocation failure!\n");
-        return encoded;
-    }
-    Defer(ASN_STRUCT_FREE(asn_DEF_E2SM_KPM_ActionDefinition_Format4, actDefFmt4)); // free memory in the end
 
     // Set Action Definition to format 4 (UE-level Measurement)
     actDef->ric_Style_Type = 4;
-    actDef->actionDefinition_formats.choice.actionDefinition_Format4 = actDefFmt4;
     actDef->actionDefinition_formats.present = E2SM_KPM_ActionDefinition__actionDefinition_formats_PR_actionDefinition_Format4;
 
-    // Set test Condition
-    size_t numOfTestsCond = 1;
-    actDefFmt4->matchingUeCondList.list.array = (MatchingUeCondPerSubItem_t **)calloc(numOfTestsCond, sizeof(MatchingUeCondPerSubItem_t *));
-    if (actDefFmt4->matchingUeCondList.list.array == NULL) {
-        fprintf(stderr, "[ERROR] Memory allocation failure for MatchingUeCondPerSubItem_t array!\n");
+    // ActionDefinitionFormat4 memory allocation
+    E2SM_KPM_ActionDefinition_Format4_t * actDefFmt4 = calloc(1, sizeof(E2SM_KPM_ActionDefinition_Format4_t));
+    if(actDefFmt4 == NULL) {
+        fprintf(stderr, "[ERROR] E2SM_KPM_ActionDefinition_Format4 memory allocation failure!\n");
+        ASN_STRUCT_FREE(asn_DEF_E2SM_KPM_ActionDefinition, actDef);
         return encoded;
     }
-    actDefFmt4->matchingUeCondList.list.count = 0;
-    actDefFmt4->matchingUeCondList.list.size = numOfTestsCond;
 
-    // Alloc memory to each internal structure
-    for (size_t i = 0; i < numOfTestsCond; i++) {
-        actDefFmt4->matchingUeCondList.list.array[i] = (MatchingUeCondPerSubItem_t *)calloc(1, sizeof(MatchingUeCondPerSubItem_t));
-        if (actDefFmt4->matchingUeCondList.list.array[i] == NULL) {
-            fprintf(stderr, "[ERROR] Memory allocation failure for MatchingUeCondPerSubItem_t at index %zu!\n", i);
-            return encoded;
-        }
-
-        // alloc memory for test conditions
-        //// testValue
-        actDefFmt4->matchingUeCondList.list.array[i]->testCondInfo.testValue = (TestCond_Value_t *)calloc(1, sizeof(TestCond_Value_t));
-        if (actDefFmt4->matchingUeCondList.list.array[i]->testCondInfo.testValue == NULL) {
-            fprintf(stderr, "[ERROR] Memory allocation failure for TestCond_Value_t at index %zu!\n", i);
-            return encoded;
-        }
-        //// Test Expression
-        actDefFmt4->matchingUeCondList.list.array[i]->testCondInfo.testExpr = (long *)malloc(sizeof(long));
-        if (actDefFmt4->matchingUeCondList.list.array[i]->testCondInfo.testExpr == NULL) {
-            fprintf(stderr, "[ERROR] Memory allocation failure for testExpr at index %zu!\n", i);
-            return encoded;
-        }
-
-        // Set conditions
-        *(actDefFmt4->matchingUeCondList.list.array[i]->testCondInfo.testExpr) = TestCond_Expression_lessthan;
-        actDefFmt4->matchingUeCondList.list.array[i]->testCondInfo.testType.present = TestCond_Type_PR_ul_rSRP;
-        actDefFmt4->matchingUeCondList.list.array[i]->testCondInfo.testType.choice.ul_rSRP = TestCond_Type__ul_rSRP_true;
-        actDefFmt4->matchingUeCondList.list.array[i]->testCondInfo.testValue->present = TestCond_Value_PR_valueInt;
-        actDefFmt4->matchingUeCondList.list.array[i]->testCondInfo.testValue->choice.valueInt = 1000;
-
-        actDefFmt4->matchingUeCondList.list.count++;
-    }
-
-    // set meas info list
-    //// alloc memory for info list
-    actDefFmt4->subscriptionInfo.measInfoList.list.array = (MeasurementInfoItem_t **)calloc(numOfMetrics, sizeof(MeasurementInfoItem_t *));
-    if (actDefFmt4->subscriptionInfo.measInfoList.list.array == NULL) {
-        fprintf(stderr, "[ERROR] Memory allocation failure for MeasurementInfoItem_t array!\n");
+    // Matching UE test condition
+    MatchingUeCondPerSubItem_t *matchingUeCondItem = (MatchingUeCondPerSubItem_t *)calloc(1, sizeof(MatchingUeCondPerSubItem_t));
+    if(matchingUeCondItem == NULL) {
+        fprintf(stderr, "[ERROR] matchingUeCondItem memory allocation failure!\n");
+        ASN_STRUCT_FREE(asn_DEF_E2SM_KPM_ActionDefinition, actDef);
         return encoded;
     }
-    actDefFmt4->subscriptionInfo.measInfoList.list.count = 0;
-    actDefFmt4->subscriptionInfo.measInfoList.list.size = numOfMetrics;
+    matchingUeCondItem->testCondInfo.testType.present = TestCond_Type_PR_ul_rSRP;
+    matchingUeCondItem->testCondInfo.testType.choice.ul_rSRP = TestCond_Type__ul_rSRP_true;
 
-    // set number of labels by meas_name
-    size_t numOfLabels = 1;
+    //// Test Condition expression
+    static TestCond_Expression_t testConditionExp = TestCond_Expression_lessthan;
+    matchingUeCondItem->testCondInfo.testExpr = &testConditionExp;
 
+    //// test Value
+    TestCond_Value_t *testVal = (TestCond_Value_t *)calloc(1, sizeof(TestCond_Value_t));
+    if(testVal == NULL) {
+        fprintf(stderr, "[ERROR] testVal memory allocation failure!\n");
+        ASN_STRUCT_FREE(asn_DEF_E2SM_KPM_ActionDefinition, actDef);
+        return encoded;
+    }
+    testVal->present = TestCond_Value_PR_valueInt;
+    testVal->choice.valueInt = 1000;
+
+    matchingUeCondItem->testCondInfo.testValue = testVal;
+
+    // Add to test list
+    ASN_SEQUENCE_ADD(&actDefFmt4->matchingUeCondList.list, matchingUeCondItem);
+
+    // Set meas info list
     for (size_t i = 0; i < numOfMetrics; i++)
     {
-        // alloc memory for meas name
-        actDefFmt4->subscriptionInfo.measInfoList.list.array[i] = (MeasurementInfoItem_t *)calloc(1, sizeof(MeasurementInfoItem_t));
-        if (actDefFmt4->subscriptionInfo.measInfoList.list.array[i] == NULL) {
-            fprintf(stderr, "[ERROR] Memory allocation failure for MatchingUeCondPerSubItem_t at index %zu!\n", i);
+        MeasurementInfoItem_t *measInfoItem = (MeasurementInfoItem_t *)calloc(1, sizeof(MeasurementInfoItem_t));
+        if(measInfoItem == NULL) {
+            fprintf(stderr, "[ERROR] measInfoItem memory allocation failure!\n");
+            ASN_STRUCT_FREE(asn_DEF_E2SM_KPM_ActionDefinition, actDef);
             return encoded;
         }
-
-        // Set meas name
-        actDefFmt4->subscriptionInfo.measInfoList.list.array[i]->measType.present = MeasurementType_PR_measName;
+        // meas type
+        measInfoItem->measType.present = MeasurementType_PR_measName;
+        //// meas name
         size_t measNameSize = strlen(metricNames[i]);
-        actDefFmt4->subscriptionInfo.measInfoList.list.array[i]->measType.choice.measName.buf = (uint8_t *)malloc(measNameSize * sizeof(uint8_t));
-        if(actDefFmt4->subscriptionInfo.measInfoList.list.array[i]->measType.choice.measName.buf == NULL) {
-            fprintf(stderr, "[ERROR] Meas name buffer memory allocation failure!\n");
+        measInfoItem->measType.choice.measName.buf = (uint8_t *)calloc(measNameSize + 1, sizeof(uint8_t));
+        if(measInfoItem->measType.choice.measName.buf == NULL) {
+            fprintf(stderr, "[ERROR] measName buffer memory allocation failure!\n");
+            ASN_STRUCT_FREE(asn_DEF_E2SM_KPM_ActionDefinition, actDef);
             return encoded;
         }
-        memcpy(actDefFmt4->subscriptionInfo.measInfoList.list.array[i]->measType.choice.measName.buf, metricNames[i], measNameSize);
-        actDefFmt4->subscriptionInfo.measInfoList.list.array[i]->measType.choice.measName.size = measNameSize;
+        memcpy(measInfoItem->measType.choice.measName.buf, metricNames[i], measNameSize);
+        measInfoItem->measType.choice.measName.buf[measNameSize] = '\0'; // for null character
+        measInfoItem->measType.choice.measName.size = measNameSize;
 
-        //// alloc memory for labelInfoLst
-        actDefFmt4->subscriptionInfo.measInfoList.list.array[i]->labelInfoList.list.array = (LabelInfoItem_t **)calloc(numOfLabels, sizeof(LabelInfoItem_t *));
-        if (actDefFmt4->subscriptionInfo.measInfoList.list.array[i]->labelInfoList.list.array == NULL)
-        {
-            fprintf(stderr, "[ERROR] Memory allocation failure for LabelInfoItem_t at index %zu!\n", i);
+        // label info list
+        LabelInfoItem_t *labelInfoItem = (LabelInfoItem_t *)calloc(1, sizeof(LabelInfoItem_t));
+        labelInfoItem->measLabel.noLabel = (long *)calloc(1, sizeof(long));
+        if(labelInfoItem->measLabel.noLabel == NULL) {
+            fprintf(stderr, "[ERROR] NoLabel buffer memory allocation failure!\n");
+            ASN_STRUCT_FREE(asn_DEF_E2SM_KPM_ActionDefinition, actDef);
             return encoded;
         }
+        static long label = MeasurementLabel__noLabel_true;
+        labelInfoItem->measLabel.noLabel = &label;
 
-        actDefFmt4->subscriptionInfo.measInfoList.list.array[i]->labelInfoList.list.count = 0;
-        actDefFmt4->subscriptionInfo.measInfoList.list.array[i]->labelInfoList.list.size = numOfLabels;
-
-        for (size_t j = 0; j < numOfLabels; j++)
-        {
-            // Allocate memory for LabelInfoItem
-            actDefFmt4->subscriptionInfo.measInfoList.list.array[i]->labelInfoList.list.array[j] = (LabelInfoItem_t *)calloc(1, sizeof(LabelInfoItem_t));
-            if (actDefFmt4->subscriptionInfo.measInfoList.list.array[i]->labelInfoList.list.array[j] == NULL) {
-                fprintf(stderr, "[ERROR] Memory allocation failure for LabelInfoItem_t at index %zu, label index %zu!\n", i, j);
-                return encoded;
-            }
-
-            // Initialize labelInfoItem
-            actDefFmt4->subscriptionInfo.measInfoList.list.array[i]->labelInfoList.list.array[j]->measLabel.noLabel = (long *)calloc(1, sizeof(long));
-            if (actDefFmt4->subscriptionInfo.measInfoList.list.array[i]->labelInfoList.list.array[j]->measLabel.noLabel == NULL) {
-                fprintf(stderr, "[ERROR] Memory allocation failure for noLabel at index %zu, label index %zu!\n", i, j);
-                return encoded;
-            }
-
-            *(actDefFmt4->subscriptionInfo.measInfoList.list.array[i]->labelInfoList.list.array[j]->measLabel.noLabel) = MeasurementLabel__noLabel_true;
-        }
-
-        // increment arrays count
-        actDefFmt4->subscriptionInfo.measInfoList.list.count++;
-        actDefFmt4->subscriptionInfo.measInfoList.list.array[i]->labelInfoList.list.count++;
+        // add labelInfoitem to list
+        ASN_SEQUENCE_ADD(&measInfoItem->labelInfoList.list, labelInfoItem);
+        // Add to measInfoitem to list
+        ASN_SEQUENCE_ADD(&actDefFmt4->subscriptionInfo.measInfoList.list, measInfoItem);
     }
 
-   	// Set granularity period
+    // Granularity period
     actDefFmt4->subscriptionInfo.granulPeriod = granularityPeriod;
 
+    // Set action definition format 4
+    actDef->actionDefinition_formats.choice.actionDefinition_Format4 = actDefFmt4;
+
     // Create an encoding buffer
-    const size_t buffer_size = 1024;
-    u_int8_t *buffer = (uint8_t *)calloc(1, buffer_size);
-    if(buffer == NULL) {
-        fprintf(stderr, "[ERROR] Buffer memory allocation failure!\n");
-        return encoded;
-    }
-    Defer(free(buffer)); // free memory in the end
+    void *buffer = NULL;
 
-    // Compare buffers size
-    // memcpy(buffer, actDef, buffer_size);
-
-	// xer_fprint(stdout, &asn_DEF_E2SM_KPM_ActionDefinition, actDef);
+    // xer_fprint(stdout, &asn_DEF_E2SM_KPM_ActionDefinition, actDef);
 
     // Encoding
-    asn_enc_rval_t enc_rval = aper_encode_to_buffer(&asn_DEF_E2SM_KPM_ActionDefinition, NULL, actDef, buffer, buffer_size);
+    size_t buffer_size = aper_encode_to_new_buffer(&asn_DEF_E2SM_KPM_ActionDefinition, NULL, actDef, &buffer);
+    printf("Buffer size %ld\n", buffer_size);
 
-    // Failed to encoding
-	if (enc_rval.encoded == -1) {
-    	fprintf(stderr, "[ERROR] Failed to encode E2SM_KPM_ActionDefinition format 4!\n");
-    	fprintf(stderr, "[ERROR] Encoding error: %s\n", enc_rval.failed_type ? enc_rval.failed_type->name : "Unknown type");
-    	if (enc_rval.structure_ptr) {
-        	fprintf(stderr, "[ERROR] Failed structure pointer: %p\n", enc_rval.structure_ptr);
-    	}
-    	return encoded;
-	}
-
-    // Adjust size (1 byte == 8 bits)
-    encoded.size = (enc_rval.encoded + 7) / 8; // truncate
+    encoded.size = buffer_size; // truncate
     encoded.buffer = calloc(1, encoded.size);
-    for (size_t i = 0; i < encoded.size; i++) {
-        encoded.buffer[i] = buffer[i];
+    if (encoded.buffer == NULL) {
+        fprintf(stderr, "Memory allocation failure\n");
+        return encoded;
     }
+    memcpy(encoded.buffer, buffer, encoded.size);
 
     return encoded;
 }

@@ -9,6 +9,7 @@ import "C"
 import (
 	"errors"
 	"fmt"
+	"strings"
 	"unsafe"
 )
 
@@ -35,9 +36,19 @@ func EncodeEventTriggerDefinitionFormat1(reportingPeriod uint64) ([]int64, error
 
 // O-RAN E2SM_KPM 7.4.1: Common Condition-based, UE-level Measurement
 func EncodeActionDefinitionFormat4(metricNames []string, granularityPeriod uint64) ([]int64, error) {
+	// TEMP: check if metrics if empty
+	validNames := make([]string, 0)
+	for _, v := range metricNames {
+		if len(strings.TrimSpace(v)) > 0 {
+			validNames = append(metricNames, v)
+		}
+	}
+
+	fmt.Println(validNames)
+
 	// Convert []string to [][]byte
-	byteSlices := make([][]byte, len(metricNames))
-	for i, name := range metricNames {
+	byteSlices := make([][]byte, len(validNames))
+	for i, name := range validNames {
 		byteSlices[i] = []byte(name)
 	}
 

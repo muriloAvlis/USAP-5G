@@ -1,5 +1,5 @@
 ARG UBUNTU_VERSION=24.04
-ARG SRSRAN_VERSION=release_24_04
+ARG SRSRAN_VERSION=main
 
 #----------------------------------------------------------------------#
 #------------------------- BUILDER STAGE ------------------------------#

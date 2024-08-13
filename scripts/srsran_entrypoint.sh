@@ -32,4 +32,4 @@ fi
 
 envsubst < /gnb-template.yml > gnb.yml
 
-/opt/srsRAN_Project/target/bin/gnb -c gnb.yml
+exec /opt/srsRAN_Project/target/bin/gnb -c gnb.yml
