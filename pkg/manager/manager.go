@@ -111,10 +111,6 @@ func (app *UsapXapp) sendSubscription(e2NodeID string) {
 	}
 	xapp.Logger.Debug("Encoded eventTriggerDefinitionFormat1: %v", evTriggerDefFmt1)
 
-	// convert eventTriggerDefinitionFormat1 to correct type
-	eventTriggerDef := make(clientmodel.EventTriggerDefinition, 0)
-	eventTriggerDef = append(eventTriggerDef, evTriggerDefFmt1...)
-
 	// Encode actionDefinitionFormat4 using C encoder
 	actionDefinitionFormat4, err := kpmpacker.EncodeActionDefinitionFormat4(ranUeKpis[e2NodeID], granularityPeriod)
 	if err != nil {
@@ -123,14 +119,10 @@ func (app *UsapXapp) sendSubscription(e2NodeID string) {
 
 	xapp.Logger.Debug("Encoded actionDefinitionFormat4: %v", actionDefinitionFormat4)
 
-	// convert actionDefinitionFormat4 to correct type
-	actionDefinition := make(clientmodel.ActionDefinition, 0)
-	actionDefinition = append(actionDefinition, actionDefinitionFormat4...)
-
 	// Set actionToBeSetup
 	actionToBeSetup := &clientmodel.ActionToBeSetup{
 		ActionID:         &actionId,
-		ActionDefinition: actionDefinition,
+		ActionDefinition: actionDefinitionFormat4,
 		ActionType:       &actionType,
 		SubsequentAction: &clientmodel.SubsequentAction{
 			SubsequentActionType: &subsequentActionType,
@@ -143,7 +135,7 @@ func (app *UsapXapp) sendSubscription(e2NodeID string) {
 		ActionToBeSetupList: clientmodel.ActionsToBeSetup{
 			actionToBeSetup,
 		},
-		EventTriggers:       eventTriggerDef,
+		EventTriggers:       evTriggerDefFmt1,
 		XappEventInstanceID: &seqId,
 	}
 
@@ -265,7 +257,7 @@ func (app *UsapXapp) xAppStartCB(d interface{}) {
 
 			// loop to check if xApp is registered
 			for {
-				time.Sleep(10 * time.Second)
+				time.Sleep(5 * time.Second)
 				if xapp.IsRegistered() {
 					xapp.Logger.Info("xApp registration is done, ready to send subscription request")
 					break
