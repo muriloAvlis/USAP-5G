@@ -111,6 +111,10 @@ func (app *UsapXapp) sendSubscription(e2NodeID string) {
 	}
 	xapp.Logger.Debug("Encoded eventTriggerDefinitionFormat1: %v", evTriggerDefFmt1)
 
+	// convert eventTriggerDefinitionFormat1 to correct type
+	eventTriggerDef := make(clientmodel.EventTriggerDefinition, len(evTriggerDefFmt1))
+	eventTriggerDef = append(eventTriggerDef, evTriggerDefFmt1...)
+
 	// Encode actionDefinitionFormat4 using C encoder
 	actionDefinitionFormat4, err := kpmpacker.EncodeActionDefinitionFormat4(ranUeKpis[e2NodeID], granularityPeriod)
 	if err != nil {
@@ -119,10 +123,14 @@ func (app *UsapXapp) sendSubscription(e2NodeID string) {
 
 	xapp.Logger.Debug("Encoded actionDefinitionFormat4: %v", actionDefinitionFormat4)
 
+	// convert actionDefinitionFormat4 to correct type
+	actionDefinition := make(clientmodel.ActionDefinition, len(actionDefinitionFormat4))
+	actionDefinition = append(actionDefinition, actionDefinitionFormat4...)
+
 	// Set actionToBeSetup
 	actionToBeSetup := &clientmodel.ActionToBeSetup{
 		ActionID:         &actionId,
-		ActionDefinition: actionDefinitionFormat4,
+		ActionDefinition: actionDefinition,
 		ActionType:       &actionType,
 		SubsequentAction: &clientmodel.SubsequentAction{
 			SubsequentActionType: &subsequentActionType,
@@ -135,7 +143,7 @@ func (app *UsapXapp) sendSubscription(e2NodeID string) {
 		ActionToBeSetupList: clientmodel.ActionsToBeSetup{
 			actionToBeSetup,
 		},
-		EventTriggers:       evTriggerDefFmt1,
+		EventTriggers:       eventTriggerDef,
 		XappEventInstanceID: &seqId,
 	}
 
