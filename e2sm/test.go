@@ -35,30 +35,38 @@ func EncodeEventTriggerDefinitionFormat1(reportingPeriod uint64) ([]int64, error
 
 // EncodeActionDefinitionFormat4 chama a função C e converte os resultados
 func EncodeActionDefinitionFormat4(metricNames []string, granularityPeriod uint64) ([]int64, error) {
-	// Convert []string to [][]byte
-	byteSlices := make([][]byte, len(metricNames))
-	for i, name := range metricNames {
-		byteSlices[i] = []byte(name)
+	// Alloc memory to char**
+	cArray := C.malloc(C.size_t(len(metricNames)) * C.size_t(unsafe.Sizeof(uintptr(0))))
+	cStringArray := (**C.char)(cArray)
+	defer C.free(unsafe.Pointer(cStringArray))
+
+	// Slice to free C String pointers
+	cStrSlice := make([]*C.char, len(metricNames))
+
+	// Put values in char **
+	for i, s := range metricNames {
+		cstr := C.CString(s)
+		cStrSlice[i] = cstr // storage C string pointers
+		// Calcule pointer
+		pointer := (**C.char)(unsafe.Pointer(uintptr(cArray) + uintptr(i)*unsafe.Sizeof(uintptr(0))))
+		*pointer = cstr
 	}
 
-	numOfMetrics := len(byteSlices)
+	// Free C strings in the end
+	defer func() {
+		for _, cstr := range cStrSlice {
+			C.free(unsafe.Pointer(cstr))
+		}
+	}()
 
-	// Create a char array to metricNames
-	cMetricNames := make([]*C.char, numOfMetrics)
-	for i := 0; i < numOfMetrics; i++ {
-		cMetricNames[i] = (*C.char)(C.CBytes(byteSlices[i]))
-		defer C.free(unsafe.Pointer(cMetricNames[i]))
-	}
+	numOfMetrics := len(metricNames)
 
 	// Convert n_of_metrics to size_t
 	cNumOfMetrics := C.size_t(numOfMetrics)
 
-	// Convert array of pointers to char ** array
-	cMetricNamesPtr := (**C.char)(unsafe.Pointer(&cMetricNames[0]))
-
 	// Call C encoder
 	encoded := C.encodeActionDefinitionFormat4(
-		cMetricNamesPtr,
+		cStringArray,
 		cNumOfMetrics,
 		C.uint64_t(granularityPeriod),
 	)
