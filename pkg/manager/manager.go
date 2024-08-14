@@ -251,7 +251,12 @@ func (app *UsapXapp) xAppStartCB(d interface{}) {
 				rfDefFmtType4 = append(rfDefFmtType4, C.GoString(v))
 			}
 
-			ranUeKpis[nb.GetInventoryName()] = rfDefFmtType4
+			// TEMP: check if metric name is not empty
+			for _, v := range rfDefFmtType4 {
+				if len(strings.TrimSpace(v)) > 0 {
+					ranUeKpis[nb.GetInventoryName()] = append(ranUeKpis[nb.GetInventoryName()], v)
+				}
+			}
 
 			// TODO: prepare variable to receive cell KPIs
 
