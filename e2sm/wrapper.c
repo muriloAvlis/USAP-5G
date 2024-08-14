@@ -191,8 +191,14 @@ encodedData_t encodeEventTriggerDefinitionFormat1(const u_int64_t reportingPerio
     return encoded;
 }
 
-encodedData_t encodeActionDefinitionFormat4(char **metricNames, size_t numOfMetrics, u_int64_t granularityPeriod)
+encodedData_t encodeActionDefinitionFormat4(char **metricNames, const size_t numOfMetrics, const u_int64_t granularityPeriod)
 {Deferral
+    // test
+    for (size_t i = 0; i < numOfMetrics; i++)
+    {
+        printf("Metric %ld:  %s", i, metricNames[i]);
+    }
+
     // Initialize the result
     encodedData_t encoded = {NULL, 0};
 
@@ -309,7 +315,7 @@ encodedData_t encodeActionDefinitionFormat4(char **metricNames, size_t numOfMetr
         fprintf(stderr, "[ERROR] Failed to encode ASN.1 structure!\n");
     }
 
-    encoded.size = (enc_val.encoded + 7) / 8; // truncate
+    encoded.size = (enc_val.encoded + 7) / 8; // convert to bytes
     encoded.buffer = calloc(1, encoded.size);
     if (encoded.buffer == NULL) {
         fprintf(stderr, "Memory allocation failure\n");
