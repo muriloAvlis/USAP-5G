@@ -69,8 +69,14 @@ typedef struct test
 
 // Don't compile with this
 
-test_t testFunc(char **metricNames, const size_t numOfMetrics, const unsigned long granularityPeriod)
+test_t testFunc(char **metricNames, const size_t numOfMetrics, const u_int64_t granularityPeriod)
 {
+    // test
+    // for (size_t i = 0; i < numOfMetrics; i++)
+    // {
+    //     printf("Metric %ld:  %s\n", i, metricNames[i]);
+    // }
+
     // Initialize the result
     test_t encoded = {NULL, 0};
 
@@ -177,7 +183,7 @@ test_t testFunc(char **metricNames, const size_t numOfMetrics, const unsigned lo
         return encoded;
     }
 
-    xer_fprint(stdout, &asn_DEF_E2SM_KPM_ActionDefinition, actDef);
+    // xer_fprint(stdout, &asn_DEF_E2SM_KPM_ActionDefinition, actDef);
 
     // Encoding
     asn_enc_rval_t enc_val = uper_encode_to_buffer(&asn_DEF_E2SM_KPM_ActionDefinition, NULL, actDef, buffer, buffer_size);
@@ -187,7 +193,7 @@ test_t testFunc(char **metricNames, const size_t numOfMetrics, const unsigned lo
         fprintf(stderr, "[ERROR] Failed to encode ASN.1 structure!\n");
     }
 
-    encoded.size = (enc_val.encoded + 7) / 8; // truncate
+    encoded.size = (enc_val.encoded + 7) / 8; // convert to bytes
     encoded.buffer = calloc(1, encoded.size);
     if (encoded.buffer == NULL) {
         fprintf(stderr, "Memory allocation failure\n");
@@ -203,9 +209,7 @@ test_t testFunc(char **metricNames, const size_t numOfMetrics, const unsigned lo
 
 // int main() {
 //     char* metrics[] = {
-//         "CQI", "DRB.AirIfDelayUl", "DRB.PacketSuccessRateUlgNBUu", "DRB.RlcDelayUl", "DRB.RlcPacketDropRateDl",
-//         "DRB.RlcSduDelayDl", "DRB.RlcSduTransmittedVolumeDL", "DRB.RlcSduTransmittedVolumeUL", "DRB.UEThpDl",
-//         "DRB.UEThpUl", "RRU.PrbAvailDl", "RRU.PrbAvailUl", "RRU.PrbTotDl", "RRU.PrbTotUl", "RSRP", "RSRQ"
+//         "CQI"
 //     };
 //     // char* metrics[] = {
 //     //     "CQI"

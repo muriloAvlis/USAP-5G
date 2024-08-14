@@ -194,10 +194,10 @@ encodedData_t encodeEventTriggerDefinitionFormat1(const u_int64_t reportingPerio
 encodedData_t encodeActionDefinitionFormat4(char **metricNames, const size_t numOfMetrics, const u_int64_t granularityPeriod)
 {Deferral
     // test
-    for (size_t i = 0; i < numOfMetrics; i++)
-    {
-        printf("Metric %ld:  %s\n", i, metricNames[i]);
-    }
+    // for (size_t i = 0; i < numOfMetrics; i++)
+    // {
+    //     printf("Metric %ld:  %s\n", i, metricNames[i]);
+    // }
 
     // Initialize the result
     encodedData_t encoded = {NULL, 0};
@@ -308,7 +308,7 @@ encodedData_t encodeActionDefinitionFormat4(char **metricNames, const size_t num
     xer_fprint(stdout, &asn_DEF_E2SM_KPM_ActionDefinition, actDef);
 
     // Encoding
-    asn_enc_rval_t enc_val = uper_encode_to_buffer(&asn_DEF_E2SM_KPM_ActionDefinition, NULL, actDef, buffer, buffer_size);
+    asn_enc_rval_t enc_val = aper_encode_to_buffer(&asn_DEF_E2SM_KPM_ActionDefinition, NULL, actDef, buffer, buffer_size);
 
     if (enc_val.encoded == -1)
     {
