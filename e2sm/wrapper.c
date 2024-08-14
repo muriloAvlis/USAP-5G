@@ -31,7 +31,7 @@ actFmtType_t buildRanCellUeKpi(const char* ranFuncDefinition)
 
     // Now hex_buffer contains the binary data corresponding to the RF Definitions values
     // Print the result
-    printf("[INFO] RAN Function definition values as a string: %s", rfDefBuffer);
+    printf("[INFO] RAN Function definition values as a string: %s\n", rfDefBuffer);
 
     char ** act_fmt_type1 = NULL;
     char ** act_fmt_type2 = NULL;
