@@ -6,7 +6,7 @@ class e2sm_kpm_packer(object):
     def __init__(self) -> None:
         asn1_files = ["./asn1/e2sm-v5.00.asn",
                       "./asn1/e2sm-kpm-v4.00.asn"]
-        self.asn1_compiler = asn1tools.compile_files(asn1_files, "per")
+        self.asn1_compiler = asn1tools.compile_files(asn1_files, "uper")
 
     def pack_event_trigger_def_fmt_1(self, reportingPeriod):
         e2sm_kpm_trigger_def = {

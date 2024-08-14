@@ -81,7 +81,7 @@ typedef struct actFmtType
 
 typedef struct encodedData
 {
-    u_int64_t * buffer;
+    u_int8_t * buffer;
     int size;
 } encodedData_t;
 

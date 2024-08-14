@@ -67,6 +67,8 @@ typedef struct test
     size_t size;
 } test_t;
 
+// Don't compile with this
+
 test_t testFunc(char **metricNames, const size_t numOfMetrics, const unsigned long granularityPeriod)
 {
     // Initialize the result
@@ -168,28 +170,46 @@ test_t testFunc(char **metricNames, const size_t numOfMetrics, const unsigned lo
     actDef->actionDefinition_formats.choice.actionDefinition_Format4 = actDefFmt4;
 
     // Create an encoding buffer
-    void *buffer = NULL;
+    const size_t buffer_size = 1024;
+    char *buffer = (char *)calloc(1, buffer_size);
+    if(buffer == NULL) {
+        fprintf(stderr, "[ERROR] Buffer memory allocation failure!\n");
+        return encoded;
+    }
 
     // xer_fprint(stdout, &asn_DEF_E2SM_KPM_ActionDefinition, actDef);
 
     // Encoding
-    size_t buffer_size = aper_encode_to_new_buffer(&asn_DEF_E2SM_KPM_ActionDefinition, NULL, actDef, &buffer);
-    printf("Buffer size %ld\n", buffer_size);
+    asn_enc_rval_t enc_val = uper_encode_to_buffer(&asn_DEF_E2SM_KPM_ActionDefinition, NULL, actDef, buffer, buffer_size);
 
-    encoded.size = buffer_size; // truncate
+    if (enc_val.encoded == -1)
+    {
+        fprintf(stderr, "[ERROR] Failed to encode ASN.1 structure!\n");
+    }
+
+    encoded.size = (enc_val.encoded + 7) / 8; // truncate
     encoded.buffer = calloc(1, encoded.size);
     if (encoded.buffer == NULL) {
         fprintf(stderr, "Memory allocation failure\n");
         return encoded;
     }
+
     memcpy(encoded.buffer, buffer, encoded.size);
+
+    free(buffer);
 
     return encoded;
 }
 
-// Don't compile with this
 // int main() {
-//     char * metrics[] = {"CQI"};
+//     // char* metrics[] = {
+//     //     "CQI", "DRB.AirIfDelayUl", "DRB.PacketSuccessRateUlgNBUu", "DRB.RlcDelayUl", "DRB.RlcPacketDropRateDl",
+//     //     "DRB.RlcSduDelayDl", "DRB.RlcSduTransmittedVolumeDL", "DRB.RlcSduTransmittedVolumeUL", "DRB.UEThpDl",
+//     //     "DRB.UEThpUl", "RRU.PrbAvailDl", "RRU.PrbAvailUl", "RRU.PrbTotDl", "RRU.PrbTotUl", "RSRP", "RSRQ"
+//     // };
+//     char* metrics[] = {
+//         "CQI"
+//     };
 // 	size_t numOfMetrics = sizeof(metrics) / sizeof(metrics[0]);
 // 	u_int64_t granPer = 1000;
 //
