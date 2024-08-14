@@ -254,7 +254,7 @@ func (app *UsapXapp) xAppStartCB(d interface{}) {
 			// TEMP: check if metric name is not empty
 			for _, v := range rfDefFmtType4 {
 				if len(strings.TrimSpace(v)) > 0 {
-					ranUeKpis[nb.GetInventoryName()] = append(ranUeKpis[nb.GetInventoryName()], v)
+					ranUeKpis[nb.GetInventoryName()] = append(ranUeKpis[nb.GetInventoryName()], strings.TrimSpace(v))
 				}
 			}
 
