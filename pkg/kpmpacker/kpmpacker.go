@@ -36,13 +36,13 @@ func EncodeEventTriggerDefinitionFormat1(reportingPeriod uint64) ([]int64, error
 // O-RAN E2SM_KPM 7.4.1: Common Condition-based, UE-level Measurement
 func EncodeActionDefinitionFormat4(metricNames []string, granularityPeriod uint64) ([]int64, error) {
 	// Convert []string to [][]byte
-	fmt.Printf("Metric %s", metricNames[0])
-	fmt.Printf("Metric len: %d", len(metricNames[0]))
-
 	byteSlices := make([][]byte, len(metricNames))
 	for i, name := range metricNames {
 		byteSlices[i] = []byte(name)
 	}
+
+	fmt.Printf("Metric %s\n", byteSlices[0])
+	fmt.Printf("Metric len: %d\n", len(byteSlices[0]))
 
 	numOfMetrics := len(byteSlices)
 
