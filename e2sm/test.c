@@ -177,7 +177,7 @@ test_t testFunc(char **metricNames, const size_t numOfMetrics, const unsigned lo
         return encoded;
     }
 
-    // xer_fprint(stdout, &asn_DEF_E2SM_KPM_ActionDefinition, actDef);
+    xer_fprint(stdout, &asn_DEF_E2SM_KPM_ActionDefinition, actDef);
 
     // Encoding
     asn_enc_rval_t enc_val = uper_encode_to_buffer(&asn_DEF_E2SM_KPM_ActionDefinition, NULL, actDef, buffer, buffer_size);
@@ -202,14 +202,14 @@ test_t testFunc(char **metricNames, const size_t numOfMetrics, const unsigned lo
 }
 
 // int main() {
-//     // char* metrics[] = {
-//     //     "CQI", "DRB.AirIfDelayUl", "DRB.PacketSuccessRateUlgNBUu", "DRB.RlcDelayUl", "DRB.RlcPacketDropRateDl",
-//     //     "DRB.RlcSduDelayDl", "DRB.RlcSduTransmittedVolumeDL", "DRB.RlcSduTransmittedVolumeUL", "DRB.UEThpDl",
-//     //     "DRB.UEThpUl", "RRU.PrbAvailDl", "RRU.PrbAvailUl", "RRU.PrbTotDl", "RRU.PrbTotUl", "RSRP", "RSRQ"
-//     // };
 //     char* metrics[] = {
-//         "CQI"
+//         "CQI", "DRB.AirIfDelayUl", "DRB.PacketSuccessRateUlgNBUu", "DRB.RlcDelayUl", "DRB.RlcPacketDropRateDl",
+//         "DRB.RlcSduDelayDl", "DRB.RlcSduTransmittedVolumeDL", "DRB.RlcSduTransmittedVolumeUL", "DRB.UEThpDl",
+//         "DRB.UEThpUl", "RRU.PrbAvailDl", "RRU.PrbAvailUl", "RRU.PrbTotDl", "RRU.PrbTotUl", "RSRP", "RSRQ"
 //     };
+//     // char* metrics[] = {
+//     //     "CQI"
+//     // };
 // 	size_t numOfMetrics = sizeof(metrics) / sizeof(metrics[0]);
 // 	u_int64_t granPer = 1000;
 //

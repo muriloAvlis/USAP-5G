@@ -271,7 +271,10 @@ func (app *UsapXapp) xAppStartCB(d interface{}) {
 			}
 
 			// print RAN UEs Kpis available by E2 Node
-			xapp.Logger.Debug("Available UE KPIs on E2 Node %s: %v", nb.GetInventoryName(), ranUeKpis[nb.GetInventoryName()])
+			xapp.Logger.Debug("Available %d UE KPIs on E2 Node %s: %v",
+				len(ranUeKpis[nb.GetInventoryName()]),
+				nb.GetInventoryName(),
+				ranUeKpis[nb.GetInventoryName()])
 
 			// send subscription request
 			app.sendSubscription(nb.GetInventoryName())
