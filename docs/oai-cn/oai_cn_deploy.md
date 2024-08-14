@@ -10,7 +10,7 @@
 ### Clone oai-cn5g-fed repository
 
 ```sh
-cd ~
+cd ~/git
 git clone https://gitlab.eurecom.fr/oai/cn5g/oai-cn5g-fed.git
 cd oai-cn5g-fed
 git checkout develop
@@ -21,8 +21,8 @@ git checkout develop
 Copy the custom files in the configs folder to the chart directory and install them.
 
 ```sh 
-cd ~/oai-cn5g-fed/charts/oai-5g-core/oai-5g-advance
-cp ~/USAP/configs/oai-cn/* .
+cd ~/git/oai-cn5g-fed/charts/oai-5g-core/oai-5g-advance
+cp ~/git/USAP/configs/oai-cn/* .
 helm dependency update
 helm upgrade --install -n oai5gcn --create-namespace oai-5gcn . -f values.yaml
 ```

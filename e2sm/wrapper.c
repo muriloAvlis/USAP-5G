@@ -196,7 +196,7 @@ encodedData_t encodeActionDefinitionFormat4(char **metricNames, const size_t num
     // test
     for (size_t i = 0; i < numOfMetrics; i++)
     {
-        printf("Metric %ld:  %s", i, metricNames[i]);
+        printf("Metric %ld:  %s\n", i, metricNames[i]);
     }
 
     // Initialize the result
@@ -305,7 +305,7 @@ encodedData_t encodeActionDefinitionFormat4(char **metricNames, const size_t num
         return encoded;
     }
 
-    xer_fprint(stdout, &asn_DEF_E2SM_KPM_ActionDefinition, actDef);
+    // xer_fprint(stdout, &asn_DEF_E2SM_KPM_ActionDefinition, actDef);
 
     // Encoding
     asn_enc_rval_t enc_val = uper_encode_to_buffer(&asn_DEF_E2SM_KPM_ActionDefinition, NULL, actDef, buffer, buffer_size);
