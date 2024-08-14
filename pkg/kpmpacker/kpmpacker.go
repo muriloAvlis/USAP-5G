@@ -11,8 +11,6 @@ import (
 	"fmt"
 	"strings"
 	"unsafe"
-
-	"gerrit.o-ran-sc.org/r/ric-plt/xapp-frame/pkg/xapp"
 )
 
 // Encode Event Trigger Definition (only format 1 is available on KPM)
@@ -42,11 +40,9 @@ func EncodeActionDefinitionFormat4(metricNames []string, granularityPeriod uint6
 	validNames := make([]string, 0)
 	for _, v := range metricNames {
 		if len(strings.TrimSpace(v)) > 0 {
-			validNames = append(metricNames, v)
+			validNames = append(validNames, v)
 		}
 	}
-
-	xapp.Logger.Debug("Valid metric names %v", validNames)
 
 	// Convert []string to [][]byte
 	byteSlices := make([][]byte, len(validNames))
