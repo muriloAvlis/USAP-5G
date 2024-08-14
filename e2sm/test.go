@@ -10,7 +10,6 @@ import (
 	"errors"
 	"fmt"
 	"log"
-	"strings"
 	"unsafe"
 )
 
@@ -36,17 +35,9 @@ func EncodeEventTriggerDefinitionFormat1(reportingPeriod uint64) ([]int64, error
 
 // EncodeActionDefinitionFormat4 chama a função C e converte os resultados
 func EncodeActionDefinitionFormat4(metricNames []string, granularityPeriod uint64) ([]int64, error) {
-	// TEMP: check if metrics is not empty
-	validNames := make([]string, 0)
-	for _, v := range metricNames {
-		if len(strings.TrimSpace(v)) > 0 {
-			validNames = append(validNames, v)
-		}
-	}
-
 	// Convert []string to [][]byte
-	byteSlices := make([][]byte, len(validNames))
-	for i, name := range validNames {
+	byteSlices := make([][]byte, len(metricNames))
+	for i, name := range metricNames {
 		byteSlices[i] = []byte(name)
 	}
 
@@ -91,6 +82,21 @@ func EncodeActionDefinitionFormat4(metricNames []string, granularityPeriod uint6
 func main() {
 	metricNames := []string{
 		"CQI",
+		"DRB.AirIfDelayUl",
+		"DRB.PacketSuccessRateUlgNBUu",
+		"DRB.RlcDelayUl",
+		"DRB.RlcPacketDropRateDl",
+		"DRB.RlcSduDelayDl",
+		"DRB.RlcSduTransmittedVolumeDL",
+		"DRB.RlcSduTransmittedVolumeUL",
+		"DRB.UEThpDl",
+		"DRB.UEThpUl",
+		"RRU.PrbAvailDl",
+		"RRU.PrbAvailUl",
+		"RRU.PrbTotDl",
+		"RRU.PrbTotUl",
+		"RSRP",
+		"RSRQ",
 	}
 
 	encodedData, err := EncodeActionDefinitionFormat4(metricNames, 1000)
