@@ -5,8 +5,7 @@ file(GLOB KPM_SRC "${CMAKE_CURRENT_SOURCE_DIR}/kpm_v4.00_compiled/*.c")
 file(GLOB KPM_HEADERS "${CMAKE_CURRENT_SOURCE_DIR}/kpm_v4.00_compiled/*.h")
 file(GLOB INCLUDE_HEADERS "include/*.h")
 
-add_library(e2smwrapper SHARED wrapper.c ${KPM_SRC}
-        test.c)
+add_library(e2smwrapper SHARED wrapper.c ${KPM_SRC})
 
 target_include_directories(e2smwrapper PUBLIC
         kpm_v4.00_compiled
