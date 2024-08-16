@@ -93,11 +93,7 @@ test_t testFunc(char **metricNames, const size_t numOfMetrics, const u_int64_t g
         return encoded;
     }
 
-    // Set Action Definition to format 4 (UE-level Measurement)
-    actDef->ric_Style_Type = (long)4;
-    actDef->actionDefinition_formats.present = E2SM_KPM_ActionDefinition__actionDefinition_formats_PR_actionDefinition_Format4;
-
-    // Matching UE test condition list
+    // Matching UE test condition item
     MatchingUeCondPerSubItem_t *matchingUeCondItem = (MatchingUeCondPerSubItem_t *)calloc(1, sizeof(MatchingUeCondPerSubItem_t));
     if(matchingUeCondItem == NULL) {
         fprintf(stderr, "[ERROR] matchingUeCondItem memory allocation failure!\n");
@@ -138,20 +134,22 @@ test_t testFunc(char **metricNames, const size_t numOfMetrics, const u_int64_t g
         if(measInfoItem == NULL) {
             fprintf(stderr, "[ERROR] measInfoItem memory allocation failure!\n");
             ASN_STRUCT_FREE(asn_DEF_E2SM_KPM_ActionDefinition, actDef);
+            ASN_STRUCT_FREE(asn_DEF_E2SM_KPM_ActionDefinition_Format4, actDefFmt4);
             return encoded;
         }
         // meas type
         measInfoItem->measType.present = MeasurementType_PR_measName;
         //// meas name
         size_t measNameSize = strlen(metricNames[i]);
-        measInfoItem->measType.choice.measName.buf = (uint8_t *)calloc(measNameSize + 1, sizeof(uint8_t));
+        measInfoItem->measType.choice.measName.buf = (uint8_t *)calloc(measNameSize, sizeof(uint8_t));
         if(measInfoItem->measType.choice.measName.buf == NULL) {
             fprintf(stderr, "[ERROR] measName buffer memory allocation failure!\n");
             ASN_STRUCT_FREE(asn_DEF_E2SM_KPM_ActionDefinition, actDef);
+            ASN_STRUCT_FREE(asn_DEF_E2SM_KPM_ActionDefinition_Format4, actDefFmt4);
+            free(measInfoItem);
             return encoded;
         }
         memcpy(measInfoItem->measType.choice.measName.buf, metricNames[i], measNameSize);
-        measInfoItem->measType.choice.measName.buf[measNameSize + 1] = '\0'; // for null character
         measInfoItem->measType.choice.measName.size = measNameSize;
 
         // label info list
@@ -160,6 +158,8 @@ test_t testFunc(char **metricNames, const size_t numOfMetrics, const u_int64_t g
         if(labelInfoItem->measLabel.noLabel == NULL) {
             fprintf(stderr, "[ERROR] NoLabel buffer memory allocation failure!\n");
             ASN_STRUCT_FREE(asn_DEF_E2SM_KPM_ActionDefinition, actDef);
+            ASN_STRUCT_FREE(asn_DEF_E2SM_KPM_ActionDefinition_Format4, actDefFmt4);
+            free(measInfoItem);
             return encoded;
         }
         static long label = MeasurementLabel__noLabel_true;
@@ -171,11 +171,13 @@ test_t testFunc(char **metricNames, const size_t numOfMetrics, const u_int64_t g
         ASN_SEQUENCE_ADD(&actDefFmt4->subscriptionInfo.measInfoList.list, measInfoItem);
     }
 
+    // Set Action Definition to format 4 (UE-level Measurement)
+    actDef->ric_Style_Type = 4;
+    actDef->actionDefinition_formats.present = E2SM_KPM_ActionDefinition__actionDefinition_formats_PR_actionDefinition_Format4;
+    actDef->actionDefinition_formats.choice.actionDefinition_Format4 = actDefFmt4;
+
     // Granularity period
     actDefFmt4->subscriptionInfo.granulPeriod = granularityPeriod;
-
-    // Set action definition format 4
-    actDef->actionDefinition_formats.choice.actionDefinition_Format4 = actDefFmt4;
 
     // create a constrains buffer
     size_t errbuffer_size = 128;
@@ -200,7 +202,7 @@ test_t testFunc(char **metricNames, const size_t numOfMetrics, const u_int64_t g
         return encoded;
     }
 
-    // xer_fprint(stdout, &asn_DEF_E2SM_KPM_ActionDefinition, actDef);
+    xer_fprint(stdout, &asn_DEF_E2SM_KPM_ActionDefinition, actDef);
 
     //ATS_ALIGNED_BASIC_PER
     //ATS_ALIGNED_CANONICAL_PER
@@ -229,27 +231,27 @@ test_t testFunc(char **metricNames, const size_t numOfMetrics, const u_int64_t g
 
 // Don't compile with this
 
-// int main() {
-//     char* metrics[] = {
-//         "CQI"
-//     };
-//     // char* metrics[] = {
-//     //     "CQI"
-//     // };
-// 	size_t numOfMetrics = sizeof(metrics) / sizeof(metrics[0]);
-// 	u_int64_t granPer = 1000;
-//
-// 	test_t res = testFunc(metrics, numOfMetrics, granPer);
-//
-//     // Exibir o resultado (apenas como exemplo, ajuste conforme necessário)
-//     printf("Encoded buffer size: %zu\n", res.size);
-//     printf("Encoded buffer: ");
-//     for (size_t i = 0; i < res.size; i++) {
-//         printf("%d ", res.buffer[i]);
-//     }
-//     printf("\n");
-//
-//     free(res.buffer);
-//
-//     return 0;
-// }
+int main() {
+    char* metrics[] = {
+        "CQI"
+    };
+    // char* metrics[] = {
+    //     "CQI"
+    // };
+	size_t numOfMetrics = sizeof(metrics) / sizeof(metrics[0]);
+	u_int64_t granPer = 1000;
+
+	test_t res = testFunc(metrics, numOfMetrics, granPer);
+
+    // Exibir o resultado (apenas como exemplo, ajuste conforme necessário)
+    printf("Encoded buffer size: %zu\n", res.size);
+    printf("Encoded buffer: ");
+    for (size_t i = 0; i < res.size; i++) {
+        printf("%d ", res.buffer[i]);
+    }
+    printf("\n");
+
+    free(res.buffer);
+
+    return 0;
+}

@@ -13,5 +13,5 @@ asn1c -gen-PER -fcompound-names -fincludes-quoted -fno-include-deps -findirect-c
 To avoid a Go error `A reference to undefined reference 'ASN_DEF_1'`:
 
 ```shell
-echo "int main(){}" > converter-example.c
+echo "" > converter-example.c
 ```
