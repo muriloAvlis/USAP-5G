@@ -112,18 +112,20 @@ func (app *UsapXapp) sendSubscription(e2NodeID string) {
 	xapp.Logger.Debug("Encoded eventTriggerDefinitionFormat1: %v", evTriggerDefFmt1)
 
 	// Encode actionDefinitionFormat4 using C encoder
-	actionDefinitionFormat4, err := kpmpacker.EncodeActionDefinitionFormat4(ranUeKpis[e2NodeID], granularityPeriod)
-	if err != nil {
-		log.Fatal(err) // critical process
-	}
+	// actionDefinitionFormat4, err := kpmpacker.EncodeActionDefinitionFormat4(ranUeKpis[e2NodeID], granularityPeriod)
+	// if err != nil {
+	// 	log.Fatal(err) // critical process
+	// }
 
-	xapp.Logger.Debug("Encoded actionDefinitionFormat4: %v", actionDefinitionFormat4)
+	// xapp.Logger.Debug("Encoded actionDefinitionFormat4: %v", actionDefinitionFormat4)
 
 	// Set actionToBeSetup
 	actionToBeSetup := &clientmodel.ActionToBeSetup{
-		ActionID:         &actionId,
-		ActionDefinition: actionDefinitionFormat4,
-		ActionType:       &actionType,
+		ActionID: &actionId,
+		ActionDefinition: clientmodel.ActionDefinition{
+			0, 1, 4, 128, 26, 0, 0, 0, 56, 0, 1, 0, 32, 2, 3, 232, 0, 0, 0, 0, 32, 67, 81, 73, 1, 32, 0, 0, 64, 3, 231,
+		},
+		ActionType: &actionType,
 		SubsequentAction: &clientmodel.SubsequentAction{
 			SubsequentActionType: &subsequentActionType,
 			TimeToWait:           &timeToWait,
