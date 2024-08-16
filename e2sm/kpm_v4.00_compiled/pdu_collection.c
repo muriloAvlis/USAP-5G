@@ -25,6 +25,7 @@ extern struct asn_TYPE_descriptor_s asn_DEF_E2SM_KPM_ActionDefinition;
 extern struct asn_TYPE_descriptor_s asn_DEF_E2SM_KPM_IndicationHeader;
 extern struct asn_TYPE_descriptor_s asn_DEF_E2SM_KPM_IndicationMessage;
 extern struct asn_TYPE_descriptor_s asn_DEF_E2SM_KPM_RANfunction_Description;
+extern struct asn_TYPE_descriptor_s asn_DEF_EXTERNAL;
 
 
 struct asn_TYPE_descriptor_s *asn_pdu_collection[] = {
@@ -51,6 +52,8 @@ struct asn_TYPE_descriptor_s *asn_pdu_collection[] = {
 	&asn_DEF_E2SM_KPM_IndicationHeader,	
 	&asn_DEF_E2SM_KPM_IndicationMessage,	
 	&asn_DEF_E2SM_KPM_RANfunction_Description,	
+	/* From module ASN1C-UsefulInformationObjectClasses in /usr/local/share/asn1c/standard-modules/ASN1C-UsefulInformationObjectClasses.asn1 */
+	&asn_DEF_EXTERNAL,	
 	0
 };
 

@@ -133,7 +133,7 @@ actFmtType_t buildRanCellUeKpi(const char* ranFuncDefinition)
 }
 
 encodedData_t encodeEventTriggerDefinitionFormat1(const u_int64_t reportingPeriod)
-{Deferral
+{
     // Initialize the result
     encodedData_t encoded = {NULL, 0};
 
@@ -143,15 +143,14 @@ encodedData_t encodeEventTriggerDefinitionFormat1(const u_int64_t reportingPerio
         fprintf(stderr, "[ERROR] E2SM_KPM_EventTriggerDefinition memory allocation failure!\n");
         return encoded;
     }
-    Defer(ASN_STRUCT_FREE(asn_DEF_E2SM_KPM_EventTriggerDefinition, eventTriggerDef)); // free memory in the end
 
     // EventTriggerFormat1 memory allocation
     E2SM_KPM_EventTriggerDefinition_Format1_t * eventTriggerDefFmt1 = (E2SM_KPM_EventTriggerDefinition_Format1_t *)calloc(1, sizeof(E2SM_KPM_EventTriggerDefinition_Format1_t));
     if(eventTriggerDefFmt1 == NULL) {
         fprintf(stderr, "[ERROR] E2SM_KPM_EventTriggerDefinition_Format1 memory allocation failure!\n");
+        ASN_STRUCT_FREE(asn_DEF_E2SM_KPM_EventTriggerDefinition, eventTriggerDef);
         return encoded;
     }
-    Defer(ASN_STRUCT_FREE(asn_DEF_E2SM_KPM_EventTriggerDefinition_Format1, eventTriggerDefFmt1)); // free memory in the end
 
     // Set event trigger definition to format 1
     eventTriggerDef->eventDefinition_formats.choice.eventDefinition_Format1 = eventTriggerDefFmt1;
@@ -161,19 +160,21 @@ encodedData_t encodeEventTriggerDefinitionFormat1(const u_int64_t reportingPerio
     eventTriggerDefFmt1->reportingPeriod = reportingPeriod;
 
     // Create an encoding buffer
-    const size_t buffer_size = 64;
+    const size_t buffer_size = 1024;
     u_int8_t *buffer = (uint8_t *)calloc(1, buffer_size);
     if(buffer == NULL) {
         fprintf(stderr, "[ERROR] Buffer memory allocation failure!\n");
+        ASN_STRUCT_FREE(asn_DEF_E2SM_KPM_EventTriggerDefinition, eventTriggerDef);
+        ASN_STRUCT_FREE(asn_DEF_E2SM_KPM_EventTriggerDefinition_Format1, eventTriggerDefFmt1);
+        free(eventTriggerDefFmt1);
         return encoded;
     }
-    Defer(free(buffer)); // free memory in the end
-
-    // Compare buffers size
-    memcpy(buffer, eventTriggerDef, buffer_size);
 
     // Encoding
-    asn_enc_rval_t enc_rval = aper_encode_to_buffer(&asn_DEF_E2SM_KPM_EventTriggerDefinition, NULL, eventTriggerDef, buffer, buffer_size);
+    //ATS_ALIGNED_BASIC_PER
+    //ATS_ALIGNED_CANONICAL_PER
+    //ATS_DER
+    asn_enc_rval_t enc_rval = asn_encode_to_buffer(0, ATS_ALIGNED_CANONICAL_PER, &asn_DEF_E2SM_KPM_EventTriggerDefinition, eventTriggerDef, buffer, buffer_size);
 
     // Failed to encoding
     if (enc_rval.encoded == -1) {
@@ -188,17 +189,15 @@ encodedData_t encodeEventTriggerDefinitionFormat1(const u_int64_t reportingPerio
         encoded.buffer[i] = buffer[i];
     }
 
+    ASN_STRUCT_FREE(asn_DEF_E2SM_KPM_EventTriggerDefinition, eventTriggerDef);
+    ASN_STRUCT_FREE(asn_DEF_E2SM_KPM_EventTriggerDefinition_Format1, eventTriggerDefFmt1);
+    free(buffer); // free memory in the end
+
     return encoded;
 }
 
 encodedData_t encodeActionDefinitionFormat4(char **metricNames, const size_t numOfMetrics, const u_int64_t granularityPeriod)
-{Deferral
-    // test
-    // for (size_t i = 0; i < numOfMetrics; i++)
-    // {
-    //     printf("Metric %ld:  %s\n", i, metricNames[i]);
-    // }
-
+{
     // Initialize the result
     encodedData_t encoded = {NULL, 0};
 
@@ -210,7 +209,7 @@ encodedData_t encodeActionDefinitionFormat4(char **metricNames, const size_t num
         return encoded;
     }
 
-    // Set Action Definition to format 4 (UE-level Measurement)
+    // Set RIC Style Type to format 4 (UE-level Measurement)
     actDef->ric_Style_Type = 4;
     actDef->actionDefinition_formats.present = E2SM_KPM_ActionDefinition__actionDefinition_formats_PR_actionDefinition_Format4;
 
@@ -227,6 +226,7 @@ encodedData_t encodeActionDefinitionFormat4(char **metricNames, const size_t num
     if(matchingUeCondItem == NULL) {
         fprintf(stderr, "[ERROR] matchingUeCondItem memory allocation failure!\n");
         ASN_STRUCT_FREE(asn_DEF_E2SM_KPM_ActionDefinition, actDef);
+        ASN_STRUCT_FREE(asn_DEF_E2SM_KPM_ActionDefinition_Format4, actDefFmt4);
         return encoded;
     }
     matchingUeCondItem->testCondInfo.testType.present = TestCond_Type_PR_ul_rSRP;
@@ -241,6 +241,8 @@ encodedData_t encodeActionDefinitionFormat4(char **metricNames, const size_t num
     if(testVal == NULL) {
         fprintf(stderr, "[ERROR] testVal memory allocation failure!\n");
         ASN_STRUCT_FREE(asn_DEF_E2SM_KPM_ActionDefinition, actDef);
+        ASN_STRUCT_FREE(asn_DEF_E2SM_KPM_ActionDefinition_Format4, actDefFmt4);
+        free(matchingUeCondItem);
         return encoded;
     }
     testVal->present = TestCond_Value_PR_valueInt;
@@ -258,6 +260,7 @@ encodedData_t encodeActionDefinitionFormat4(char **metricNames, const size_t num
         if(measInfoItem == NULL) {
             fprintf(stderr, "[ERROR] measInfoItem memory allocation failure!\n");
             ASN_STRUCT_FREE(asn_DEF_E2SM_KPM_ActionDefinition, actDef);
+            ASN_STRUCT_FREE(asn_DEF_E2SM_KPM_ActionDefinition_Format4, actDefFmt4);
             return encoded;
         }
         // meas type
@@ -268,6 +271,8 @@ encodedData_t encodeActionDefinitionFormat4(char **metricNames, const size_t num
         if(measInfoItem->measType.choice.measName.buf == NULL) {
             fprintf(stderr, "[ERROR] measName buffer memory allocation failure!\n");
             ASN_STRUCT_FREE(asn_DEF_E2SM_KPM_ActionDefinition, actDef);
+            ASN_STRUCT_FREE(asn_DEF_E2SM_KPM_ActionDefinition_Format4, actDefFmt4);
+            free(measInfoItem);
             return encoded;
         }
         memcpy(measInfoItem->measType.choice.measName.buf, metricNames[i], measNameSize);
@@ -280,6 +285,8 @@ encodedData_t encodeActionDefinitionFormat4(char **metricNames, const size_t num
         if(labelInfoItem->measLabel.noLabel == NULL) {
             fprintf(stderr, "[ERROR] NoLabel buffer memory allocation failure!\n");
             ASN_STRUCT_FREE(asn_DEF_E2SM_KPM_ActionDefinition, actDef);
+            ASN_STRUCT_FREE(asn_DEF_E2SM_KPM_ActionDefinition_Format4, actDefFmt4);
+            free(measInfoItem);
             return encoded;
         }
         static long label = MeasurementLabel__noLabel_true;
@@ -298,7 +305,7 @@ encodedData_t encodeActionDefinitionFormat4(char **metricNames, const size_t num
     actDef->actionDefinition_formats.choice.actionDefinition_Format4 = actDefFmt4;
 
     // Create an encoding buffer
-    const size_t buffer_size = 1024;
+    const size_t buffer_size = 10240;
     char *buffer = (char *)calloc(1, buffer_size);
     if(buffer == NULL) {
         fprintf(stderr, "[ERROR] Buffer memory allocation failure!\n");
@@ -307,15 +314,18 @@ encodedData_t encodeActionDefinitionFormat4(char **metricNames, const size_t num
 
     xer_fprint(stdout, &asn_DEF_E2SM_KPM_ActionDefinition, actDef);
 
+    //ATS_ALIGNED_BASIC_PER
+    //ATS_ALIGNED_CANONICAL_PER
+    //ATS_DER
     // Encoding
-    asn_enc_rval_t enc_val = aper_encode_to_buffer(&asn_DEF_E2SM_KPM_ActionDefinition, NULL, actDef, buffer, buffer_size);
+    asn_enc_rval_t enc_val = asn_encode_to_buffer(0, ATS_ALIGNED_CANONICAL_PER, &asn_DEF_E2SM_KPM_ActionDefinition, actDef, buffer, buffer_size);
 
     if (enc_val.encoded == -1)
     {
         fprintf(stderr, "[ERROR] Failed to encode ASN.1 structure!\n");
     }
 
-    encoded.size = (enc_val.encoded + 7) / 8; // convert to bytes
+    encoded.size = enc_val.encoded;
     encoded.buffer = calloc(1, encoded.size);
     if (encoded.buffer == NULL) {
         fprintf(stderr, "Memory allocation failure\n");
@@ -324,6 +334,9 @@ encodedData_t encodeActionDefinitionFormat4(char **metricNames, const size_t num
 
     memcpy(encoded.buffer, buffer, encoded.size);
 
+    // free memory
+    ASN_STRUCT_FREE(asn_DEF_E2SM_KPM_ActionDefinition, actDef);
+    ASN_STRUCT_FREE(asn_DEF_E2SM_KPM_ActionDefinition_Format4, actDefFmt4);
     free(buffer);
 
     return encoded;
