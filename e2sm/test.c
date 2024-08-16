@@ -225,27 +225,27 @@ test_t testFunc(char **metricNames, const size_t numOfMetrics, const u_int64_t g
     return encoded;
 }
 
-int main() {
-    char* metrics[] = {
-        "CQI"
-    };
-    // char* metrics[] = {
-    //     "CQI"
-    // };
-	size_t numOfMetrics = sizeof(metrics) / sizeof(metrics[0]);
-	u_int64_t granPer = 1000;
+// int main() {
+//     char* metrics[] = {
+//         "CQI"
+//     };
+//     // char* metrics[] = {
+//     //     "CQI"
+//     // };
+// 	size_t numOfMetrics = sizeof(metrics) / sizeof(metrics[0]);
+// 	u_int64_t granPer = 1000;
 
-	test_t res = testFunc(metrics, numOfMetrics, granPer);
+// 	test_t res = testFunc(metrics, numOfMetrics, granPer);
 
-    // Exibir o resultado (apenas como exemplo, ajuste conforme necessário)
-    printf("Encoded buffer size: %zu\n", res.size);
-    printf("Encoded buffer: ");
-    for (size_t i = 0; i < res.size; i++) {
-        printf("%d ", res.buffer[i]);
-    }
-    printf("\n");
+//     // Exibir o resultado (apenas como exemplo, ajuste conforme necessário)
+//     printf("Encoded buffer size: %zu\n", res.size);
+//     printf("Encoded buffer: ");
+//     for (size_t i = 0; i < res.size; i++) {
+//         printf("%d ", res.buffer[i]);
+//     }
+//     printf("\n");
 
-    free(res.buffer);
+//     free(res.buffer);
 
-    return 0;
-}
+//     return 0;
+// }
