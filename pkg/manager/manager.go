@@ -123,7 +123,7 @@ func (app *UsapXapp) sendSubscription(e2NodeID string) {
 	actionToBeSetup := &clientmodel.ActionToBeSetup{
 		ActionID: &actionId,
 		ActionDefinition: clientmodel.ActionDefinition{
-			0, 1, 4, 128, 26, 0, 0, 0, 56, 0, 1, 0, 32, 2, 3, 232, 0, 0, 0, 0, 32, 67, 81, 73, 1, 32, 0, 0, 64, 3, 231,
+			0, 1, 4, 128, 25, 0, 0, 0, 56, 1, 0, 32, 2, 3, 232, 0, 0, 0, 0, 32, 67, 81, 73, 1, 32, 0, 0, 64, 3, 231,
 		},
 		ActionType: &actionType,
 		SubsequentAction: &clientmodel.SubsequentAction{

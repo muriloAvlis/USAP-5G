@@ -67,8 +67,6 @@ typedef struct test
     size_t size;
 } test_t;
 
-// Don't compile with this
-
 test_t testFunc(char **metricNames, const size_t numOfMetrics, const u_int64_t granularityPeriod)
 {
     // test
@@ -80,38 +78,40 @@ test_t testFunc(char **metricNames, const size_t numOfMetrics, const u_int64_t g
     // Initialize the result
     test_t encoded = {NULL, 0};
 
-    // E2SM_KPM_ActionDefinition allocation
-    E2SM_KPM_ActionDefinition_t *actDef = calloc(1, sizeof(E2SM_KPM_ActionDefinition_t));
+    // E2SM_KPM_ActionDefinition memory allocation
+    E2SM_KPM_ActionDefinition_t *actDef = (E2SM_KPM_ActionDefinition_t *)calloc(1, sizeof(E2SM_KPM_ActionDefinition_t));
     if (actDef == NULL) {
         fprintf(stderr, "[ERROR] E2SM_KPM_ActionDefinition memory allocation failure!\n");
-        ASN_STRUCT_FREE(asn_DEF_E2SM_KPM_ActionDefinition, actDef);
         return encoded;
     }
 
-    // Set Action Definition to format 4 (UE-level Measurement)
-    actDef->ric_Style_Type = 4;
-    actDef->actionDefinition_formats.present = E2SM_KPM_ActionDefinition__actionDefinition_formats_PR_actionDefinition_Format4;
-
     // ActionDefinitionFormat4 memory allocation
-    E2SM_KPM_ActionDefinition_Format4_t * actDefFmt4 = calloc(1, sizeof(E2SM_KPM_ActionDefinition_Format4_t));
+    E2SM_KPM_ActionDefinition_Format4_t *actDefFmt4 = (E2SM_KPM_ActionDefinition_Format4_t *)calloc(1, sizeof(E2SM_KPM_ActionDefinition_Format4_t));
     if(actDefFmt4 == NULL) {
         fprintf(stderr, "[ERROR] E2SM_KPM_ActionDefinition_Format4 memory allocation failure!\n");
         ASN_STRUCT_FREE(asn_DEF_E2SM_KPM_ActionDefinition, actDef);
         return encoded;
     }
 
-    // Matching UE test condition
+    // Set Action Definition to format 4 (UE-level Measurement)
+    actDef->ric_Style_Type = (long)4;
+    actDef->actionDefinition_formats.present = E2SM_KPM_ActionDefinition__actionDefinition_formats_PR_actionDefinition_Format4;
+
+    // Matching UE test condition list
     MatchingUeCondPerSubItem_t *matchingUeCondItem = (MatchingUeCondPerSubItem_t *)calloc(1, sizeof(MatchingUeCondPerSubItem_t));
     if(matchingUeCondItem == NULL) {
         fprintf(stderr, "[ERROR] matchingUeCondItem memory allocation failure!\n");
         ASN_STRUCT_FREE(asn_DEF_E2SM_KPM_ActionDefinition, actDef);
+        ASN_STRUCT_FREE(asn_DEF_E2SM_KPM_ActionDefinition_Format4, actDefFmt4);
         return encoded;
     }
+
+    //// Test type
     matchingUeCondItem->testCondInfo.testType.present = TestCond_Type_PR_ul_rSRP;
     matchingUeCondItem->testCondInfo.testType.choice.ul_rSRP = TestCond_Type__ul_rSRP_true;
 
     //// Test Condition expression
-    static TestCond_Expression_t testConditionExp = TestCond_Expression_lessthan;
+    static TestCond_Expression_t testConditionExp = TestCond_Expression_lessthan; // <
     matchingUeCondItem->testCondInfo.testExpr = &testConditionExp;
 
     //// test Value
@@ -119,10 +119,12 @@ test_t testFunc(char **metricNames, const size_t numOfMetrics, const u_int64_t g
     if(testVal == NULL) {
         fprintf(stderr, "[ERROR] testVal memory allocation failure!\n");
         ASN_STRUCT_FREE(asn_DEF_E2SM_KPM_ActionDefinition, actDef);
+        ASN_STRUCT_FREE(asn_DEF_E2SM_KPM_ActionDefinition_Format4, actDefFmt4);
+        free(matchingUeCondItem);
         return encoded;
     }
     testVal->present = TestCond_Value_PR_valueInt;
-    testVal->choice.valueInt = 1000;
+    testVal->choice.valueInt = (long)1000; // ul_rSRP < 1000 (always true)
 
     matchingUeCondItem->testCondInfo.testValue = testVal;
 
@@ -149,7 +151,7 @@ test_t testFunc(char **metricNames, const size_t numOfMetrics, const u_int64_t g
             return encoded;
         }
         memcpy(measInfoItem->measType.choice.measName.buf, metricNames[i], measNameSize);
-        measInfoItem->measType.choice.measName.buf[measNameSize] = '\0'; // for null character
+        measInfoItem->measType.choice.measName.buf[measNameSize + 1] = '\0'; // for null character
         measInfoItem->measType.choice.measName.size = measNameSize;
 
         // label info list
@@ -225,6 +227,8 @@ test_t testFunc(char **metricNames, const size_t numOfMetrics, const u_int64_t g
     return encoded;
 }
 
+// Don't compile with this
+
 // int main() {
 //     char* metrics[] = {
 //         "CQI"
@@ -234,9 +238,9 @@ test_t testFunc(char **metricNames, const size_t numOfMetrics, const u_int64_t g
 //     // };
 // 	size_t numOfMetrics = sizeof(metrics) / sizeof(metrics[0]);
 // 	u_int64_t granPer = 1000;
-
+//
 // 	test_t res = testFunc(metrics, numOfMetrics, granPer);
-
+//
 //     // Exibir o resultado (apenas como exemplo, ajuste conforme necessário)
 //     printf("Encoded buffer size: %zu\n", res.size);
 //     printf("Encoded buffer: ");
@@ -244,8 +248,8 @@ test_t testFunc(char **metricNames, const size_t numOfMetrics, const u_int64_t g
 //         printf("%d ", res.buffer[i]);
 //     }
 //     printf("\n");
-
+//
 //     free(res.buffer);
-
+//
 //     return 0;
 // }
