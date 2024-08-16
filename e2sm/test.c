@@ -175,8 +175,23 @@ test_t testFunc(char **metricNames, const size_t numOfMetrics, const u_int64_t g
     // Set action definition format 4
     actDef->actionDefinition_formats.choice.actionDefinition_Format4 = actDefFmt4;
 
+    // create a constrains buffer
+    size_t errbuffer_size = 128;
+    char *errbuffer = calloc(1, errbuffer_size);
+    if(errbuffer == NULL) {
+        fprintf(stderr, "[ERROR] errbuffer memory allocation failure!\n");
+        return encoded;
+    }
+
+    // check constrains
+    size_t ret_constr = asn_check_constraints(&asn_DEF_E2SM_KPM_ActionDefinition, actDef, errbuffer, &errbuffer_size);
+    if(ret_constr == -1){
+        fprintf(stderr,"Constraints failed for encoding action definition, %s", strerror(errno));
+        return encoded;
+    }
+
     // Create an encoding buffer
-    const size_t buffer_size = 1024;
+    const size_t buffer_size = 10240;
     char *buffer = (char *)calloc(1, buffer_size);
     if(buffer == NULL) {
         fprintf(stderr, "[ERROR] Buffer memory allocation failure!\n");
@@ -185,15 +200,18 @@ test_t testFunc(char **metricNames, const size_t numOfMetrics, const u_int64_t g
 
     // xer_fprint(stdout, &asn_DEF_E2SM_KPM_ActionDefinition, actDef);
 
+    //ATS_ALIGNED_BASIC_PER
+    //ATS_ALIGNED_CANONICAL_PER
+    //ATS_DER
     // Encoding
-    asn_enc_rval_t enc_val = uper_encode_to_buffer(&asn_DEF_E2SM_KPM_ActionDefinition, NULL, actDef, buffer, buffer_size);
+    asn_enc_rval_t enc_val = asn_encode_to_buffer(0, ATS_ALIGNED_CANONICAL_PER, &asn_DEF_E2SM_KPM_ActionDefinition, actDef, buffer, buffer_size);
 
     if (enc_val.encoded == -1)
     {
         fprintf(stderr, "[ERROR] Failed to encode ASN.1 structure!\n");
     }
 
-    encoded.size = (enc_val.encoded + 7) / 8; // convert to bytes
+    encoded.size = enc_val.encoded; // convert to bytes
     encoded.buffer = calloc(1, encoded.size);
     if (encoded.buffer == NULL) {
         fprintf(stderr, "Memory allocation failure\n");
@@ -207,27 +225,27 @@ test_t testFunc(char **metricNames, const size_t numOfMetrics, const u_int64_t g
     return encoded;
 }
 
-// int main() {
-//     char* metrics[] = {
-//         "CQI"
-//     };
-//     // char* metrics[] = {
-//     //     "CQI"
-//     // };
-// 	size_t numOfMetrics = sizeof(metrics) / sizeof(metrics[0]);
-// 	u_int64_t granPer = 1000;
-//
-// 	test_t res = testFunc(metrics, numOfMetrics, granPer);
-//
-//     // Exibir o resultado (apenas como exemplo, ajuste conforme necessário)
-//     printf("Encoded buffer size: %zu\n", res.size);
-//     printf("Encoded buffer: ");
-//     for (size_t i = 0; i < res.size; i++) {
-//         printf("%d ", res.buffer[i]);
-//     }
-//     printf("\n");
-//
-//     free(res.buffer);
-//
-//     return 0;
-// }
+int main() {
+    char* metrics[] = {
+        "CQI"
+    };
+    // char* metrics[] = {
+    //     "CQI"
+    // };
+	size_t numOfMetrics = sizeof(metrics) / sizeof(metrics[0]);
+	u_int64_t granPer = 1000;
+
+	test_t res = testFunc(metrics, numOfMetrics, granPer);
+
+    // Exibir o resultado (apenas como exemplo, ajuste conforme necessário)
+    printf("Encoded buffer size: %zu\n", res.size);
+    printf("Encoded buffer: ");
+    for (size_t i = 0; i < res.size; i++) {
+        printf("%d ", res.buffer[i]);
+    }
+    printf("\n");
+
+    free(res.buffer);
+
+    return 0;
+}
