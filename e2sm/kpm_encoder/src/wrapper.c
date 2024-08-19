@@ -5,23 +5,27 @@
 #include "wrapper.h"
 
 
-
 // TODO: fix empty metrics return when call this func
 actFmtType_t buildRanCellUeKpi(const char* ranFuncDefinition)
 {
-    actFmtType_t res;
+    actFmtType_t res = {};
 
     // Calculate the length of the hex string
-    const size_t rfDefLen = strlen(ranFuncDefinition);
+    size_t rfDefLen = strlen(ranFuncDefinition);
+    printf("RFLenght: %ld\n", rfDefLen);
+    printf("RFLenghtAdapt: %ld\n", rfDefLen / 2 + 1);
 
     // Allocate memory for a char array to store the hex values
-    char *rfDefBuffer = malloc(rfDefLen/2 + 1);  // Each byte is represented by 2 characters, +1 for null terminator
+    char *rfDefBuffer = (char *)malloc((rfDefLen / 2) + 1); // Each byte is represented by 2 characters, +1 for null terminator
+    if (rfDefBuffer == NULL) {
+        fprintf(stderr, "rfDefBuffer memory allocation failed\n");
+        return res;
+    }
 
-    // Convert the rfDefinition string to binary data
-    for (size_t i = 0; i < rfDefLen; i += 2)
-    {
-        const char byte[3] = {ranFuncDefinition[i], ranFuncDefinition[i+1], '\0'};
-        rfDefBuffer[i/2] = (char)(strtol(byte, NULL, 16)); // convert to long int | 16 == hex
+    // Convert the hex string to binary data
+    for (size_t i = 0; i < rfDefLen; i += 2) {
+        char byte[3] = {ranFuncDefinition[i], ranFuncDefinition[i + 1], '\0'};
+        rfDefBuffer[i / 2] = (char)strtol(byte, NULL, 16);
     }
 
     // Null-terminate the char array
@@ -43,6 +47,10 @@ actFmtType_t buildRanCellUeKpi(const char* ranFuncDefinition)
     int act_fmt_type5_size = 0;
 
     E2SM_KPM_RANfunction_Description_t *e2smKpmRanFunctDescrip = (E2SM_KPM_RANfunction_Description_t *)(calloc(1, sizeof(E2SM_KPM_RANfunction_Description_t)));
+    if (e2smKpmRanFunctDescrip == NULL) {
+        fprintf(stderr, "e2smKpmRanFunctDescrip memory allocation failed\n");
+        return res;
+    }
 
     // decode asn.1 format
     const enum asn_transfer_syntax syntax = ATS_ALIGNED_BASIC_PER;
@@ -113,8 +121,7 @@ actFmtType_t buildRanCellUeKpi(const char* ranFuncDefinition)
         }
     } else
     {
-        printf("[WARN] E2SM-KPM RAN Function Description decode failed rval.code = %d \n", rval.code);
-        return res;
+        printf("[WARN] E2SM KPM RAN Function Description decode failed rval.code = %d \n", rval.code);
     }
 
     // set RAN Func definitions to res
@@ -128,6 +135,10 @@ actFmtType_t buildRanCellUeKpi(const char* ranFuncDefinition)
     res.act_fmt_type3_size = act_fmt_type3_size;
     res.act_fmt_type4_size = act_fmt_type4_size;
     res.act_fmt_type5_size = act_fmt_type5_size;
+
+    free(rfDefBuffer);
+    free(e2smKpmRanFunctDescrip);
+
     return res;
 }
 
