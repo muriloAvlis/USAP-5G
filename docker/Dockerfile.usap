@@ -47,7 +47,7 @@ ENV TZ=America/Belem
 RUN install_packages tzdata dnsutils net-tools
 
 ## Copy compiled dependencies from builder stage
-COPY --from=builder /usr/local/lib/libe2smwrapper.so /usr/local/lib/libe2smwrapper.so
+COPY --from=builder /usr/local/lib/libe2sm* /usr/local/lib/
 COPY --from=builder /usr/local/include/e2sm/ /usr/local/include/e2sm/
 
 RUN ldconfig
