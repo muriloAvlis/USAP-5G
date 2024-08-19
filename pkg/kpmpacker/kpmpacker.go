@@ -87,3 +87,7 @@ func EncodeActionDefinitionFormat4(metricNames []string, granularityPeriod uint6
 	}
 	return actionDefFmt4, nil
 }
+
+func DecodeRanFuncDefStyles() {
+
+}
