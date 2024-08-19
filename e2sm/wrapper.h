@@ -61,9 +61,10 @@
 #include <S-NSSAI.h>
 #include <TimeStamp.h>
 #include <per_encoder.h>
+// TestCond
+#include <TestCond-Value.h>
 
 #include "asn_application.h"
-#include "defer.h"
 
 typedef struct actFmtType
 {
@@ -85,6 +86,7 @@ typedef struct encodedData
     int size;
 } encodedData_t;
 
+// Decode action formats
 actFmtType_t buildRanCellUeKpi(const char *ranFuncDefinition);
 
 // Encode Event Trigger Definition (only format 1 is available on KPM)
