@@ -9,28 +9,13 @@
 // TODO: fix empty metrics return when call this func
 actFmtType_t buildRanCellUeKpi(const char* ranFuncDefinition)
 {
-    actFmtType_t res = {
-        NULL,
-        NULL,
-        NULL,
-        NULL,
-        NULL,
-        0,
-        0,
-        0,
-        0,
-        0
-    };
+    actFmtType_t res;
 
     // Calculate the length of the hex string
     const size_t rfDefLen = strlen(ranFuncDefinition);
 
     // Allocate memory for a char array to store the hex values
     char *rfDefBuffer = malloc(rfDefLen/2 + 1);  // Each byte is represented by 2 characters, +1 for null terminator
-    if (rfDefBuffer == NULL) {
-        fprintf(stderr, "[ERROR] rfDefBuffer memory allocation failure!\n");
-        return res;
-    }
 
     // Convert the rfDefinition string to binary data
     for (size_t i = 0; i < rfDefLen; i += 2)
@@ -128,7 +113,7 @@ actFmtType_t buildRanCellUeKpi(const char* ranFuncDefinition)
         }
     } else
     {
-        printf("[WARN] E2SM KPM RAN Function Description decode failed rval.code = %d \n", rval.code);
+        printf("[WARN] E2SM-KPM RAN Function Description decode failed rval.code = %d \n", rval.code);
         return res;
     }
 
