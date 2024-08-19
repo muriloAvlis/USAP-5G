@@ -40,7 +40,7 @@ actFmtType_t buildRanCellUeKpi(const char* ranFuncDefinition)
     }
 
     // Null-terminate the char array
-    rfDefBuffer[  / 2] = '\0';
+    rfDefBuffer[rfDefLen / 2] = '\0';
 
     // Now hex_buffer contains the binary data corresponding to the RF Definitions values
     // Print the result
@@ -129,6 +129,7 @@ actFmtType_t buildRanCellUeKpi(const char* ranFuncDefinition)
     } else
     {
         printf("[WARN] E2SM KPM RAN Function Description decode failed rval.code = %d \n", rval.code);
+        return res;
     }
 
     // free memory
