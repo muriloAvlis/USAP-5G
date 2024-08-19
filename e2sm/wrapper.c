@@ -175,6 +175,10 @@ encodedData_t encodeEventTriggerDefinitionFormat1(const u_int64_t reportingPerio
     // Set Reporting Period
     eventTriggerDefFmt1->reportingPeriod = reportingPeriod;
 
+    // Shows the structure to be encoded
+    printf("[INFO] E2SM-KPM Event Trigger Definition Format 1 message:\n");
+    xer_fprint(stdout, &asn_DEF_E2SM_KPM_EventTriggerDefinition, eventTriggerDef);
+
     // Create an encoding buffer
     const size_t buffer_size = 1024;
     u_int8_t *buffer = (uint8_t *)calloc(1, buffer_size);
@@ -328,6 +332,8 @@ encodedData_t encodeActionDefinitionFormat4(char **metricNames, const size_t num
         return encoded;
     }
 
+    // Shows the structure to be encoded
+    printf("[INFO] E2SM-KPM Action Definition Format 4 message:\n");
     xer_fprint(stdout, &asn_DEF_E2SM_KPM_ActionDefinition, actDef);
 
     //ATS_ALIGNED_BASIC_PER
