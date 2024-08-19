@@ -4,20 +4,33 @@
 
 #include "wrapper.h"
 
-#include <TestCond-Value.h>
+
 
 // TODO: fix empty metrics return when call this func
 actFmtType_t buildRanCellUeKpi(const char* ranFuncDefinition)
-{Deferral
-    actFmtType_t res;
+{
+    actFmtType_t res = {
+        NULL,
+        NULL,
+        NULL,
+        NULL,
+        NULL,
+        0,
+        0,
+        0,
+        0,
+        0
+    };
 
     // Calculate the length of the hex string
     const size_t rfDefLen = strlen(ranFuncDefinition);
 
     // Allocate memory for a char array to store the hex values
     char *rfDefBuffer = malloc(rfDefLen/2 + 1);  // Each byte is represented by 2 characters, +1 for null terminator
-    assert(rfDefBuffer != NULL && "[ERROR] Failed to allocate memory!");
-    Defer(free(rfDefBuffer));
+    if (rfDefBuffer == NULL) {
+        fprintf(stderr, "[ERROR] rfDefBuffer memory allocation failure!\n");
+        return res;
+    }
 
     // Convert the rfDefinition string to binary data
     for (size_t i = 0; i < rfDefLen; i += 2)
@@ -27,7 +40,7 @@ actFmtType_t buildRanCellUeKpi(const char* ranFuncDefinition)
     }
 
     // Null-terminate the char array
-    rfDefBuffer[rfDefLen / 2] = '\0';
+    rfDefBuffer[  / 2] = '\0';
 
     // Now hex_buffer contains the binary data corresponding to the RF Definitions values
     // Print the result
@@ -117,6 +130,9 @@ actFmtType_t buildRanCellUeKpi(const char* ranFuncDefinition)
     {
         printf("[WARN] E2SM KPM RAN Function Description decode failed rval.code = %d \n", rval.code);
     }
+
+    // free memory
+    free(rfDefBuffer);
 
     // set RAN Func definitions to res
     res.act_fmt_type1 = act_fmt_type1;
