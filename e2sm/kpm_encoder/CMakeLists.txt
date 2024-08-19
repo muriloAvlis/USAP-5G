@@ -4,9 +4,7 @@ set(CMAKE_POSITION_INDEPENDENT_CODE ON)
 file(GLOB KPM_ENCODER_SRC "${CMAKE_CURRENT_SOURCE_DIR}/lib/*.c")
 file(GLOB KPM_ENCODER_HEADERS "${CMAKE_CURRENT_SOURCE_DIR}/lib/*.h")
 
-add_library(e2sm_kpm_encoder SHARED src/wrapper.c ${KPM_ENCODER_SRC}
-        ../kpm_decoder/src/wrapper.c
-        ../kpm_decoder/src/wrapper.h)
+add_library(e2sm_kpm_encoder SHARED src/wrapper.c ${KPM_ENCODER_SRC})
 
 target_include_directories(e2sm_kpm_encoder PUBLIC
         lib
