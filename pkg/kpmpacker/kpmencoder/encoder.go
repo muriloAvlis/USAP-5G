@@ -1,4 +1,4 @@
-package kpmpacker
+package kpmencoder
 
 /*
 #cgo LDFLAGS: -lm -le2sm_kpm_encoder
