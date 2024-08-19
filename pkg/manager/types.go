@@ -12,7 +12,7 @@ var (
 	RMRPort              = int64(4561)
 	KpmRanFuncId         = int64(2)
 	seqId                = int64(1234)               // XappEventInstanceID
-	ranUeKpis            = make(map[string][]string) // map to [E2NodeID]:[RF_Def_Fmt]
+	ranUeKpis            = make(map[string][]string) // map to [E2NodeID]:[metrics]
 	reportingPeriod      = uint64(10000)             // in ms
 	actionId             = int64(1)                  // What is this??
 	granularityPeriod    = uint64(1000)

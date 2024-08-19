@@ -1,11 +1,5 @@
 package manager
 
-/*
-#cgo LDFLAGS: -L/usr/local/lib -le2smwrapper -lm
-#cgo CFLAGS: -I/usr/local/include/e2sm
-#include <e2sm/wrapper.h>
-*/
-import "C"
 import (
 	"encoding/json"
 	"log"
@@ -14,7 +8,6 @@ import (
 	"strings"
 	"sync"
 	"time"
-	"unsafe"
 
 	"gerrit.o-ran-sc.org/r/ric-plt/xapp-frame/pkg/clientmodel"
 	"gerrit.o-ran-sc.org/r/ric-plt/xapp-frame/pkg/xapp"
@@ -240,26 +233,9 @@ func (app *UsapXapp) xAppStartCB(d interface{}) {
 				continue
 			}
 
-			// decode KPM RF definition format types
-			RfDefCString := C.CString(e2Resp.Gnb.RanFunctions[kpm_idx].RanFunctionDefinition)
-			defer C.free(unsafe.Pointer(RfDefCString))         // free buffer
-			rfDefFmtTypes := C.buildRanCellUeKpi(RfDefCString) // get RAN Function definitions from C wrapper
-
-			// For E2SM-KPM report style 4
-			rfDefFmtType4 := make([]string, rfDefFmtTypes.act_fmt_type4_size)
-
-			for _, v := range unsafe.Slice(rfDefFmtTypes.act_fmt_type4, rfDefFmtTypes.act_fmt_type4_size) {
-				rfDefFmtType4 = append(rfDefFmtType4, C.GoString(v))
-			}
-
-			// TEMP: check if metric name is not empty
-			for _, v := range rfDefFmtType4 {
-				if len(strings.TrimSpace(v)) > 0 {
-					ranUeKpis[nb.GetInventoryName()] = append(ranUeKpis[nb.GetInventoryName()], strings.TrimSpace(v))
-				}
-			}
-
-			// TODO: prepare variable to receive cell KPIs
+			// decode KPM RF definition Action Format Type 4
+			rfDefActFmtType4 := kpmpacker.DecodeActFmtTypebyReportStyle(e2Resp.Gnb.RanFunctions[kpm_idx].RanFunctionDefinition, 4)
+			ranUeKpis[nb.GetInventoryName()] = append(ranUeKpis[nb.GetInventoryName()], rfDefActFmtType4...)
 
 			// loop to check if xApp is registered
 			for {

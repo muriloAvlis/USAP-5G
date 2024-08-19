@@ -66,28 +66,11 @@
 
 #include "asn_application.h"
 
-typedef struct actFmtType
-{
-    char ** act_fmt_type1; // E2 Node Measurement
-    char ** act_fmt_type2; // E2 Node Measurement for a single UE
-    char ** act_fmt_type3; // Condition-based, UE-level E2 Node Measuremen
-    char ** act_fmt_type4; // Common Condition-based, UE-level Measurement
-    char ** act_fmt_type5; // E2 Node Measurement for multiple UEs
-    int act_fmt_type1_size;
-    int act_fmt_type2_size;
-    int act_fmt_type3_size;
-    int act_fmt_type4_size;
-    int act_fmt_type5_size;
-} actFmtType_t;
-
 typedef struct encodedData
 {
     u_int8_t * buffer;
     int size;
 } encodedData_t;
-
-// Decode action formats
-actFmtType_t buildRanCellUeKpi(const char *ranFuncDefinition);
 
 // Encode Event Trigger Definition (only format 1 is available on KPM)
 encodedData_t encodeEventTriggerDefinitionFormat1(u_int64_t reportingPeriod);
