@@ -132,9 +132,6 @@ actFmtType_t buildRanCellUeKpi(const char* ranFuncDefinition)
         return res;
     }
 
-    // free memory
-    free(rfDefBuffer);
-
     // set RAN Func definitions to res
     res.act_fmt_type1 = act_fmt_type1;
     res.act_fmt_type2 = act_fmt_type2;
