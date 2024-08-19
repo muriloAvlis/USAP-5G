@@ -1,3 +1,0 @@
-package kpmpacker
-
-var ()

@@ -1,4 +1,4 @@
-package kpmpacker
+package kpmdecoder
 
 /*
 #cgo LDFLAGS: -lm -le2sm_kpm_decoder

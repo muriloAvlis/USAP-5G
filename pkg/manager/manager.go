@@ -11,7 +11,8 @@ import (
 
 	"gerrit.o-ran-sc.org/r/ric-plt/xapp-frame/pkg/clientmodel"
 	"gerrit.o-ran-sc.org/r/ric-plt/xapp-frame/pkg/xapp"
-	"github.com/muriloAvlis/USAP/pkg/kpmpacker"
+	"github.com/muriloAvlis/USAP/pkg/kpmpacker/kpmdecoder"
+	"github.com/muriloAvlis/USAP/pkg/kpmpacker/kpmencoder"
 )
 
 // Listen RIC messages and send them to the RMR channel
@@ -98,7 +99,7 @@ func (app *UsapXapp) sendSubscription(e2NodeID string) {
 	xapp.Logger.Info("Sending subscription request for E2 Node: %s", e2NodeID)
 
 	// Encode eventTriggerDefinitionFormat1 using C encoder
-	evTriggerDefFmt1, err := kpmpacker.EncodeEventTriggerDefinitionFormat1(reportingPeriod)
+	evTriggerDefFmt1, err := kpmencoder.EncodeEventTriggerDefinitionFormat1(reportingPeriod)
 	if err != nil {
 		log.Fatal(err) // critical process
 	}
@@ -106,7 +107,7 @@ func (app *UsapXapp) sendSubscription(e2NodeID string) {
 	xapp.Logger.Debug("Encoded eventTriggerDefinitionFormat1: %v", evTriggerDefFmt1)
 
 	// Encode actionDefinitionFormat4 using C encoder
-	actionDefinitionFormat4, err := kpmpacker.EncodeActionDefinitionFormat4(ranUeKpis[e2NodeID], granularityPeriod)
+	actionDefinitionFormat4, err := kpmencoder.EncodeActionDefinitionFormat4(ranUeKpis[e2NodeID], granularityPeriod)
 	if err != nil {
 		log.Fatal(err) // critical process
 	}
@@ -234,7 +235,7 @@ func (app *UsapXapp) xAppStartCB(d interface{}) {
 			}
 
 			// decode KPM RF definition Action Format Type 4
-			rfDefActFmtType4 := kpmpacker.DecodeActFmtTypebyReportStyle(e2Resp.Gnb.RanFunctions[kpm_idx].RanFunctionDefinition, 4)
+			rfDefActFmtType4 := kpmdecoder.DecodeActFmtTypebyReportStyle(e2Resp.Gnb.RanFunctions[kpm_idx].RanFunctionDefinition, 4)
 			ranUeKpis[nb.GetInventoryName()] = append(ranUeKpis[nb.GetInventoryName()], rfDefActFmtType4...)
 
 			// loop to check if xApp is registered
