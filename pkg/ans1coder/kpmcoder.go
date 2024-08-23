@@ -2,7 +2,6 @@ package asn1coder
 
 import (
 	"context"
-	"fmt"
 	"log"
 	"time"
 
@@ -26,7 +25,7 @@ func (c *Asn1Coder) DecodeMeasNameListbyReportStyle(ranFunctionDefinition string
 	// call RPC method
 	response, err := client.GetMeasListbyRicReportStyle(ctx, request)
 	if err != nil {
-		log.Fatalf("Error to call gRPC method: %v", &err)
+		log.Fatalf("Error to call gRPC method: %s", err.Error())
 	}
 
 	return response.MeasList
@@ -65,20 +64,11 @@ func (c *Asn1Coder) EncodeActionDefinitionFmt4(measNameList []string, granularit
 		GranularityPeriod: granularityPeriod,
 	}
 
-	// Measure time
-	startTime := time.Now()
-
 	// call RPC method
 	response, err := client.EncodeActionDefinitionFmt4(ctx, request)
 	if err != nil {
 		log.Fatalf("Error to call gRPC method: %s", err.Error())
 	}
-
-	// Measure time
-	duration := time.Since(startTime)
-
-	// Print the time taken
-	fmt.Printf("gRPC call took %v\n", duration)
 
 	return response.EncodedActionDefinition
 }
