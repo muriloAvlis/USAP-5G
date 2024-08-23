@@ -4,6 +4,11 @@ metadata: {{ $fullname := printf "%s-%s" .Release.Name .Chart.Name | trunc 63 | 
   name: {{ .Values.oranASN1Coder.name }}
   labels:
     chart: "{{ .Chart.Name }}-{{ .Chart.Version | replace "+" "_" }}"
+  annotations:
+      keel.sh/policy: force
+      keel.sh/trigger: poll      
+      keel.sh/match-tag: "true"
+      keel.sh/pollSchedule: "@every 5s"
 spec:
   selector:
     matchLabels:
