@@ -50,7 +50,7 @@ oranASN1Coder:
         targetPort: 5051
         protocol: TCP
 
-  grpcServerService: service-usap-oranasn1coder-grpc.ricxapp.svc.cluster.local
+  grpcServerService: service-usap-oranasn1coder.ricxapp ## svc-name + namespace
   grpcPort: 5051
 
 # Location of the xApp config files injected from the xApp descriptor

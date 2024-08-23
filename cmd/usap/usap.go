@@ -1,6 +1,7 @@
 package main
 
 import (
+	"log"
 	"sync"
 
 	"gerrit.o-ran-sc.org/r/ric-plt/xapp-frame/pkg/clientmodel"
@@ -45,14 +46,14 @@ func main() {
 	// Get DB IP address
 	coreDBAddr, err := utils.GetIpbyHostname(xapp.Config.GetString("coredb.hostname"))
 	if err != nil {
-		xapp.Logger.Error(err.Error())
+		log.Fatal(err.Error()) // critical application process
 	}
 	coreDBConfig.CoreDBAddress = coreDBAddr
 
 	// Get usap-oranASN1Coder IP address
 	asn1CoderAddr, err := utils.GetIpbyHostname(xapp.Config.GetString("oranASN1Coder.grpcServerService"))
 	if err != nil {
-		xapp.Logger.Error(err.Error())
+		log.Fatal(err.Error()) // critical application process
 	}
 	appConfig.OranAsn1CoderEndpoint.Ip = asn1CoderAddr
 
