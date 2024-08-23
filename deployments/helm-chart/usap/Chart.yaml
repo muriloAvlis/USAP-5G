@@ -3,3 +3,4 @@ appVersion: "v1.0.0-alpha"
 description: USAP Helm Chart
 name: usap
 version: 0.0.1
+icon: "file:://assets/images/icon.ico"

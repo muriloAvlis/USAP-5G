@@ -4,7 +4,7 @@ metadata:
   name: grpc-health-check-script
 data:
   check_grpc_health.sh: |
-    #!/bin/bash
+    #!/bin/sh
     if grpcurl -plaintext localhost:5051 list; then
       exit 0
     else

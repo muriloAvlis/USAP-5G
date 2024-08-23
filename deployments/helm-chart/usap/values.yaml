@@ -37,10 +37,11 @@ oranASN1Coder:
         repository: muriloavlis/usap-oranasn1coder
         registry: docker.io
         tag: latest
-    - ports:
-        name: grpc-server
-        containerPort: 5051
-        protocol: TCP
+        imagePullPolicy: Always
+      ports:
+        - name: grpc-server
+          containerPort: 5051
+          protocol: TCP
   service:
     type: ClusterIP
     ports:

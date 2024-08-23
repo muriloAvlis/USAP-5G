@@ -37,9 +37,9 @@ spec:
         release: {{ .Release.Name }}
     spec:
       initContainers:
-      - name: wait-for-oranAsn1Encoder
+      - name: wait-for-oranasn1encoder
         image: busybox
-        command: ['sh', '-c', 'until nslookup service-{{ .Values.oranASN1Coder.name }}; do echo waiting for oranAsn1Encoder; sleep 2; done']
+        command: ['sh', '-c', 'until nslookup service-{{ .Values.oranASN1Coder.name }}.ricxapp; do echo waiting for oranAsn1Encoder; sleep 2; done']
       hostname: {{ include "ricxapp.name" . }}
       nodeSelector:
         {{- if .Values.nodeSelector }}
