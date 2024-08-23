@@ -25,9 +25,9 @@ Definitions used by the application to interact with the RIC
 
 ### E2SM standard
 
-- [E2SM-KPM-v4.00](e2sm/asn1/e2sm-kpm-v4.00.asn)
-- [E2SM-RC-v5.00](e2sm/asn1/e2sm-rc-v5.00.asn)
-- [E2SM-v5.00](e2sm/asn1/e2sm-v5.00.asn)
+- [E2SM-KPM-v4.00](oranASN1Coder/asn1/e2sm/e2sm-kpm-v4.00.asn)
+- [E2SM-RC-v5.00](oranASN1Coder/asn1/e2sm/e2sm-rc-v5.00.asn)
+- [E2SM-v5.00](oranASN1Coder/asn1/e2sm/e2sm-v5.00.asn)
 
 <!-- ### 3GPP NG Application Protocol (NGAP) Release 17
 
