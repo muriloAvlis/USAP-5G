@@ -50,7 +50,7 @@ func main() {
 	coreDBConfig.CoreDBAddress = coreDBAddr
 
 	// Get usap-oranASN1Coder IP address
-	asn1CoderAddr, err := utils.GetIpbyHostname(xapp.Config.GetString("grpcServerService"))
+	asn1CoderAddr, err := utils.GetIpbyHostname(xapp.Config.GetString("oranASN1Coder.grpcServerService"))
 	if err != nil {
 		xapp.Logger.Error(err.Error())
 	}
