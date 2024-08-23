@@ -2,9 +2,7 @@ package coredb
 
 import (
 	"database/sql"
-	"errors"
 	"fmt"
-	"net"
 	"sync"
 	"time"
 
@@ -88,23 +86,4 @@ func (cdb *coreDB) start() error {
 
 	// Show status of UEs connected to 5GC (TODO)
 	return nil
-}
-
-func GetDBIpbyHostname(coreDBHostname string) (string, error) {
-	coreDBAddr := net.ParseIP(coreDBHostname)
-	if coreDBAddr != nil { // it is already IP format
-		return coreDBAddr.String(), nil
-	} else { // convert to IPv4 format
-		dbIpAddr, err := net.LookupIP(coreDBHostname)
-		if err != nil {
-			return "", err
-		}
-
-		for _, dbIp := range dbIpAddr {
-			if dbIp.To4() != nil { // first IPv4 occurrence // TODO: review this comportament
-				return dbIp.To4().String(), nil
-			}
-		}
-	}
-	return "", errors.New("unable to get 5GC Database IP Address")
 }

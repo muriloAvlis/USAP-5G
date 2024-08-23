@@ -3,7 +3,7 @@ package manager
 import (
 	"gerrit.o-ran-sc.org/r/ric-plt/xapp-frame/pkg/clientmodel"
 	"gerrit.o-ran-sc.org/r/ric-plt/xapp-frame/pkg/xapp"
-	"github.com/muriloAvlis/USAP/pkg/coredb"
+	asn1coder "github.com/muriloAvlis/USAP/pkg/ans1coder"
 )
 
 // Vars used on subscription
@@ -22,7 +22,7 @@ var (
 )
 
 type UsapXapp struct {
-	CoreDBConfig coredb.Config
+	asn1Coder *asn1coder.Asn1Coder
 	Config
 	RMR                   chan *xapp.RMRParams
 	subscriptionId        *string
@@ -30,8 +30,9 @@ type UsapXapp struct {
 }
 
 type Config struct {
-	WaitForSdl     bool
-	ClientEndpoint clientmodel.SubscriptionParamsClientEndpoint
+	WaitForSdl            bool
+	ClientEndpoint        clientmodel.SubscriptionParamsClientEndpoint
+	OranAsn1CoderEndpoint asn1coder.OranAsn1CoderEndpoint
 }
 
 // -------- E2mgr HTTP SVC response -------- //

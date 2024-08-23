@@ -1,0 +1,50 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata: {{ $fullname := printf "%s-%s" .Release.Name .Chart.Name | trunc 63 | trimSuffix "-" }}
+  name: {{ .Values.oranASN1Coder.name }}
+  labels:
+    chart: "{{ .Chart.Name }}-{{ .Chart.Version | replace "+" "_" }}"
+spec:
+  selector:
+    matchLabels:
+      app: {{ .Values.oranASN1Coder.name }}
+  replicas: 1
+  template:
+    metadata:
+      labels:
+        app: {{ .Values.oranASN1Coder.name }}
+    spec:
+      containers:
+      {{- $containers := .Values.oranASN1Coder.containers }}
+      {{- range $container := $containers }}
+      - name: {{ .Values.oranASN1Coder.name }}
+        image: "{{ $container.image.registry }}/{{ $container.image.repository }}:{{ $container.image.tag }}"
+        imagePullPolicy: Always
+        ports:
+        {{- range $port := $container.ports }}
+        - name: {{ $port.name }}
+          protocol: {{ $port.protocol }}
+          containerPort: {{ $port.containerPort | int }}
+        {{- end }}
+        livenessProbe:
+          exec:
+            command:
+            - /bin/sh
+            - -c
+            - /scripts/check_grpc_health.sh
+        readinessProbe:
+          exec:
+            command:
+            - /bin/sh
+            - -c
+            - /scripts/check_grpc_health.sh
+        volumeMounts:
+        - name: health-check-scripts
+          mountPath: /scripts
+          subPath: check_grpc_health.sh
+          # Ensuring the script is executable
+          readOnly: true
+      volumes:
+      - name: health-check-scripts
+        configMap:
+          name: grpc-health-check-script

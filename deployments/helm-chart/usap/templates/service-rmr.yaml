@@ -1,0 +1,33 @@
+apiVersion: v1
+kind: Service
+metadata:
+  name: {{ include "ricxapp.servicename.rmr" . }}
+  namespace: {{ include "ricxapp.namespace" . }}
+  labels:
+    app: {{ include "ricxapp.namespace" . }}-{{ include "ricxapp.name" . }}
+    chart: {{ .Chart.Name }}-{{ .Chart.Version | replace "+" "_" }}
+    release: {{ .Release.Name }}
+    heritage: {{ .Release.Service }}
+spec:
+  type: ClusterIP
+  ports:
+  {{- range .Values.messaging.ports  }}
+  {{- if eq .name "rmrdata" }}
+    - port: {{ .port }}
+      targetPort: {{ .port }}
+      protocol: TCP
+      name: {{ .name }}
+  {{- end }}
+  {{- end }}
+  {{- range .Values.messaging.ports  }}
+  {{- if contains "rmr" .name }} {{- if ne .name "rmrdata" }}
+    - port: {{ .port }}
+      targetPort: {{ .port }}
+      protocol: TCP
+      name: {{ .name }}
+  {{- end }}
+  {{- end }}
+  {{- end }}
+  selector:
+    app: {{ include "ricxapp.namespace" . }}-{{ include "ricxapp.name" . }}
+    release: {{ .Release.Name }}

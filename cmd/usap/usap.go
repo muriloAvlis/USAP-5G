@@ -5,9 +5,11 @@ import (
 
 	"gerrit.o-ran-sc.org/r/ric-plt/xapp-frame/pkg/clientmodel"
 	"gerrit.o-ran-sc.org/r/ric-plt/xapp-frame/pkg/xapp"
+	asn1coder "github.com/muriloAvlis/USAP/pkg/ans1coder"
 	"github.com/muriloAvlis/USAP/pkg/coredb"
 	"github.com/muriloAvlis/USAP/pkg/logging"
 	"github.com/muriloAvlis/USAP/pkg/manager"
+	"github.com/muriloAvlis/USAP/pkg/utils"
 )
 
 var wg sync.WaitGroup
@@ -20,35 +22,48 @@ func main() {
 	logging.SetLogger()
 
 	// Set configurations used by xApp
-	app := &manager.UsapXapp{
-		Config: manager.Config{
-			WaitForSdl: xapp.Config.GetBool("db.waitForSdl"),
-			ClientEndpoint: clientmodel.SubscriptionParamsClientEndpoint{
-				Host:     "service-ricxapp-usap-http.ricxapp",
-				HTTPPort: &manager.HttpPort,
-				RMRPort:  &manager.RMRPort},
+	appConfig := manager.Config{
+		WaitForSdl: xapp.Config.GetBool("db.waitForSdl"),
+		ClientEndpoint: clientmodel.SubscriptionParamsClientEndpoint{
+			Host:     "service-ricxapp-usap-http.ricxapp",
+			HTTPPort: &manager.HttpPort,
+			RMRPort:  &manager.RMRPort,
 		},
-		RMR: make(chan *xapp.RMRParams),
-		CoreDBConfig: coredb.Config{
-			CoreDBUser:     xapp.Config.GetString("coredb.username"),
-			CoreDBPassword: xapp.Config.GetString("coredb.password"),
-			CoreDBPort:     xapp.Config.GetString("coredb.port"),
-			CoreDBName:     xapp.Config.GetString("coredb.dbname"),
+		OranAsn1CoderEndpoint: asn1coder.OranAsn1CoderEndpoint{
+			Port: xapp.Config.GetInt("oranASN1Coder.grpcPort"),
 		},
+	}
+
+	// Set configuration to connect to 5GC
+	coreDBConfig := coredb.Config{
+		CoreDBUser:     xapp.Config.GetString("coredb.username"),
+		CoreDBPassword: xapp.Config.GetString("coredb.password"),
+		CoreDBPort:     xapp.Config.GetString("coredb.port"),
+		CoreDBName:     xapp.Config.GetString("coredb.dbname"),
 	}
 
 	// Get DB IP address
-	coreDBAddr, err := coredb.GetDBIpbyHostname(xapp.Config.GetString("coredb.hostname"))
+	coreDBAddr, err := utils.GetIpbyHostname(xapp.Config.GetString("coredb.hostname"))
 	if err != nil {
 		xapp.Logger.Error(err.Error())
 	}
-	app.CoreDBConfig.CoreDBAddress = coreDBAddr
+	coreDBConfig.CoreDBAddress = coreDBAddr
+
+	// Get usap-oranASN1Coder IP address
+	asn1CoderAddr, err := utils.GetIpbyHostname(xapp.Config.GetString("grpcServerService"))
+	if err != nil {
+		xapp.Logger.Error(err.Error())
+	}
+	appConfig.OranAsn1CoderEndpoint.Ip = asn1CoderAddr
+
+	// Create a New xApp Manager
+	appMgr := manager.NewManager(appConfig)
 
 	// Run xApp
-	go app.Run(&wg)
+	go appMgr.Run(&wg)
 
-	// Start 5GC DB connection
-	coreDBMgr := coredb.NewManager(app.CoreDBConfig)
+	// Create a New 5GC Manager
+	coreDBMgr := coredb.NewManager(coreDBConfig)
 
 	// Run 5GC DB management
 	go coreDBMgr.Run(&wg)

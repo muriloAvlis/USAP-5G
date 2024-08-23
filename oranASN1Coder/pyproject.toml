@@ -1,0 +1,22 @@
+[tool.poetry]
+name = "oranASN1Coder"
+version = "1.0.0"
+description = "A microservice for encoding/decoding ASN.1 O-RAN messages"
+authors = ["Murilo Silva <murilosilva@itec.ufpa.br>"]
+readme = "README.md"
+packages = [{include = "app"}]
+
+[tool.poetry.dependencies]
+python = "^3.10"
+asn1tools = "^0.167.0"
+grpcio = "^1.65.5"
+grpcio-tools = "^1.65.5"
+grpc-interceptor = "^0.15.4"
+grpcio-reflection = "^1.66.0"
+
+[tool.poetry.scripts]
+app = "app.app:run"
+
+[build-system]
+requires = ["poetry-core"]
+build-backend = "poetry.core.masonry.api"

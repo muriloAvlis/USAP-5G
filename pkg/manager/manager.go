@@ -2,7 +2,6 @@ package manager
 
 import (
 	"encoding/json"
-	"log"
 	"net/http"
 	"os"
 	"strings"
@@ -11,12 +10,29 @@ import (
 
 	"gerrit.o-ran-sc.org/r/ric-plt/xapp-frame/pkg/clientmodel"
 	"gerrit.o-ran-sc.org/r/ric-plt/xapp-frame/pkg/xapp"
-	"github.com/muriloAvlis/USAP/pkg/kpmpacker/kpmdecoder"
-	"github.com/muriloAvlis/USAP/pkg/kpmpacker/kpmencoder"
+	asn1coder "github.com/muriloAvlis/USAP/pkg/ans1coder"
 )
 
+func NewManager(c Config) *UsapXapp {
+	// create a new oranASN1Coder]
+	asn1CoderConfig := asn1coder.Config{
+		OranAsn1CoderEndpoint: c.OranAsn1CoderEndpoint,
+	}
+
+	oranAsn1Coder := asn1coder.NewAsn1Coder(asn1CoderConfig)
+
+	// create a RMR Go channel
+	RMRCh := make(chan *xapp.RMRParams)
+
+	return &UsapXapp{
+		asn1Coder: oranAsn1Coder,
+		Config:    c,
+		RMR:       RMRCh,
+	}
+}
+
 // Listen RIC messages and send them to the RMR channel
-func (app *UsapXapp) Consume(msg *xapp.RMRParams) (err error) {
+func (u *UsapXapp) Consume(msg *xapp.RMRParams) (err error) {
 	id := xapp.Rmr.GetRicMessageName(msg.Mtype)
 	defer func() {
 		xapp.Rmr.Free(msg.Mbuf)
@@ -31,12 +47,12 @@ func (app *UsapXapp) Consume(msg *xapp.RMRParams) (err error) {
 		msg.PayloadLen,
 	)
 	// send message to RMR channel to be processed
-	app.RMR <- msg
+	u.RMR <- msg
 	return nil
 }
 
 // Get eNBs list
-func (app *UsapXapp) geteNBList() ([]*xapp.RNIBNbIdentity, error) {
+func (u *UsapXapp) geteNBList() ([]*xapp.RNIBNbIdentity, error) {
 	eNBs, err := xapp.Rnib.GetListEnbIds()
 	if err != nil {
 		xapp.Logger.Error("Unable to get eNodeB list: %s", err.Error())
@@ -54,7 +70,7 @@ func (app *UsapXapp) geteNBList() ([]*xapp.RNIBNbIdentity, error) {
 }
 
 // Get gNBs list
-func (app *UsapXapp) getgNBList() ([]*xapp.RNIBNbIdentity, error) {
+func (u *UsapXapp) getgNBList() ([]*xapp.RNIBNbIdentity, error) {
 	gNBs, err := xapp.Rnib.GetListGnbIds()
 	if err != nil {
 		xapp.Logger.Error("Unable to get gNodeB list: %s", err.Error())
@@ -72,14 +88,14 @@ func (app *UsapXapp) getgNBList() ([]*xapp.RNIBNbIdentity, error) {
 }
 
 // Get gNB and eNB list connected to RIC
-func (app *UsapXapp) getNbList() []*xapp.RNIBNbIdentity {
+func (u *UsapXapp) getNbList() []*xapp.RNIBNbIdentity {
 	var nodeBs []*xapp.RNIBNbIdentity
 
-	if eNBs, err := app.geteNBList(); err == nil {
+	if eNBs, err := u.geteNBList(); err == nil {
 		nodeBs = append(nodeBs, eNBs...)
 	}
 
-	if gNBs, err := app.getgNBList(); err == nil {
+	if gNBs, err := u.getgNBList(); err == nil {
 		nodeBs = append(nodeBs, gNBs...)
 	}
 
@@ -87,30 +103,24 @@ func (app *UsapXapp) getNbList() []*xapp.RNIBNbIdentity {
 }
 
 // Setup response callback to handle subscription response from SubMgr
-func (app *UsapXapp) subscriptionCB(resp *clientmodel.SubscriptionResponse) {
-	if app.subscriptionId == resp.SubscriptionID {
-		app.subscriptionInstances = append(app.subscriptionInstances, resp.SubscriptionInstances...)
+func (u *UsapXapp) subscriptionCB(resp *clientmodel.SubscriptionResponse) {
+	if u.subscriptionId == resp.SubscriptionID {
+		u.subscriptionInstances = append(u.subscriptionInstances, resp.SubscriptionInstances...)
 	}
 }
 
 // Send subscription to E2 Node
-func (app *UsapXapp) sendSubscription(e2NodeID string) {
+func (u *UsapXapp) sendSubscription(e2NodeID string) {
 	// Create Subscription message and send it to RIC platform
 	xapp.Logger.Info("Sending subscription request for E2 Node: %s", e2NodeID)
 
 	// Encode eventTriggerDefinitionFormat1 using C encoder
-	evTriggerDefFmt1, err := kpmencoder.EncodeEventTriggerDefinitionFormat1(reportingPeriod)
-	if err != nil {
-		log.Fatal(err) // critical process
-	}
+	evTriggerDefFmt1 := u.asn1Coder.EncodeEventTriggerDefinitionFormat1(reportingPeriod)
 
 	xapp.Logger.Debug("Encoded eventTriggerDefinitionFormat1: %v", evTriggerDefFmt1)
 
 	// Encode actionDefinitionFormat4 using C encoder
-	actionDefinitionFormat4, err := kpmencoder.EncodeActionDefinitionFormat4(ranUeKpis[e2NodeID], granularityPeriod)
-	if err != nil {
-		log.Fatal(err) // critical process
-	}
+	actionDefinitionFormat4 := u.asn1Coder.EncodeActionDefinitionFmt4(ranUeKpis[e2NodeID], granularityPeriod)
 
 	xapp.Logger.Debug("Encoded actionDefinitionFormat4: %v", actionDefinitionFormat4)
 
@@ -138,7 +148,7 @@ func (app *UsapXapp) sendSubscription(e2NodeID string) {
 
 	// Set subscription parameters
 	subscriptionParams := clientmodel.SubscriptionParams{
-		ClientEndpoint: &app.ClientEndpoint,
+		ClientEndpoint: &u.ClientEndpoint,
 		Meid:           &e2NodeID,
 		RANFunctionID:  &KpmRanFuncId,
 		SubscriptionDetails: clientmodel.SubscriptionDetailsList{
@@ -165,19 +175,19 @@ func (app *UsapXapp) sendSubscription(e2NodeID string) {
 }
 
 // TODO
-func (app *UsapXapp) handleRicIndication(msg *xapp.RMRParams) {
+func (u *UsapXapp) handleRicIndication(msg *xapp.RMRParams) {
 	xapp.Logger.Debug("Everything Already until here :) %v", msg.Meid)
 }
 
-func (app *UsapXapp) controlLoop() {
+func (u *UsapXapp) controlLoop() {
 	// Handle receiving message based on message type
 	for {
 		// consume message from RMR chan
-		msg := <-app.RMR // wait here until receive a message
+		msg := <-u.RMR // wait here until receive a message
 		xapp.Logger.Debug("Received message type: %d", msg.Mtype)
 		switch msg.Mtype {
 		case xapp.RIC_INDICATION:
-			go app.handleRicIndication(msg) // TODO: Is it necessary to control this routine?
+			go u.handleRicIndication(msg) // TODO: Is it necessary to control this routine?
 		case xapp.RIC_HEALTH_CHECK_REQ:
 			xapp.Logger.Info("Received health check request")
 		case xapp.A1_POLICY_REQ:
@@ -194,10 +204,10 @@ func (u *UsapXapp) ConfigChangeHandler(f string) {
 }
 
 // xApp callback (start here)
-func (app *UsapXapp) xAppStartCB(d interface{}) {
+func (u *UsapXapp) xAppStartCB(d interface{}) {
 	xapp.Logger.Info("Starting application callback...")
 
-	nodeBs := app.getNbList()
+	nodeBs := u.getNbList()
 
 	// prepare nodeBs data
 	for _, nb := range nodeBs {
@@ -235,7 +245,7 @@ func (app *UsapXapp) xAppStartCB(d interface{}) {
 			}
 
 			// decode KPM RF definition Action Format Type 4
-			rfDefActFmtType4 := kpmdecoder.DecodeActFmtTypebyReportStyle(e2Resp.Gnb.RanFunctions[kpm_idx].RanFunctionDefinition, 4)
+			rfDefActFmtType4 := u.asn1Coder.DecodeMeasNameListbyReportStyle(e2Resp.Gnb.RanFunctions[kpm_idx].RanFunctionDefinition, 4)
 			ranUeKpis[nb.GetInventoryName()] = append(ranUeKpis[nb.GetInventoryName()], rfDefActFmtType4...)
 
 			// loop to check if xApp is registered
@@ -255,10 +265,10 @@ func (app *UsapXapp) xAppStartCB(d interface{}) {
 				ranUeKpis[nb.GetInventoryName()])
 
 			// send subscription request
-			app.sendSubscription(nb.GetInventoryName())
+			u.sendSubscription(nb.GetInventoryName())
 
 			// run controlLoop to receive RIC indication messages
-			go app.controlLoop() // TODO: Is it necessary to control this routine?
+			go u.controlLoop() // TODO: Is it necessary to control this routine?
 
 		} else { // disconnected nodeB
 			xapp.Logger.Warn("NodeB %s is disconnected!", nb.GetInventoryName())
