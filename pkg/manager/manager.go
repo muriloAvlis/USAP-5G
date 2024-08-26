@@ -34,6 +34,7 @@ func NewManager(c Config) *UsapXapp {
 // Listen RIC messages and send them to the RMR channel
 func (u *UsapXapp) Consume(msg *xapp.RMRParams) (err error) {
 	id := xapp.Rmr.GetRicMessageName(msg.Mtype)
+
 	defer func() {
 		xapp.Rmr.Free(msg.Mbuf)
 		msg.Mbuf = nil
@@ -287,7 +288,7 @@ func (app *UsapXapp) Run(wg *sync.WaitGroup) {
 	xapp.AddConfigChangeListener(app.ConfigChangeHandler)
 
 	// set subscription callback
-	xapp.Subscription.SetResponseCB(app.subscriptionCB)
+	// xapp.Subscription.SetResponseCB(app.subscriptionCB)
 
 	// start xapp
 	xapp.RunWithParams(app, app.Config.WaitForSdl)
