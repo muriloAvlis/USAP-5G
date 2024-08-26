@@ -14,4 +14,7 @@ rte|12020|service-ricplt-e2term-rmr-alpha.ricplt:38000  # RIC_SUB_DEL_REQ
 rte|12021|service-ricplt-submgr-rmr.ricplt:4560         # RIC_SUB_DEL_RESP
 rte|12022|service-ricplt-submgr-rmr.ricplt:4560         # RIC_SUB_DEL_FAILURE
 rte|12040|service-ricplt-e2term-rmr-alpha.ricplt:38000  # RIC_CONTROL_REQ
+rte|12041|service-ricxapp-usap-rmr.ricxapp:4560;service-ricxapp-usap-rmr.ricxapp:4561   # RIC_CONTROL_ACK
+rte|12042|service-ricxapp-usap-rmr.ricxapp:4560;service-ricxapp-usap-rmr.ricxapp:4561   # RIC_CONTROL_FAILURE
+rte|12050|service-ricxapp-usap-rmr.ricxapp:4560;service-ricxapp-usap-rmr.ricxapp:4561   # RIC_INDICATION
 newrt|end
