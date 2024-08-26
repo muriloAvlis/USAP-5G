@@ -9,13 +9,23 @@ WORKDIR /builder
 
 ## Install dependencies
 RUN apt-get update && \
-    apt-get install -y build-essential cmake ccache
+    apt-get install -y build-essential cmake ccache curl
 
 ## Install RMR lib
-COPY ./dependencies ./dependencies
-RUN dpkg -i ./dependencies/rmr-dev_4.9.4_amd64.deb
+# COPY ./dependencies ./dependencies
+# RUN dpkg -i ./dependencies/rmr-dev_4.9.4_amd64.deb
 
-RUN ldconfig
+## Install RMR from deb packages at packagecloud.io
+ARG RMR_PKG=rmr_4.9.4_amd64.deb
+ARG RMR_PKG_DEV=rmr-dev_4.9.4_amd64.deb
+
+RUN curl -Lo ${RMR_PKG} https://packagecloud.io/o-ran-sc/release/packages/debian/stretch/${RMR_PKG}/download.deb && \
+    dpkg -i ${RMR_PKG} && rm -f ${RMR_PKG}
+
+RUN curl -Lo ${RMR_PKG_DEV} https://packagecloud.io/o-ran-sc/release/packages/debian/stretch/${RMR_PKG_DEV}/download.deb && \
+    dpkg -i ${RMR_PKG_DEV} && rm -f ${RMR_PKG_DEV}
+
+RUN export LD_LIBRARY_PATH=/usr/local/lib && ldconfig
 
 COPY go.mod go.sum ./
 RUN go mod download && go mod verify
@@ -36,10 +46,17 @@ ENV TZ=America/Belem
 
 RUN install_packages tzdata dnsutils net-tools
 
-RUN ldconfig
+## Copy dependencies
+COPY --from=builder /usr/local/include/ /usr/local/include/
+COPY --from=builder /usr/local/lib/ /usr/local/lib/
 
 ## Copy app bin
 COPY --from=builder /builder/bin/usap /usr/local/bin/usap
+
+# Required to find nng and rmr libs
+RUN export LD_LIBRARY_PATH=/usr/local/lib
+
+RUN ldconfig
 
 ## Add labels
 LABEL br.ufpa.gercom.title="USAP" \
