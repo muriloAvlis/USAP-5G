@@ -10,7 +10,7 @@ import (
 
 // Create a new gRPC connection with oranASN1Coder
 func NewAsn1Coder(config Config) *Asn1Coder {
-	conn, err := grpc.NewClient(config.Ip+strconv.Itoa(config.Port), grpc.WithTransportCredentials(insecure.NewCredentials()))
+	conn, err := grpc.NewClient(config.Ip+":"+strconv.Itoa(config.Port), grpc.WithTransportCredentials(insecure.NewCredentials()))
 	if err != nil {
 		log.Fatalf("Failed to connect to gRPC server: %s", err.Error())
 		return nil

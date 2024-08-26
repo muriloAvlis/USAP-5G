@@ -2,7 +2,6 @@ package asn1coder
 
 import (
 	"context"
-	"fmt"
 	"log"
 	"time"
 
@@ -22,8 +21,6 @@ func (c *Asn1Coder) DecodeMeasNameListbyReportStyle(ranFunctionDefinition string
 		EncodedRanFunctionDefinition: ranFunctionDefinition,
 		ReportStyleType:              ricReportStyle,
 	}
-
-	fmt.Println(client)
 
 	// call RPC method
 	response, err := client.GetMeasListbyRicReportStyle(ctx, request)

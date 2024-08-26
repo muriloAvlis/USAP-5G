@@ -43,9 +43,9 @@ spec:
           runAsUser: 0 # root
           runAsGroup: 0
         command: 
-          - 'sh'
-          - '-c'
-          - "export ADDR=$(getent ahosts service-{{ .Values.oranASN1Coder.name }}.ricxapp | grep "STREAM" | awk '{print $1}') &&
+          - "sh"
+          - "-c"
+          - "export ADDR=$(getent ahosts service-{{ .Values.oranASN1Coder.name }}.ricxapp | grep \"STREAM\" | awk '{print $1}') &&
              until grpcurl -plaintext ${ADDR}:5051 list; do echo waiting for oranAsn1Encoder server; sleep 2; done"
       hostname: {{ include "ricxapp.name" . }}
       nodeSelector:
