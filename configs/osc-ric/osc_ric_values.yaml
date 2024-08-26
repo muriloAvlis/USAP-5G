@@ -41,7 +41,7 @@ global:
   serviceport:
     submgr:
       http: 8088
-  nodeSelector: 
+  nodeSelector:
     kubernetes.io/hostname: nrtric
 
 # Change the overall image pull policy using the following option
@@ -59,7 +59,6 @@ global:
 extsvcplt:
   ricip: "10.126.1.120"
   auxip: "10.126.1.120"
-
 
 # Specify the docker registry credential using the following
 # The release and staging LF repos' credentials have already been included.
@@ -99,7 +98,6 @@ appmgr:
         name: ric-plt-appmgr
         tag: 0.5.8
 
-
 dbaas:
   dbaas:
     image:
@@ -109,7 +107,6 @@ dbaas:
     enableHighAvailability: false
     # Enable pod anti affinity only if you have more than 3 k8s nodes
     enablePodAntiAffinity: false
-
 
 e2mgr:
   e2mgr:
@@ -134,7 +131,7 @@ e2term:
         registry: "nexus3.o-ran-sc.org:10002/o-ran-sc"
         name: ric-plt-e2
         tag: 6.0.6
-      privilegedmode: false
+      privilegedmode: true
       hostnetworkmode: false
       env:
         print: "1"
@@ -143,7 +140,6 @@ e2term:
       storageClassName: local-path
       pizpub:
         enabled: false
-
 
 jaegeradapter:
   image:
@@ -173,11 +169,11 @@ vespamgr:
   prometheusurl: "http://r4-infrastructure-prometheus-server.ricplt"
 
 o1mediator:
-  image:
-    registry: "nexus3.o-ran-sc.org:10002/o-ran-sc"
-    name: ric-plt-o1
-    tag: 0.6.3
-
+  o1mediator:
+    image:
+      registry: "nexus3.o-ran-sc.org:10002/o-ran-sc"
+      name: ric-plt-o1
+      tag: 0.6.3
 
 alarmmanager:
   image:
@@ -195,7 +191,7 @@ influxdb2:
     port: 8086
   persistence:
     storageClass: local-path
-  nodeSelector: 
+  nodeSelector:
     kubernetes.io/hostname: nrtric
 
 xapp-onboarder:
@@ -209,10 +205,3 @@ xapp-onboarder:
         registry: "ghcr.io"
         name: ghcr.io/helm/chartmuseum
         tag: v0.16.2
-
-o1mediator:
-  o1mediator:
-    image:
-      name: ric-plt-o1
-      tag: 0.6.3
-      registry: "nexus3.o-ran-sc.org:10002/o-ran-sc"
