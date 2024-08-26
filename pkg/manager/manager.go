@@ -34,6 +34,8 @@ func NewManager(c Config) *UsapXapp {
 
 // Listen RIC messages and send them to the RMR channel
 func (u *UsapXapp) Consume(msg *xapp.RMRParams) (err error) {
+	log.Fatalln(msg.Mtype)
+
 	id := xapp.Rmr.GetRicMessageName(msg.Mtype)
 
 	log.Fatalln(id)
