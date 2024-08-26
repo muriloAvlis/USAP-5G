@@ -35,10 +35,10 @@ func NewManager(c Config) *UsapXapp {
 func (u *UsapXapp) Consume(msg *xapp.RMRParams) (err error) {
 	id := xapp.Rmr.GetRicMessageName(msg.Mtype)
 
-	defer func() {
-		xapp.Rmr.Free(msg.Mbuf)
-		msg.Mbuf = nil
-	}()
+	// defer func() {
+	// 	xapp.Rmr.Free(msg.Mbuf)
+	// 	msg.Mbuf = nil
+	// }()
 
 	xapp.Logger.Info("Received RIC message: name=%s | e2NodeID=%s | subID=%d | txID=%s | len=%d",
 		id,
@@ -288,7 +288,7 @@ func (app *UsapXapp) Run(wg *sync.WaitGroup) {
 	xapp.AddConfigChangeListener(app.ConfigChangeHandler)
 
 	// set subscription callback
-	// xapp.Subscription.SetResponseCB(app.subscriptionCB)
+	xapp.Subscription.SetResponseCB(app.subscriptionCB)
 
 	// start xapp
 	xapp.RunWithParams(app, app.Config.WaitForSdl)
