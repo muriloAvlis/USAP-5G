@@ -261,7 +261,7 @@ func (u *UsapXapp) xAppStartCB(d interface{}) {
 					xapp.Logger.Info("xApp registration is done, ready to send subscription request")
 					break
 				}
-				xapp.Logger.Debug("xApp registration is not done yet, sleep 10s and check again")
+				xapp.Logger.Debug("xApp registration is not done yet, sleep 5s and check again")
 			}
 
 			// print RAN UEs Kpis available by E2 Node
