@@ -9,7 +9,7 @@ import (
 // Vars used on subscription
 var (
 	HttpPort             = int64(8080)
-	RMRPort              = int64(4560)
+	RMRPort              = int64(4561)
 	KpmRanFuncId         = int64(2)
 	seqId                = int64(1234)               // XappEventInstanceID
 	ranUeKpis            = make(map[string][]string) // map to [E2NodeID]:[metrics]

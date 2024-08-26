@@ -161,7 +161,7 @@ rmr:
   maxSize: 8192
   numWorkers: 1
   policies: []
-  protPort: tcp:4560
+  protPort: tcp:4561
   rxMessages:
     - RIC_SUB_RESP
     - RIC_INDICATION
