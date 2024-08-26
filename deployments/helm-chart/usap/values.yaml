@@ -123,18 +123,14 @@ measurements:
     type: int
 messaging:
   ports:
-    - container: usap
+    - name: http
+      container: usap
       description: http service
-      name: http
       port: 8080
-    - container: usap
-      description: rmr route port for usap
-      name: rmr-route
-      port: 4561
-    - container: usap
+    - name: rmr-data
+      container: usap
       description: rmr data port for usap
       maxSize: 65536
-      name: rmr-data
       numWorkers: 1
       policies: []
       port: 4560
@@ -147,6 +143,10 @@ messaging:
       txMessages:
         - RIC_SUB_REQ
         - RIC_SUB_DEL_REQ
+    - name: rmr-route
+      container: usap
+      description: rmr route port for usap
+      port: 4561
 metrics:
   namespace: ricxapp
   url: /ric/v1/metrics
