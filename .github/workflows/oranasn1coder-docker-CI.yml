@@ -3,6 +3,9 @@ name: oranASN1Coder Docker CI
 on:
   push:
     branches: ["main"]
+    paths:
+      - "docker/Dockerfile.usap.oranasn1coder"
+      - "oranASN1Coder"
   pull_request:
     branches: ["main"]
 
