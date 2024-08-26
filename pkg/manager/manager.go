@@ -2,6 +2,7 @@ package manager
 
 import (
 	"encoding/json"
+	"log"
 	"net/http"
 	"os"
 	"strings"
@@ -35,10 +36,12 @@ func NewManager(c Config) *UsapXapp {
 func (u *UsapXapp) Consume(msg *xapp.RMRParams) (err error) {
 	id := xapp.Rmr.GetRicMessageName(msg.Mtype)
 
-	// defer func() {
-	// 	xapp.Rmr.Free(msg.Mbuf)
-	// 	msg.Mbuf = nil
-	// }()
+	log.Fatalln(id)
+
+	defer func() {
+		xapp.Rmr.Free(msg.Mbuf)
+		msg.Mbuf = nil
+	}()
 
 	xapp.Logger.Info("Received RIC message: name=%s | e2NodeID=%s | subID=%d | txID=%s | len=%d",
 		id,
