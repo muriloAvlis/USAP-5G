@@ -68,6 +68,6 @@ LABEL br.ufpa.gercom.title="USAP" \
 
 # xApp-framework stuff
 ENV CFG_FILE=/opt/ric/config/config-file.json
-# ENV RMR_SEED_RT=/opt/ric/config/uta_rtg.rt
+ENV RMR_SEED_RT=/opt/ric/config/uta_rtg.rt
 
 ENTRYPOINT ["usap"]
