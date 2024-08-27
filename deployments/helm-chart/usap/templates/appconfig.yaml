@@ -13,10 +13,10 @@ data:
         rte|12001|service-ricplt-e2mgr-rmr.ricplt:3801          # RIC_E2_SETUP_REQ
         rte|12002|service-ricplt-e2term-rmr.ricplt:38000        # RIC_E2_SETUP_RESP
         rte|12003|service-ricplt-e2term-rmr.ricplt:38000        # RIC_E2_SETUP_FAILURE
-        rte|12010|service-ricplt-e2term-rmr-alpha.ricplt:38000  # RIC_SUB_REQ
+        rte|12010|service-ricplt-submgr-rmr.ricplt:4560         # RIC_SUB_REQ
         rte|12011|service-ricplt-submgr-rmr.ricplt:4560         # RIC_SUB_RESP
         rte|12012|service-ricplt-submgr-rmr.ricplt:4560         # RIC_SUB_FAILURE
-        rte|12020|service-ricplt-e2term-rmr-alpha.ricplt:38000  # RIC_SUB_DEL_REQ
+        rte|12020|service-ricplt-submgr-rmr.ricplt:4560         # RIC_SUB_DEL_REQ
         rte|12021|service-ricplt-submgr-rmr.ricplt:4560         # RIC_SUB_DEL_RESP
         rte|12022|service-ricplt-submgr-rmr.ricplt:4560         # RIC_SUB_DEL_FAILURE
         rte|12040|service-ricplt-e2term-rmr-alpha.ricplt:38000  # RIC_CONTROL_REQ

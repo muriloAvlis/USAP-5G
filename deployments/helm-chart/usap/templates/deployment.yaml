@@ -122,8 +122,8 @@ spec:
           envFrom:
             - configMapRef:
                 name: {{ include "ricxapp.configmapname" . }}-appenv
-            - configMapRef:
-                name: dbaas-appconfig
+            # - configMapRef:
+            #     name: dbaas-appconfig
           env:
             - name: POD_NAME
               valueFrom:

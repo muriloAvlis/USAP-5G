@@ -273,9 +273,6 @@ func (u *UsapXapp) xAppStartCB(d interface{}) {
 			// send subscription request
 			u.sendSubscription(nb.GetInventoryName())
 
-			// run controlLoop to receive RIC indication messages
-			go u.controlLoop() // TODO: Is it necessary to control this routine?
-
 		} else { // disconnected nodeB
 			xapp.Logger.Warn("NodeB %s is disconnected!", nb.GetInventoryName())
 		}
@@ -283,18 +280,21 @@ func (u *UsapXapp) xAppStartCB(d interface{}) {
 }
 
 // Application Starting
-func (app *UsapXapp) Run(wg *sync.WaitGroup) {
+func (u *UsapXapp) Run(wg *sync.WaitGroup) {
 	defer wg.Done()
 
 	// set Start callback
-	xapp.SetReadyCB(app.xAppStartCB, true)
+	xapp.SetReadyCB(u.xAppStartCB, true)
 
 	// set config change listener
-	xapp.AddConfigChangeListener(app.ConfigChangeHandler)
+	xapp.AddConfigChangeListener(u.ConfigChangeHandler)
 
 	// set subscription callback
-	xapp.Subscription.SetResponseCB(app.subscriptionCB)
+	xapp.Subscription.SetResponseCB(u.subscriptionCB)
+
+	// run controlLoop to receive RIC indication messages
+	go u.controlLoop() // TODO: Is it necessary to control this routine?
 
 	// start xapp
-	xapp.RunWithParams(app, app.Config.WaitForSdl)
+	xapp.RunWithParams(u, u.Config.WaitForSdl)
 }
