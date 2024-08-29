@@ -85,8 +85,9 @@ image:
 
 config:
   amf:
-    hostname: oai-amf.oai5gcn
-    bind_interface: eth0
+    hostname: 10.126.1.120
+    bind_interface: ens6
+    port: 38412
 
   ru_sdr:
     device_driver: zmq
@@ -113,9 +114,9 @@ config:
   
   e2:
     ric:
-      hostname: service-ricplt-e2term-sctp-alpha.ricplt # RIC Service (on K8s) or IP address
-      port: 36421 # RIC SCTP port
-      bind_interface: eth0 # A local IP that the E2 agent binds to traffic from the RIC. ONLY required if running the RIC on a separate machine. 
+      hostname: 10.126.1.122 # RIC Service (on K8s) or IP address
+      port: 32222 # RIC SCTP port
+      bind_interface: ens6 # A local IP that the E2 agent binds to traffic from the RIC. ONLY required if running the RIC on a separate machine. 
 ue:
   image:
     registry: docker.io
@@ -285,7 +286,7 @@ containerSecurityContext:
   # runAsNonRoot: false
   privileged: true
   capabilities:
-    add: ["NET_ADMIN"]
+    add: ["NET_ADMIN", "SYS_NICE"]
 # ## ref: https://kubernetes.io/docs/tasks/configure-pod-container/configure-liveness-readiness-probes/#configure-probes
 # ## @param startupProbe.enabled Enable startupProbe
 # ## @param startupProbe.initialDelaySeconds Initial delay seconds for startupProbe

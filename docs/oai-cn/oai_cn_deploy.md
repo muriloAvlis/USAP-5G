@@ -2,8 +2,9 @@
 
 ## Requirements
 
-- Kubernetes
+- Kubernetes (<= 1.29.8)
 - Helm v3
+- Multus v4.0.2
 
 ## Getting Started
 

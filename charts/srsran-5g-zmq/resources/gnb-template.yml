@@ -6,7 +6,7 @@
 amf:
   addr: ${AMF_ADDR}                  # The address or hostname of the AMF.
   bind_addr: ${AMF_BIND_ADDR}             # A local IP that the gNB binds to for traffic from the AMF.
-
+  port: {{ .Values.config.amf.port | int }}
 ru_sdr:
   device_driver: {{ .Values.config.ru_sdr.device_driver }}                                               # The RF driver name.
   device_args: {{ .Values.config.ru_sdr.device_args }}     # Optionally pass arguments to the selected RF driver.

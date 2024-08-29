@@ -42,7 +42,7 @@ Definitions used by the application to interact with the RIC
 
 ### Requirements
 
-- Kubernetes Cluster (tutorial on [K8s Installation Using the RKE2](https://github.com/muriloAvlis/k8s-utils/blob/main/docs/cluster_deploy/rke2/README.md))
+- Kubernetes Cluster (tutorial on [K8s Installation Using Kubeadm](https://github.com/muriloAvlis/k8s-utils/blob/main/docs/cluster_deploy/kubeadm/install.md))
 - 5G Core (OAI-CN was used)
 - 5G RAN (SRSRAN was used)
 
@@ -53,6 +53,13 @@ docker image build -t muriloavlis/usap:latest -f docker/Dockerfile.usap .
 ```
 
 ### Network Configurations
+
+#### NFs Addresses
+
+- UPF: 192.168.122.110 and 192.168.122.112 (n3, n6)
+- AMF: 192.168.122.100 (n2)
+
+#### Slices 
 
 |                    | **sst** | **sd** | **dnn** | **Subnet**  | **MCC** | **MNC** |
 |--------------------|---------|--------|---------|-------------|---------|---------|
