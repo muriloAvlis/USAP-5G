@@ -18,7 +18,7 @@ var (
 	granularityPeriod    = uint64(1000)
 	actionType           = "report"
 	subsequentActionType = "continue"
-	timeToWait           = "w1s"
+	timeToWait           = "w10ms"
 )
 
 type usapXapp struct {
