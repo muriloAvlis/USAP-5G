@@ -20,9 +20,9 @@ git checkout develop
 Copy the custom files in the configs folder to the chart directory and install them.
 
 ```sh 
-cd ~/oai-cn5g-fed/charts/oai-5g-ran/oai-gnb
-cp ~/USAP/configs/oai-ran/oai_gnb_values.yaml .
-cp ~/USAP/configs/oai-ran/oai_gnb_configmap.yaml ./templates/configmap.yaml
+cd ~/git/oai-cn5g-fed/charts/oai-5g-ran/oai-gnb
+cp ~/git/USAP/configs/oai-ran/oai_gnb_values.yaml .
+cp ~/git/USAP/configs/oai-ran/oai_gnb_configmap.yaml ./templates/configmap.yaml
 helm dependency update
 helm upgrade --install -n oairan --create-namespace oai-gnb . -f oai_gnb_values.yaml
 ```

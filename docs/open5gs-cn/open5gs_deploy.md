@@ -11,13 +11,14 @@
 
 ```sh
 cd ~
-git clone https://github.com/muriloAvlis/USAP.git
+git clone https://github.com/muriloAvlis/usap.git
 ```
 
 ### Install the core network with Helm
 
 ```sh
-helm upgrade --install open5gs -n open5gs --create-namespace oci://registry-1.docker.io/gradiant/open5gs --version 2.2.2 -f ~/USAP/configs/open5gs-cn/open5gs_with_slices.yaml
+cd ~/git/usap/charts/open5gs
+helm upgrade --install open5gs -n open5gs --create-namespace . --version 2.2.4 -f ~/git/USAP/configs/open5gs-cn/open5gs_with_slices.yaml
 ```
 
 > **_NOTE_**: [open5gs_with_slices.yaml](../../configs/open5gs-cn/open5gs_with_slices.yaml) example file.
@@ -27,3 +28,9 @@ helm upgrade --install open5gs -n open5gs --create-namespace oci://registry-1.do
 The Open5GS GUI will be available at http://[open5gs-node-IP]:30999
 - user: admin
 - password: 1423
+
+### Uninstall
+
+```sh
+helm uninstall -n open5gs open5gs && kubectl delete ns open5gs
+```

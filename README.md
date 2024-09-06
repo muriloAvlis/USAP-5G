@@ -43,7 +43,7 @@ Definitions used by the application to interact with the RIC
 ### Requirements
 
 - Kubernetes Cluster (tutorial on [K8s Installation Using Kubeadm](https://github.com/muriloAvlis/k8s-utils/blob/main/docs/cluster_deploy/kubeadm/install.md))
-- 5G Core (OAI-CN was used)
+- 5G Core (Open5GS was used)
 - 5G RAN (SRSRAN was used)
 
 ### Build Docker Image
@@ -52,25 +52,33 @@ Definitions used by the application to interact with the RIC
 docker image build -t muriloavlis/usap:latest -f docker/Dockerfile.usap .
 ```
 
-### Network Configurations
+### Network Slicing Configuration
 
-#### NFs Addresses
+#### NFs
 
-- UPF: 192.168.122.110 and 192.168.122.112 (n3, n6)
-- AMF: 192.168.122.100 (n2)
+|                    | **SST** | **SD** |
+|--------------------|---------|--------|
+| **SMF/UPF-eMBB**     | 1       | 0x1  | 
+| **SMF/UPF-URLLC**    | 2       | 0x1  |
+| **SMF/UPF-mIoT**     | 3       | 0x1  |
+| **SMF/UPF-default**  | 4       | 0x1  |
 
-#### Slices 
+#### Service Types 
 
-|                    | **sst** | **sd** | **dnn** | **Subnet**  | **MCC** | **MNC** |
+|                    | **SST** | **SD** | **DNN** | **Subnet**  | **MCC** | **MNC** |
 |--------------------|---------|--------|---------|-------------|---------|---------|
-| **embb_slice**     | 1       | 000001 | nongbr  | 12.1.1.0/24 |   724   |   70    |
-| **urllc_slice**    | 2       | 000001 | gbr     | 12.1.2.0/24 |   724   |   70    |
-| **miot_slice**     | 3       | 000001 | iot     | 12.1.3.0/24 |   724   |   70    |
-| **default_slice**  | 128     | 000001 | default | 12.1.4.0/24 |   724   |   70    |
+| **embb_slice**     | 1       | 000001 | internet  | 10.45.0.0/24 |   724   |   70    |
+| **urllc_slice**    | 2       | 000001 | internet  | 10.45.1.0/24 |   724   |   70    |
+| **miot_slice**     | 3       | 000001 | internet  | 10.45.2.0/24 |   724   |   70    |
+| **default_slice**  | 4       | 000001 | internet  | 10.45.3.0/24 |   724   |   70    |
 
 ### Proposal topology
 
-![proposal-topology-v1](./assets/images/proposal_diagram-topology-v1.png)
+![proposal-topology-v1](./assets/images/proposal_topology.png)
+
+### xApp Fluxogram
+
+TODO
 
 ### How It Works
 

@@ -1,0 +1,124 @@
+ARG UBUNTU_VERSION=22.04
+ARG SRSRAN_VERSION=master
+ARG ZMQ_VERSION=v4.3.5
+ARG CZMQ_VERSION=v4.2.1
+
+#----------------------------------------------------------------------#
+#------------------------- BUILDER STAGE ------------------------------#
+#----------------------------------------------------------------------#
+
+FROM ubuntu:${UBUNTU_VERSION} AS builder
+
+ARG SRSRAN_VERSION
+ARG ZMQ_VERSION
+ARG CZMQ_VERSION
+
+ENV DEBIAN_FRONTEND=noninteractive
+ENV TZ=America/Belem
+
+## Dependencies Installation
+RUN apt-get update && apt-get install -y \
+    build-essential \
+    cmake \
+    make \
+    gcc \
+    g++ \
+    pkg-config \
+    libfftw3-dev \
+    libmbedtls-dev \
+    libsctp-dev \
+    libyaml-cpp-dev \
+    libgtest-dev \
+    ccache \
+    libbackward-cpp-dev \
+    git \ 
+    libtool \
+    libdw-dev \
+    binutils-dev \
+    libdwarf-dev \
+    libpcsclite-dev \
+    libboost-program-options-dev \
+    libconfig++-dev
+
+## ZMQ Installation
+RUN git clone https://github.com/zeromq/libzmq.git -b ${ZMQ_VERSION} && \
+    cd libzmq && \
+    ./autogen.sh && \
+    ./configure && \
+    make && \
+    make install && \
+    ldconfig
+
+## CZMQ Installation
+RUN git clone https://github.com/zeromq/czmq.git -b ${CZMQ_VERSION} && \
+    cd czmq && \
+    ./autogen.sh && \
+    ./configure && \
+    make && \
+    make install && \
+    ldconfig
+
+## SRSRAN-UE Installation
+RUN git clone https://github.com/srsran/srsRAN_4G -b ${SRSRAN_VERSION} && \
+    cd srsRAN_4G && \
+    mkdir build && \
+    cd build && \
+    cmake -DCMAKE_INSTALL_PREFIX=/opt/srsRAN_4G .. && \
+    make -j`nproc` && \
+    make install
+
+#----------------------------------------------------------------------#
+#------------------------- FINAL STAGE --------------------------------#
+#----------------------------------------------------------------------#
+
+FROM ubuntu:${UBUNTU_VERSION}
+
+ARG SRSRAN_VERSION
+
+ENV DEBIAN_FRONTEND=noninteractive
+ENV TZ=America/Belem
+## gnb | srscu | srsdu
+ENV RUN_AS=gnb
+ENV CONFIG_PATH=/etc/srsue/ue_zmq.conf
+
+LABEL org.opencontainers.image.authors="Murilo Silva <murilosilva@itec.ufpa.br>" \
+    org.opencontainers.image.vendor="GERCOM/UFPA" \
+    org.opencontainers.image.licenses="Apache-2.0" \
+    org.opencontainers.image.version=${SRSRAN_VERSION}
+
+## Dependencies Installation
+RUN apt-get update && apt-get install -y \
+    pkg-config \
+    libfftw3-dev \
+    libmbedtls-dev \
+    libsctp-dev \
+    libyaml-cpp-dev \
+    libgtest-dev \
+    libbackward-cpp-dev \
+    libdw-dev \
+    libdwarf-dev \
+    libbackward-cpp-dev \
+    libboost-program-options-dev \
+    libconfig++-dev \
+    libpcsclite-dev \
+    net-tools \
+    iputils-ping
+
+COPY --from=builder /usr/local/lib /usr/local/lib
+COPY --from=builder /usr/local/include /usr/local/include
+COPY --from=builder /opt/srsRAN_4G/bin/srsue /usr/local/bin/srsue
+COPY --from=builder /opt/srsRAN_4G/include/* /usr/local/include
+COPY --from=builder /opt/srsRAN_4G/lib/* /usr/local/lib/
+
+## Copy config
+COPY docker/srs_configs/ue_zmq.conf ${CONFIG_PATH}
+
+## Copy entrypoint
+COPY docker/scripts/srsue_entrypoint.sh /entrypoint.sh
+RUN chmod +x /entrypoint.sh
+
+RUN ldconfig
+
+WORKDIR /
+
+ENTRYPOINT [ "/entrypoint.sh" ]

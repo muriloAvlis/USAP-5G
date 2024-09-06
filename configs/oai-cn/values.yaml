@@ -7,7 +7,7 @@ global:
 mysql:
   enabled: true
   imageTag: "lts"
-  imagePullPolicy: IfNotPresent
+  imagePullPolicy: Always
   oai5gdatabase: basic
   imagePullSecrets:
     - name: "regcred"
@@ -23,7 +23,7 @@ oai-nrf:
     repository: docker.io/oaisoftwarealliance/oai-nrf ## The image will be pulled from dockerhub
     version: develop ## The branch to be used to pull from dockerhub
     # pullPolicy: IfNotPresent or Never or Always
-    pullPolicy: IfNotPresent
+    pullPolicy: Always
   includeTcpDumpContainer: false #only for taking pcaps inside network function pod
   imagePullSecrets:
     - name: "regcred"
@@ -38,7 +38,7 @@ oai-nssf:
     repository: docker.io/oaisoftwarealliance/oai-nssf ## The image will be pulled from dockerhub
     version: develop ## The branch to be used to pull from dockerhub
     # pullPolicy: IfNotPresent or Never or Always
-    pullPolicy: IfNotPresent
+    pullPolicy: Always
   imagePullSecrets:
     - name: "regcred"
   includeTcpDumpContainer: false #only for taking pcaps inside network function pod
@@ -53,7 +53,7 @@ oai-udr:
     repository: docker.io/oaisoftwarealliance/oai-udr ## The image will be pulled from dockerhub
     version: develop ## The branch to be used to pull from dockerhub
     # pullPolicy: IfNotPresent or Never or Always
-    pullPolicy: IfNotPresent
+    pullPolicy: Always
   includeTcpDumpContainer: false #only for taking pcaps inside network function pod
   imagePullSecrets:
     - name: "regcred"
@@ -68,7 +68,7 @@ oai-udm:
     repository: docker.io/oaisoftwarealliance/oai-udm ## The image will be pulled from dockerhub
     version: develop ## The branch to be used to pull from dockerhub
     # pullPolicy: IfNotPresent or Never or Always
-    pullPolicy: IfNotPresent
+    pullPolicy: Always
   includeTcpDumpContainer: false #only for taking pcaps inside network function pod
   imagePullSecrets:
     - name: "regcred"
@@ -83,7 +83,7 @@ oai-ausf:
     repository: docker.io/oaisoftwarealliance/oai-ausf ## The image will be pulled from dockerhub
     version: develop ## The branch to be used to pull from dockerhub
     # pullPolicy: IfNotPresent or Never or Always
-    pullPolicy: IfNotPresent
+    pullPolicy: Always
   includeTcpDumpContainer: false #only for taking pcaps inside network function pod
   imagePullSecrets:
     - name: "regcred"
@@ -98,7 +98,7 @@ oai-amf:
     repository: docker.io/oaisoftwarealliance/oai-amf ## The image will be pulled from dockerhub
     version: develop ## The branch to be used to pull from dockerhub
     # pullPolicy: IfNotPresent or Never or Always
-    pullPolicy: IfNotPresent
+    pullPolicy: Always
   includeTcpDumpContainer: false #only for taking pcaps inside network function pod
   imagePullSecrets:
     - name: "regcred"
@@ -106,7 +106,7 @@ oai-amf:
     ## If you don't want to add a default route in your pod then replace this field with ""
     defaultGateway: ""
     n2Interface:
-      create: true
+      create: false
       Ipadd: "192.168.122.100"
       Netmask: "24"
       # #name inside the pod is hardcoded right now
@@ -114,7 +114,7 @@ oai-amf:
       ## If you do not have a gateway leave the field empty
       Gateway: ""
       ## If you do not want to add any routes in your pod then leave this field empty
-      routes: "" ## Add RAN route
+      routes: [{ "dst": "192.168.100.44/32", "gw": "192.168.122.1" }]
       hostInterface: "enp1s0" # Interface of the host machine on which this pod will be scheduled
   nodeSelector:
     kubernetes.io/hostname: core5g
@@ -125,7 +125,7 @@ oai-upf:
     repository: docker.io/oaisoftwarealliance/oai-upf ## The image will be pulled from dockerhub
     version: develop ## The branch to be used to pull from dockerhub
     # pullPolicy: IfNotPresent or Never or Always
-    pullPolicy: IfNotPresent
+    pullPolicy: Always
   includeTcpDumpContainer: false #only for taking pcaps inside network function pod
   imagePullSecrets:
     - name: "regcred"
@@ -136,13 +136,13 @@ oai-upf:
     ## If you don't want to add a default route in your pod then replace this field with ""
     defaultGateway: ""
     n3Interface:
-      create: true
+      create: false
       Ipadd: "192.168.122.110"
       Netmask: "24"
       # #name inside the pod is hardcoded right now
       # name: "n3"
       ## If you do not have a gateway leave the field empty
-      Gateway: "192.168.122.1"
+      Gateway: ""
       ## If you don't want to add a default route in your pod then replace this field with ""
       routes: ""
       hostInterface: "enp1s0"
@@ -159,13 +159,13 @@ oai-upf:
       routes: ""
       hostInterface: "enp1s0"
     n6Interface:
-      create: true
+      create: false
       Ipadd: "192.168.122.112"
       # #name inside the pod is hardcoded right now
       # name: "n6"
       Netmask: "24"
       ## If you do not have a gateway leave the field empty
-      Gateway: "192.168.122.1"
+      Gateway: ""
       ## If you do not want to add any routes in your pod then leave this field empty
       routes: ""
       hostInterface: "enp1s0"
@@ -199,7 +199,7 @@ oai-smf:
     repository: docker.io/oaisoftwarealliance/oai-smf ## The image will be pulled from dockerhub
     version: develop ## The branch to be used to pull from dockerhub
     # pullPolicy: IfNotPresent or Never or Always
-    pullPolicy: IfNotPresent
+    pullPolicy: Always
   includeTcpDumpContainer: false #only for taking pcaps inside network function pod
   multus:
     ## If you don't want to add a default route in your pod then replace this field with ""
