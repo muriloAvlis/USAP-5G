@@ -1,5 +1,0 @@
-apiVersion: v2
-description: Common templates for inclusion in other charts for the Near RT RIC platform.
-kubeVersion: ' >= 1.22'
-name: nearrt-ric-common
-version: 0.1.0
