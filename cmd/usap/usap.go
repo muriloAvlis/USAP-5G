@@ -7,7 +7,6 @@ import (
 	"gerrit.o-ran-sc.org/r/ric-plt/xapp-frame/pkg/clientmodel"
 	"gerrit.o-ran-sc.org/r/ric-plt/xapp-frame/pkg/xapp"
 	asn1coder "github.com/muriloAvlis/USAP/pkg/ans1coder"
-	"github.com/muriloAvlis/USAP/pkg/coredb"
 	"github.com/muriloAvlis/USAP/pkg/logging"
 	"github.com/muriloAvlis/USAP/pkg/manager"
 	"github.com/muriloAvlis/USAP/pkg/utils"
@@ -36,19 +35,19 @@ func main() {
 	}
 
 	// Set configuration to connect to 5GC
-	coreDBConfig := coredb.Config{
-		CoreDBUser:     xapp.Config.GetString("coredb.username"),
-		CoreDBPassword: xapp.Config.GetString("coredb.password"),
-		CoreDBPort:     xapp.Config.GetString("coredb.port"),
-		CoreDBName:     xapp.Config.GetString("coredb.dbname"),
-	}
+	// coreDBConfig := coredb.Config{
+	// 	CoreDBUser:     xapp.Config.GetString("coredb.username"),
+	// 	CoreDBPassword: xapp.Config.GetString("coredb.password"),
+	// 	CoreDBPort:     xapp.Config.GetString("coredb.port"),
+	// 	CoreDBName:     xapp.Config.GetString("coredb.dbname"),
+	// }
 
 	// Get DB IP address
-	coreDBAddr, err := utils.GetIpbyHostname(xapp.Config.GetString("coredb.hostname"))
-	if err != nil {
-		log.Fatal(err.Error()) // critical application process
-	}
-	coreDBConfig.CoreDBAddress = coreDBAddr
+	// coreDBAddr, err := utils.GetIpbyHostname(xapp.Config.GetString("coredb.hostname"))
+	// if err != nil {
+	// 	log.Fatal(err.Error()) // critical application process
+	// }
+	// coreDBConfig.CoreDBAddress = coreDBAddr
 
 	// Get usap-oranASN1Coder IP address
 	asn1CoderAddr, err := utils.GetIpbyHostname(xapp.Config.GetString("oranASN1Coder.grpcServerService"))
@@ -63,11 +62,11 @@ func main() {
 	// Run xApp
 	go appMgr.Run(&wg)
 
-	// Create a New 5GC Manager
-	coreDBMgr := coredb.NewManager(coreDBConfig)
+	// Create a New 5GC Manager (TODO: adapt to Open5GS)
+	// coreDBMgr := coredb.NewManager(coreDBConfig)
 
 	// Run 5GC DB management
-	go coreDBMgr.Run(&wg)
+	// go coreDBMgr.Run(&wg)
 
 	wg.Wait()
 }

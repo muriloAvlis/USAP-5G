@@ -21,7 +21,7 @@ var (
 	timeToWait           = "w10ms"
 )
 
-type UsapXapp struct {
+type usapXapp struct {
 	asn1Coder *asn1coder.Asn1Coder
 	Config
 	RMR                   chan *xapp.RMRParams

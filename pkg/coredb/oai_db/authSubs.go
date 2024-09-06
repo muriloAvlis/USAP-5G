@@ -2,7 +2,7 @@
 /*----------------AuthenticationSubscription Table Handler----------------*/
 /*------------------------------------------------------------------------*/
 
-package coredb
+package oaidb
 
 import (
 	"database/sql"

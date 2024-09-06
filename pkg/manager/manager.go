@@ -14,7 +14,7 @@ import (
 	asn1coder "github.com/muriloAvlis/USAP/pkg/ans1coder"
 )
 
-func NewManager(c Config) *UsapXapp {
+func NewManager(c Config) *usapXapp {
 	// create a new oranASN1Coder]
 	asn1CoderConfig := asn1coder.Config{
 		OranAsn1CoderEndpoint: c.OranAsn1CoderEndpoint,
@@ -25,7 +25,7 @@ func NewManager(c Config) *UsapXapp {
 	// create a RMR Go channel
 	RMRCh := make(chan *xapp.RMRParams)
 
-	return &UsapXapp{
+	return &usapXapp{
 		asn1Coder: oranAsn1Coder,
 		Config:    c,
 		RMR:       RMRCh,
@@ -33,7 +33,7 @@ func NewManager(c Config) *UsapXapp {
 }
 
 // Listen RIC messages and send them to the RMR channel
-func (u *UsapXapp) Consume(msg *xapp.RMRParams) (err error) {
+func (u *usapXapp) Consume(msg *xapp.RMRParams) (err error) {
 	log.Fatalln(msg.Mtype)
 
 	id := xapp.Rmr.GetRicMessageName(msg.Mtype)
@@ -58,7 +58,7 @@ func (u *UsapXapp) Consume(msg *xapp.RMRParams) (err error) {
 }
 
 // Get eNBs list
-func (u *UsapXapp) geteNBList() ([]*xapp.RNIBNbIdentity, error) {
+func (u *usapXapp) geteNBList() ([]*xapp.RNIBNbIdentity, error) {
 	eNBs, err := xapp.Rnib.GetListEnbIds()
 	if err != nil {
 		xapp.Logger.Error("Unable to get eNodeB list: %s", err.Error())
@@ -76,7 +76,7 @@ func (u *UsapXapp) geteNBList() ([]*xapp.RNIBNbIdentity, error) {
 }
 
 // Get gNBs list
-func (u *UsapXapp) getgNBList() ([]*xapp.RNIBNbIdentity, error) {
+func (u *usapXapp) getgNBList() ([]*xapp.RNIBNbIdentity, error) {
 	gNBs, err := xapp.Rnib.GetListGnbIds()
 	if err != nil {
 		xapp.Logger.Error("Unable to get gNodeB list: %s", err.Error())
@@ -94,7 +94,7 @@ func (u *UsapXapp) getgNBList() ([]*xapp.RNIBNbIdentity, error) {
 }
 
 // Get gNB and eNB list connected to RIC
-func (u *UsapXapp) getNbList() []*xapp.RNIBNbIdentity {
+func (u *usapXapp) getNbList() []*xapp.RNIBNbIdentity {
 	var nodeBs []*xapp.RNIBNbIdentity
 
 	if eNBs, err := u.geteNBList(); err == nil {
@@ -109,14 +109,14 @@ func (u *UsapXapp) getNbList() []*xapp.RNIBNbIdentity {
 }
 
 // Setup response callback to handle subscription response from SubMgr
-func (u *UsapXapp) subscriptionCB(resp *clientmodel.SubscriptionResponse) {
+func (u *usapXapp) subscriptionCB(resp *clientmodel.SubscriptionResponse) {
 	if u.subscriptionId == resp.SubscriptionID {
 		u.subscriptionInstances = append(u.subscriptionInstances, resp.SubscriptionInstances...)
 	}
 }
 
 // Send subscription to E2 Node
-func (u *UsapXapp) sendSubscription(e2NodeID string) {
+func (u *usapXapp) sendSubscription(e2NodeID string) {
 	// Create Subscription message and send it to RIC platform
 	xapp.Logger.Info("Sending subscription request for E2 Node: %s", e2NodeID)
 
@@ -181,11 +181,11 @@ func (u *UsapXapp) sendSubscription(e2NodeID string) {
 }
 
 // TODO
-func (u *UsapXapp) handleRicIndication(msg *xapp.RMRParams) {
+func (u *usapXapp) handleRicIndication(msg *xapp.RMRParams) {
 	xapp.Logger.Debug("Everything Already until here :) %v", msg.Meid)
 }
 
-func (u *UsapXapp) controlLoop() {
+func (u *usapXapp) controlLoop() {
 	// Handle receiving message based on message type
 	for {
 		// consume message from RMR chan
@@ -205,12 +205,12 @@ func (u *UsapXapp) controlLoop() {
 }
 
 // TODO
-func (u *UsapXapp) ConfigChangeHandler(f string) {
+func (u *usapXapp) ConfigChangeHandler(f string) {
 	xapp.Logger.Info("Config file changed, do something meaningful!")
 }
 
 // xApp callback (start here)
-func (u *UsapXapp) xAppStartCB(d interface{}) {
+func (u *usapXapp) xAppStartCB(d interface{}) {
 	xapp.Logger.Info("Starting application callback...")
 
 	nodeBs := u.getNbList()
@@ -283,7 +283,7 @@ func (u *UsapXapp) xAppStartCB(d interface{}) {
 }
 
 // Application Starting
-func (u *UsapXapp) Run(wg *sync.WaitGroup) {
+func (u *usapXapp) Run(wg *sync.WaitGroup) {
 	defer wg.Done()
 
 	// set Start callback
