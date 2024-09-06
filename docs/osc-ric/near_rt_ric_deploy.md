@@ -62,7 +62,7 @@ helm repo list
 ### Prepare Near-RT RIC Helm Charts
 
 ```sh
-cd ~/git/charts/osc-nearrtric
+cd ~/git/usap-5g/charts/osc-nearrtric
 make nearrtric
 ```
 
