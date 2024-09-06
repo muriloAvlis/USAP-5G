@@ -28,8 +28,8 @@ Export enviroments and configurations files (check ricplt ingresses on K8s).
 ```sh
 export CHART_REPO_URL=http://<ingress-ricplt-xapp-onboarder-chartmuseum.ricplt>/helmrepo
 export FLASK_SERVER_NAME=http://<ingress-ricplt-xapp-onboarder-server.ricplt>/onboard
-export CONFIG_FILE_PATH=~/git/USAP/deployments/helm/configs/config.json
-export SCHEMA_FILE_PATH=~/git/USAP/deployments/helm/configs/schema.json
+export CONFIG_FILE_PATH=~/git/usap-5g/deployments/helm/configs/config.json
+export SCHEMA_FILE_PATH=~/git/usap-5g/deployments/helm/configs/schema.json
 ```
 
 Onboarding the xApp with dms_cli.
@@ -65,7 +65,7 @@ curl -X DELETE http://<ingress-ricplt-xapp-onboarder-chartmuseum.ricplt>/helmrep
 ```sh
 export XAPP_CHART_NAME=usap
 export XAPP_CHART_VERSION=0.0.1
-export OUTPUT_PATH=~/git/USAP/deployments/helm
+export OUTPUT_PATH=~/git/usap-5g/deployments/helm-chart
 dms_cli download_helm_chart --xapp_chart_name=${XAPP_CHART_NAME} --version=${XAPP_CHART_VERSION} --output_path=${OUTPUT_PATH}
 ```
 

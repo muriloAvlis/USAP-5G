@@ -11,14 +11,14 @@
 
 ```sh
 cd ~
-git clone https://github.com/muriloAvlis/usap.git
+git clone https://github.com/muriloAvlis/usap-5g.git
 ```
 
 ### Install the core network with Helm
 
 ```sh
-cd ~/git/usap/charts/open5gs
-helm upgrade --install open5gs -n open5gs --create-namespace . --version 2.2.4 -f ~/git/USAP/configs/open5gs-cn/open5gs_with_slices.yaml
+cd ~/git/usap-5g/charts/open5gs
+helm upgrade --install open5gs -n open5gs --create-namespace . --version 2.2.4 -f ~/git/usap-5g/configs/open5gs-cn/open5gs_with_slices.yaml
 ```
 
 > **_NOTE_**: [open5gs_with_slices.yaml](../../configs/open5gs-cn/open5gs_with_slices.yaml) example file.

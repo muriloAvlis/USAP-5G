@@ -23,7 +23,7 @@ Copy the custom files in the configs folder to the chart directory and install t
 
 ```sh 
 cd ~/git/oai-cn5g-fed/charts/oai-5g-core/oai-5g-advance
-cp ~/git/USAP/configs/oai-cn/* .
+cp ~/git/usap-5g/configs/oai-cn/* .
 helm dependency update
 helm upgrade --install -n oai5gcn --create-namespace oai-5gcn . -f values.yaml
 ```

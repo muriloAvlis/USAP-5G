@@ -13,7 +13,7 @@
 git clone "https://gerrit.o-ran-sc.org/r/ric-plt/ric-dep"
 ```
 
-> **_NOTE_**: Use `~/USAP/charts/nearrtric-0.1.0.tgz` instead.
+> **_NOTE_**: Use `~/usap-5g/charts/nearrtric-0.1.0.tgz` instead.
 
 ### Creating Platform and Xapp Namespaces
 
@@ -83,7 +83,7 @@ helm search repo local/nearrtric
 ### Deploy Near-RT RIC
 
 ```sh
-helm upgrade --install nearrtric -n ricplt local/nearrtric -f ~/git/USAP/configs/osc-ric/osc_ric_values.yaml --create-namespace
+helm upgrade --install nearrtric -n ricplt local/nearrtric -f ~/git/usap-5g/configs/osc-ric/osc_ric_values.yaml --create-namespace
 ```
 
 ## Clean up

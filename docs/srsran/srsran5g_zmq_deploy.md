@@ -20,10 +20,10 @@ git clone https://github.com/gercom-ufpa/srsran-5g
 ```sh
 cd ~/git/srsran-5g/charts/srsran-5g
 helm dependency build
-helm upgrade --install srsran-gnb -n srsran --create-namespace . -f ~/git/USAP/configs/srsran/values-gnb-zmq.yaml
+helm upgrade --install srsran-gnb -n srsran --create-namespace . -f ~/git/usap-5g/configs/srsran/values-gnb-zmq.yaml
 ```
 
-> **_NOTE_**: nodeSelector is `kubernetes.io/hostname: 5gran`, change it if necessary.
+> **_NOTE_**: nodeSelector is `kubernetes.io/hostname: ran5g`, change it if necessary.
 
 ### Clean up
 
