@@ -2,7 +2,7 @@
 
 The UE Smart Allocation Platform on Open 5G Networks (USAP) is a project to manage and optimize the allocation of UEs and UE QoS, using slices on Open 5G Networks with support for the ORAN Alliance O-RAN standard.
 
-## Tutorials
+<!-- ## Tutorials
 
 ### 5GC
 
@@ -17,7 +17,7 @@ The UE Smart Allocation Platform on Open 5G Networks (USAP) is a project to mana
 
 ### RIC
 
-1. [OSC Near-RT RIC Deployment](docs/osc-ric/osc_nrt_ric_deploy.md)
+1. [OSC Near-RT RIC Deployment](docs/osc-ric/osc_nrt_ric_deploy.md) -->
 
 ## Standardizations
 
