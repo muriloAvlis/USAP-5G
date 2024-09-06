@@ -1,0 +1,11 @@
+apiVersion: v2
+dependencies:
+- name: nearrt-ric-common
+  repository: '@local'
+  version: ~0.x
+description: DBaaS Service based on Redis for the Near RT RIC Platform.
+kubeVersion: ' >= 1.22'
+name: dbaas
+sources:
+- https://gerrit.o-ran-sc.org/r/admin/repos/ric-plt/dbaas,general
+version: 0.1.0

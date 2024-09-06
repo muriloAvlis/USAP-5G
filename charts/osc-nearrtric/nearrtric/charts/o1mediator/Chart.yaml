@@ -1,0 +1,11 @@
+apiVersion: v2
+dependencies:
+- name: nearrt-ric-common
+  repository: '@local'
+  version: ~0.x
+description: O1 Mediator Helm chart for Near RT RIC Platform.
+kubeVersion: ' >= 1.22'
+name: o1mediator
+sources:
+- https://gerrit.o-ran-sc.org/r/admin/repos/ric-plt/o1,general
+version: 0.1.0

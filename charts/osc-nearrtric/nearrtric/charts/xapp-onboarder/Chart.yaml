@@ -1,0 +1,11 @@
+apiVersion: v2
+dependencies:
+- name: nearrt-ric-common
+  repository: '@local'
+  version: ~0.x
+description: Helm Chart for XApp Onboarder for the Near RT RIC Platform.
+kubeVersion: ' >= 1.22'
+name: xapp-onboarder
+sources:
+- https://gerrit.o-ran-sc.org/r/gitweb?p=ric-plt/appmgr.git;a=tree;f=xapp_orchestrater/dev
+version: 0.1.0

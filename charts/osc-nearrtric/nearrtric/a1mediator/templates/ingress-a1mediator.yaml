@@ -1,0 +1,18 @@
+apiVersion: networking.k8s.io/v1
+kind: Ingress
+metadata:
+  name: {{ include "common.ingressname.a1mediator" . }}
+  annotations:
+    nginx.ingress.kubernetes.io/use-regex: "true"
+    nginx.ingress.kubernetes.io/rewrite-target: /$2
+spec:
+  rules:
+  - http:
+      paths:
+      - path: {{ include "common.kongpath.ric.a1mediator" . }}(/|$)(.*)
+        pathType: ImplementationSpecific
+        backend:
+          service:
+            name: {{ include "common.servicename.a1mediator.http" . }}
+            port:
+              number: {{ include "common.serviceport.a1mediator.http" . }}

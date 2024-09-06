@@ -1,0 +1,11 @@
+apiVersion: v2
+dependencies:
+- name: nearrt-ric-common
+  repository: '@local'
+  version: ~0.x
+description: Helm chart for Alarm Manager for NearRT RIC.
+kubeVersion: '>= 1.22'
+name: alarmmanager
+sources:
+- https://gerrit.o-ran-sc.org/r/admin/repos/ric-plt/alarm-go,general
+version: 0.1.0
