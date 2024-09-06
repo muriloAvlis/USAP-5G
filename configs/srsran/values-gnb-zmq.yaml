@@ -144,12 +144,12 @@ config:
       prach_config_index: 1 # Sets PRACH config to match what is expected by srsUE
 
   e2:
-    enable_du_e2: false # Enable DU E2 agent (one for each DU instance)
+    enable_du_e2: true # Enable DU E2 agent (one for each DU instance)
     e2sm_kpm_enabled: true # Enable KPM service module
     e2sm_rc_enabled: true # Enable KPM service module
-    addr: 192.168.0.1 # RIC IP address
-    bind_addr: 192.168.0.10 # A local IP that the E2 agent binds to for traffic from the RIC. ONLY required if running the RIC on a separate machine.
-    port: 36422 # RIC port
+    addr: service-ricplt-e2term-sctp-alpha.ricplt # RIC IP address or service name
+    bind_addr: eth0 # A local IP that the E2 agent binds to for traffic from the RIC. ONLY required if running the RIC on a separate machine.
+    port: 36421 # RIC port
 
   log: # Set debugging->enabled->true in order to make logs persistent. Make sure hostPath and log file path match.
     filename: /tmp/gnb.log # Path of the log file.

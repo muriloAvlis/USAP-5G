@@ -2,7 +2,6 @@ package manager
 
 import (
 	"encoding/json"
-	"log"
 	"net/http"
 	"os"
 	"strings"
@@ -34,11 +33,7 @@ func NewManager(c Config) *usapXapp {
 
 // Listen RIC messages and send them to the RMR channel
 func (u *usapXapp) Consume(msg *xapp.RMRParams) (err error) {
-	log.Fatalln(msg.Mtype)
-
 	id := xapp.Rmr.GetRicMessageName(msg.Mtype)
-
-	log.Fatalln(id)
 
 	defer func() {
 		xapp.Rmr.Free(msg.Mbuf)
