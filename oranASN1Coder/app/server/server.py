@@ -1,6 +1,8 @@
 from concurrent import futures
+import threading
 import grpc
 import logging
+import signal
 from .proto import e2sm_pb2
 from .proto import e2sm_pb2_grpc
 from ..e2sm_wrapper import e2sm_kpm_wrapper
@@ -94,4 +96,23 @@ def run_server():
 
     logging.info(f"gRPC server running on port {severAddr}")
 
-    server.wait_for_termination()
+    done = threading.Event()
+
+    def signal_handler(signum, _):
+        signal_name = signal.Signals(signum).name
+        logging.info(
+            'Receive a {} signal, stopping the gRPC server...'.format(signal_name))
+        done.set()
+
+    # Exit handlers.
+    signal.signal(signal.SIGQUIT, signal_handler)
+    signal.signal(signal.SIGINT, signal_handler)
+    signal.signal(signal.SIGTERM, signal_handler)
+
+    # Wait for exit signals
+    done.wait()
+
+    # Stop server
+    server.stop(0)
+
+    logging.info('Server stopped successfully!')
