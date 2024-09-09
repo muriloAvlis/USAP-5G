@@ -15,15 +15,23 @@ RUN apt-get update && \
 # COPY ./dependencies ./dependencies
 # RUN dpkg -i ./dependencies/rmr-dev_4.9.4_amd64.deb
 
-## Install RMR from deb packages at packagecloud.io
+## Install RMR lib from deb packages at packagecloud.io
 ARG RMR_PKG=rmr_4.9.4_amd64.deb
 ARG RMR_PKG_DEV=rmr-dev_4.9.4_amd64.deb
 
 RUN curl -Lo ${RMR_PKG} https://packagecloud.io/o-ran-sc/release/packages/debian/stretch/${RMR_PKG}/download.deb && \
     dpkg -i ${RMR_PKG} && rm -f ${RMR_PKG}
-
 RUN curl -Lo ${RMR_PKG_DEV} https://packagecloud.io/o-ran-sc/release/packages/debian/stretch/${RMR_PKG_DEV}/download.deb && \
     dpkg -i ${RMR_PKG_DEV} && rm -f ${RMR_PKG_DEV}
+
+## Install E2AP lib from deb packages at packagecloud.io
+ARG E2AP_PKG=riclibe2ap_1.1.0_amd64.deb
+ARG E2AP_PKG_DEV=riclibe2ap-dev_1.1.0_amd64.deb
+
+RUN curl -Lo ${E2AP_PKG} https://packagecloud.io/o-ran-sc/release/packages/debian/stretch/${E2AP_PKG}/download.deb && \
+    dpkg -i ${E2AP_PKG} && rm -f ${E2AP_PKG}
+RUN curl -Lo ${E2AP_PKG_DEV} https://packagecloud.io/o-ran-sc/release/packages/debian/stretch/${E2AP_PKG_DEV}/download.deb && \
+    dpkg -i ${E2AP_PKG_DEV} && rm -f ${E2AP_PKG_DEV}
 
 RUN export LD_LIBRARY_PATH=/usr/local/lib && ldconfig
 
