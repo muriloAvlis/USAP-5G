@@ -179,7 +179,8 @@ func (u *usapXapp) sendSubscription(e2NodeID string) {
 
 // RIC_INDICATION (12050) msg type handler
 func (u *usapXapp) handleRicIndication(msg *xapp.RMRParams) {
-	xapp.Logger.Debug("Everything Already until here :) %v", msg.Meid)
+	// TODO
+	xapp.Logger.Debug("RIC Indication Payload: %s", string(msg.Payload)) // just a test
 }
 
 func (u *usapXapp) controlLoop() {
