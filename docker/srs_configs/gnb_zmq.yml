@@ -114,12 +114,12 @@ pcap:
 
 metrics:
   rlc_report_period: 1000 # Optional UINT (1000). Sets the RLC metrics report period in milliseconds. Supported [0 - inf]
-  rlc_json_enable: false # Optional BOOLEAN (false). Enable RLC JSON metrics reporting. Supported: [false, true].
+  rlc_json_enable: true # Enable RLC metrics reporting (need to deliver measurements to E2SM_KPM service model)
   pdcp_report_period: 0 # Optional UINT (0). Sets the PDCP metrics report period.
   cu_cp_statistics_report_period: 1 # Optional UINT (1). Sets the CU-CP statistics report period in seconds. Set this value to 0 to disable this feature. Supported: [0 - inf].
   cu_up_statistics_report_period: 1 # Optional UINT (1). Sets the CU-UP statistics report period in seconds. Set this value to 0 to disable this feature. Supported: [0 - inf].
   enable_json_metrics: false # Optional BOOLEAN (false). Enables JSON metrics reporting. Supported: [false, true].
   addr: 127.0.0.1 # Optional TEXT:IPV4 (127.0.0.1). Sets the metrics address. Supported: IPV4 address.
   port: 55555 # Optional UINT. Sets the metrics UPD port. Supported: [0 - 65535].
-  autostart_stdout_metrics: false # Optional BOOLEAN (false). Sets whether or note to autostart stdout metrics reporting. Supported [false, true].
+  autostart_stdout_metrics: true # Optional BOOLEAN (false). Sets whether or note to autostart stdout metrics reporting. Supported [false, true].
   stdout_metrics_period: # Optional UINT (1). Sets the DU statistics report period in milliseconds. This metrics sets the console output period. Supported: [0 - inf].

@@ -44,6 +44,7 @@ Definitions used by the application to interact with the RIC
 
 - Kubernetes Cluster (tutorial on [K8s Installation Using Kubeadm](https://github.com/muriloAvlis/k8s-utils/blob/main/docs/cluster_deploy/kubeadm/install.md))
 - 5G Core (Open5GS was used)
+- OSC Near-RT RIC
 - 5G RAN (SRSRAN was used)
 
 ### Build Docker Image

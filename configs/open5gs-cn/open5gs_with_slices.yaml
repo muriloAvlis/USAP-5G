@@ -7,6 +7,8 @@ populate:
     repository: gradiant/open5gs-dbctl
     tag: 0.10.3
     pullPolicy: IfNotPresent
+  nodeSelector:
+    kubernetes.io/hostname: core5g
   initCommands:
     # example of initCommands:
     #  - open5gs-dbctl add 724700000000001 465B5CE8B199B49FAA5F0A2EE238A6BC E8ED289DEBA952E4283B54E88E6183CA

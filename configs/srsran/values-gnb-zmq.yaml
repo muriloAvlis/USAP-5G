@@ -165,6 +165,9 @@ config:
 
   metrics:
     autostart_stdout_metrics: true # Enable reporting metrics in stdout
+    stdout_metrics_period: 1000 # Sets the DU statistics report period in milliseconds. This metrics sets the console output period.
+    rlc_json_enable: true # Enable RLC metrics reporting (need to deliver measurements to E2SM_KPM service model)
+    rlc_report_period: 1000 # Set reporting period to 1s
     # enable_json_metrics: true        # Enable reporting metrics in JSON format
     # addr: 10.233.43.143              # Metrics-server IP
     # port: 55555                      # Metrics-server Port

@@ -21,6 +21,9 @@ spec:
       labels: {{- include "common.labels.standard" . | nindent 8 }}
         app.kubernetes.io/component: populate
     spec:
+      {{- with .Values.populate.nodeSelector }}
+      nodeSelector: {{ toYaml . | trim | nindent 8 -}}
+      {{- end }}
       {{- include "open5gs.populate.imagePullSecrets" . | nindent 6 }}
       initContainers:
       - name: init

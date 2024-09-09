@@ -35,10 +35,10 @@ func NewManager(c Config) *usapXapp {
 func (u *usapXapp) Consume(msg *xapp.RMRParams) (err error) {
 	id := xapp.Rmr.GetRicMessageName(msg.Mtype)
 
-	defer func() {
-		xapp.Rmr.Free(msg.Mbuf)
-		msg.Mbuf = nil
-	}()
+	// defer func() {
+	// 	xapp.Rmr.Free(msg.Mbuf)
+	// 	msg.Mbuf = nil
+	// }()
 
 	xapp.Logger.Info("Received RIC message: name=%s | e2NodeID=%s | subID=%d | txID=%s | len=%d",
 		id,
