@@ -2,6 +2,7 @@ package manager
 
 import (
 	"encoding/json"
+	"fmt"
 	"net/http"
 	"os"
 	"strings"
@@ -33,21 +34,21 @@ func NewManager(c Config) *usapXapp {
 
 // Listen RIC messages and send them to the RMR channel
 func (u *usapXapp) Consume(msg *xapp.RMRParams) (err error) {
-	id := xapp.Rmr.GetRicMessageName(msg.Mtype)
+	msgTypeName := xapp.Rmr.GetRicMessageName(msg.Mtype)
 
 	defer func() {
 		xapp.Rmr.Free(msg.Mbuf)
 		msg.Mbuf = nil
 	}()
 
-	xapp.Logger.Info("Received RIC message: \n \tType=%s\n\tE2NodeID=%s\n\tSubID=%d\n\tTxID=%s\n\tLength=%d bytes\n\tTimeout=%d s",
-		id,
+	xapp.Logger.Info(fmt.Sprintf("Received RIC message:\n\tType=%s\n\tE2NodeID=%s\n\tSubID=%d\n\tTxID=%s\n\tLength=%d bytes",
+		msgTypeName,
 		msg.Meid.RanName,
 		msg.SubId,
 		msg.Xid,
 		msg.PayloadLen,
-		msg.Timeout,
-	)
+	)) // it's ugly, but it's working...
+
 	// send message to RMR channel to be processed
 	u.RMR <- msg
 	return nil
@@ -158,7 +159,7 @@ func (u *usapXapp) sendSubscription(e2NodeID string) {
 		},
 	}
 
-	// indent subs parameters (just to print beautifully)
+	// Indent subs parameters (just to print beautifully)
 	b, err := json.MarshalIndent(subscriptionParams, "", " ")
 	if err != nil {
 		xapp.Logger.Error("Json marshaling failed: %v", err)
@@ -176,7 +177,7 @@ func (u *usapXapp) sendSubscription(e2NodeID string) {
 	xapp.Logger.Info("Subscription completed successfully for E2 Node %s, subscription ID: %s", e2NodeID, *resp.SubscriptionID)
 }
 
-// TODO
+// RIC_INDICATION (12050) msg type handler
 func (u *usapXapp) handleRicIndication(msg *xapp.RMRParams) {
 	xapp.Logger.Debug("Everything Already until here :) %v", msg.Meid)
 }
@@ -186,14 +187,17 @@ func (u *usapXapp) controlLoop() {
 	for {
 		// consume message from RMR chan
 		msg := <-u.RMR // wait here until receive a message
-		xapp.Logger.Debug("Received message type: %d", msg.Mtype)
+
+		msgTypeName := xapp.Rmr.GetRicMessageName(msg.Mtype)
+		xapp.Logger.Debug("Handling message type: %s", msgTypeName)
+
 		switch msg.Mtype {
 		case xapp.RIC_INDICATION:
 			go u.handleRicIndication(msg) // TODO: Is it necessary to control this routine?
 		case xapp.RIC_HEALTH_CHECK_REQ:
-			xapp.Logger.Info("Received health check request")
+			xapp.Logger.Info("Received health check request, ignoring...")
 		case xapp.A1_POLICY_REQ:
-			xapp.Logger.Info("Received policy request")
+			xapp.Logger.Info("Received policy request, ignoring...")
 		default:
 			xapp.Logger.Error("Unknow message type %d, discarding...", msg.Mtype)
 		}
