@@ -13,9 +13,9 @@ var (
 	KpmRanFuncId         = int64(2)
 	seqId                = int64(1234)               // XappEventInstanceID
 	ranUeKpis            = make(map[string][]string) // map to [E2NodeID]:[metrics]
-	reportingPeriod      = uint64(60000)             // in ms
-	actionId             = int64(1)                  // What is this??
-	granularityPeriod    = uint64(1000)
+	reportingPeriod      = uint64(1000)              // in ms
+	actionId             = int64(1)
+	granularityPeriod    = uint64(1000) // in ms
 	actionType           = "report"
 	subsequentActionType = "continue"
 	timeToWait           = "w10ms"
