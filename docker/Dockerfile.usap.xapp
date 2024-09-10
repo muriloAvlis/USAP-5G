@@ -34,7 +34,7 @@ RUN curl -Lo ${E2AP_PKG_DEV} https://packagecloud.io/o-ran-sc/release/packages/d
     dpkg -i ${E2AP_PKG_DEV} && rm -f ${E2AP_PKG_DEV}
 
 ## Fix: E2AP oer bug
-RUN cp libans1coder/libs/e2sm/kpm/oer_* /usr/local/include/riclibe2ap/
+COPY libasn1coder/libs/e2sm/kpm/oer_* /usr/local/include/riclibe2ap/
 
 RUN export LD_LIBRARY_PATH=/usr/local/lib && ldconfig
 
