@@ -31,6 +31,11 @@ func (c *Asn1Coder) DecodeMeasNameListbyReportStyle(ranFunctionDefinition string
 	return response.MeasList
 }
 
+func (c *Asn1Coder) DecodeRICIndicationHdr(indHeader []byte) []string {
+	// client := pb.
+	return nil
+}
+
 // O-RAN E2SM-KPM 7.3.2 Event Trigger Style 1: Periodic Report (only format 1 is available on KPM)
 func (c *Asn1Coder) EncodeEventTriggerDefinitionFormat1(reportingPeriod uint64) []int64 {
 	client := pb.NewEventTriggerFmtEncoderClient(c.client)

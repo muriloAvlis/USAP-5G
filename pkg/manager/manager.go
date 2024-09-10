@@ -179,8 +179,25 @@ func (u *usapXapp) sendSubscription(e2NodeID string) {
 
 // RIC_INDICATION (12050) msg type handler
 func (u *usapXapp) handleRicIndication(msg *xapp.RMRParams) {
-	// TODO
 	xapp.Logger.Debug("RIC Indication Payload: %s", string(msg.Payload)) // just a test
+	indMsg, err := u.asn1Coder.DecodeRICIndicationMsg(msg.Payload)
+
+	if err != nil {
+		xapp.Logger.Error("Failed to decode RIC indication message: %s", err.Error())
+		return
+	}
+
+	xapp.Logger.Info("Decoded RIC Indication message from {%s} with successfully!", msg.Meid.RanName)
+
+	// check if Ind Msg Header and Ind Msg has content
+	if indMsg.IndHeader == nil || indMsg.IndHeaderLength == 0 || indMsg.IndMessage == nil || indMsg.IndMessageLength == 0 {
+		xapp.Logger.Error("Indication message header and indication message are empty!")
+		return
+	}
+
+	// Decode indication header and message
+	xapp.Logger.Debug("Encoded RIC Indication Header: %v", indMsg.IndHeader)
+	xapp.Logger.Debug("Encoded RIC Indication Message: %v", indMsg.IndMessage)
 }
 
 func (u *usapXapp) controlLoop() {

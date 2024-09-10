@@ -4,16 +4,30 @@ package e2sm;
 
 option go_package = "./pb";
 
+/*********************
+------ SERVICES ------
+**********************/
+
 // Service to get meas list
 service RanFuncDefDecoder {
     // RPC to get meas list by RIC report style
     rpc getMeasListbyRicReportStyle (MeasListByReportStyleRequest) returns (MeasListResponse);
 }
 
+// Service to decode RIC indications
+service RICIndDecoder {
+    // RPC to decode RIC indication header
+    rpc decodeRICIndicationHdr (RICIndDecoderRequest) returns (RICIndDecoderResponse);
+
+    // RPC to decode RIC indication message
+    rpc decodeRICIndicationMsg (RICIndDecoderRequest) returns (RICIndDecoderResponse);
+}
+
 // Service to encode action definitions
 service ActDefEncoder {
     // RPC to encode Action Definition Format 4
     rpc encodeActionDefinitionFmt4(ActDefFmt4Request) returns (EncodedActDefResponse);
+
     // TODO: encode others actions definitions format
 }
 
@@ -22,6 +36,10 @@ service EventTriggerFmtEncoder {
     // RPC to encode Event Trigger Format 1
     rpc encodeEventTriggerFmt1(EventTriggerDefFmt1Resquest) returns (EncodedEventTriggerDefResponse);
 }
+
+/*********************
+------- MESSAGES ------
+**********************/
 
 message EventTriggerDefFmt1Resquest {
     uint64 reportingPeriod = 1;
@@ -51,4 +69,9 @@ message MeasListByReportStyleRequest {
 // Response from getMeasListbyRicReportStyle
 message MeasListResponse {
     repeated string measList = 1; 
+}
+
+// Request to RICIndDecoder
+message RICIndDecoderRequest {
+    bytes encodedData = 1;
 }

@@ -180,6 +180,12 @@ class e2sm_kpm_wrapper(object):
             'E2SM-KPM-RANfunction-Description', byte_string)
         return ran_function_description
 
+    def decode_ric_ind_header_fmt_1(self, encoded_data):
+        indication_hdr = self.asn1_compiler.decode(
+            'E2SM-KPM-IndicationHeader-Format1', encoded_data
+        )
+        return indication_hdr
+
     def get_meas_name_list_by_ric_report_style(self, ran_function_description, reportStyleType) -> list:
         measNameList = []
         for reportStyle in ran_function_description['ric-ReportStyle-List']:
