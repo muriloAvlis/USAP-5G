@@ -94,12 +94,12 @@ TestCond-Type ::= CHOICE{
         isCatM                          ENUMERATED {true, ...},
         rSRP                            ENUMERATED {true, ...},
         rSRQ                            ENUMERATED {true, ...},
+        ...,
         ul-rSRP                         ENUMERATED {true, ...},
         cQI                                     ENUMERATED {true, ...},
         fiveQI                          ENUMERATED {true, ...},
         qCI                                     ENUMERATED {true, ...},
-        sNSSAI                          ENUMERATED {true, ...},
-        ...
+        sNSSAI                          ENUMERATED {true, ...}
 }
 
 TestCond-Expression ::= ENUMERATED {
@@ -118,8 +118,8 @@ TestCond-Value ::= CHOICE{
         valueBitS                       BIT STRING,
         valueOctS                       OCTET STRING, 
         valuePrtS                       PrintableString,
-        valueReal                       REAL,
-        ...
+        ...,
+        valueReal                       REAL
 }
 
 -- **************************************************************
@@ -209,8 +209,8 @@ MeasurementCondList ::= SEQUENCE (SIZE(1..maxnoofMeasurementInfo)) OF Measuremen
 MeasurementCondItem ::= SEQUENCE {
         measType                                MeasurementType,
         matchingCond                MatchingCondList,
-        binRangeDef                         BinRangeDefinition                  OPTIONAL,
-        ...
+        ...,
+        binRangeDef                         BinRangeDefinition                  OPTIONAL
 }
 
 MeasurementCondUEidList ::= SEQUENCE (SIZE(1..maxnoofMeasurementInfo)) OF MeasurementCondUEidItem
@@ -219,8 +219,8 @@ MeasurementCondUEidItem ::= SEQUENCE {
         measType                                MeasurementType,
         matchingCond                    MatchingCondList,
         matchingUEidList                MatchingUEidList                        OPTIONAL,
-        matchingUEidPerGP               MatchingUEidPerGP                       OPTIONAL,
-        ...
+        ...,
+        matchingUEidPerGP               MatchingUEidPerGP                       OPTIONAL
 }
 
 MatchingCondList ::= SEQUENCE (SIZE(1..maxnoofConditionInfo)) OF MatchingCondItem
@@ -319,9 +319,9 @@ E2SM-KPM-ActionDefinition ::= SEQUENCE{
                 actionDefinition-Format1                E2SM-KPM-ActionDefinition-Format1,
                 actionDefinition-Format2                E2SM-KPM-ActionDefinition-Format2,
                 actionDefinition-Format3                E2SM-KPM-ActionDefinition-Format3,
+                ...,
                 actionDefinition-Format4                E2SM-KPM-ActionDefinition-Format4,
-                actionDefinition-Format5                E2SM-KPM-ActionDefinition-Format5,
-                ...
+                actionDefinition-Format5                E2SM-KPM-ActionDefinition-Format5
         },
         ...
 }
@@ -330,8 +330,8 @@ E2SM-KPM-ActionDefinition-Format1 ::= SEQUENCE {
         measInfoList                                    MeasurementInfoList,
         granulPeriod                                    GranularityPeriod,
         cellGlobalID                                    CGI                                                     OPTIONAL,
-        distMeasBinRangeInfo                    DistMeasurementBinRangeList             OPTIONAL,
-        ...
+        ...,
+        distMeasBinRangeInfo                    DistMeasurementBinRangeList             OPTIONAL
 }
 
 E2SM-KPM-ActionDefinition-Format2 ::= SEQUENCE {
@@ -389,8 +389,8 @@ E2SM-KPM-IndicationMessage ::= SEQUENCE{
         indicationMessage-formats               CHOICE{
                 indicationMessage-Format1               E2SM-KPM-IndicationMessage-Format1,
                 indicationMessage-Format2               E2SM-KPM-IndicationMessage-Format2,
-                indicationMessage-Format3               E2SM-KPM-IndicationMessage-Format3,
-                ...
+                ...,
+                indicationMessage-Format3               E2SM-KPM-IndicationMessage-Format3
         },
         ...
 }
