@@ -3,10 +3,10 @@ kubernetesType: Vanilla #Vanilla for community kubernetes distribution else Open
 ## In case of using these charts on Openshift then please use UBI images
 ## To know more about them follow this tutorial https://gitlab.eurecom.fr/oai/cn5g/oai-cn5g-fed/-/tree/master/openshift
 nfimage: # image name either locally present or in a public/private repository
-  repository: docker.io/oaisoftwarealliance/oai-gnb
-  version: 2024.w32 # image tag or develop
+  repository: muriloavlis/oai-gnb
+  version: 2024.w36 # image tag or develop
   # pullPolicy: IfNotPresent or Never or Always
-  pullPolicy: IfNotPresent
+  pullPolicy: Always
 
 # good to use when pulling images from docker-hub mention
 imagePullSecrets:
@@ -78,18 +78,20 @@ config:
   mnc: "70" # check the information with AMF, SMF, UPF
   tac: "1" # check the information with AMF
   snssaiList:
-    - sst: "1" #currently only 4 standard values are allowed 1,2,3,4 (eMBB)
+    - sst: "1" # eMBB
       sd: "000001"
     - sst: "2" # URLLC
       sd: "000001"
     - sst: "3" # MIoT
       sd: "000001"
-    - sst: "4"
+    - sst: "4" # default
       sd: "000001"
   usrp: rfsim #allowed values rfsim, b2xx, n3xx or x3xx
   amfhost: "open5gs-amf-ngap.open5gs" # amf ip-address or service-name oai-amf-svc or 172.21.6.94
   n2IfName: "eth0" # if multus.n2Interface.create is true then use n2
   n3IfName: "eth0" #if multus.n3Interface.create is true then use n3 or you can only use 1 interface n2 or eth0
+  e2_agent:
+    ric_host: "" # RIC ip-address or service-name
 
 ## Debugging section
 start:

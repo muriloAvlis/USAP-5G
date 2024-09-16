@@ -267,3 +267,9 @@ data:
         rrc_log_level                         ="info";
         f1ap_log_level                         ="debug";
       };
+
+    e2_agent = {
+      near_ric_ip_addr = {{ .Values.config.e2_agent.near_ric_ip_addr | quote }};
+      sm_dir = "/usr/local/lib/flexric/"
+    }
+

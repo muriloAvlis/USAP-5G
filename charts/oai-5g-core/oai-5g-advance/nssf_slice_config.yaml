@@ -1,0 +1,71 @@
+# Reference:- TS 29.531 R16.0.0., Section- 6.1.6 Data Model
+info:
+  version: 2.0.0
+  description: OAI-NSSF Release v2.0.1
+configuration:
+  nsiInfoList:
+    - snssai:
+        sst: 1
+        sd: "000001"
+      nsiInformationList:
+        nrfId: http://oai-nrf:80/nnrf-disc/v1/nf-instances
+        nsiId: "1"
+    - snssai:
+        sst: 2
+        sd: "000001"
+      nsiInformationList:
+        nrfId: http://oai-nrf:80/nnrf-disc/v1/nf-instances
+        nsiId: "2"
+    - snssai:
+        sst: 3
+        sd: "000001"
+      nsiInformationList:
+        nrfId: http://oai-nrf:80/nnrf-disc/v1/nf-instances
+        nsiId: "3"
+    - snssai:
+        sst: 128
+        sd: "000001"
+      nsiInformationList:
+        nrfId: http://oai-nrf:80/nnrf-disc/v1/nf-instances
+        nsiId: "4"
+  taInfoList:
+    - tai:
+        plmnId:
+          mcc: "724"
+          mnc: "70"
+        tac: "00001"
+      supportedSnssaiList:
+        - sst: 1
+          sd: "000001"
+        - sst: 2
+          sd: "000001"
+        - sst: 3
+          sd: "000001"
+        - sst: 128
+          sd: "000001"
+  amfInfoList:
+    - targetAmfSet: 724-70-01-001
+      nrfAmfSet: http://oai-nrf:80/nnrf-disc/v1/nf-instances'
+      nrfAmfSetNfMgtUri: http://oai-nrf:80/nnrf-nfm/v1/nf-instances
+      amfList:
+        - nfId: 405e8251-cc5a-45dd-a494-efb9eaf1cd58 # 55541de6-74d2-480b-a285-37df655e3737
+          supportedNssaiAvailabilityData:
+            tai:
+              plmnId:
+                mcc: 724
+                mnc: 70
+              tac: 00001
+            supportedSnssaiList:
+              - sst: 1
+                sd: "000001"
+              - sst: 2
+                sd: "000001"
+              - sst: 3
+                sd: "000001"
+              - sst: 128
+                sd: "000001"
+  plmnInfoList:
+    - operatorName: yoshisauro
+      homePlmnId:
+        mcc: 724
+        mnc: 70

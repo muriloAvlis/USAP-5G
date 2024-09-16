@@ -26,4 +26,4 @@ version: 0.1.0
 dependencies:
   - name: nearrt-ric-common
     version: ~0.x
-    repository: "@local"
+    repository: "file://../nearrt-ric-common"

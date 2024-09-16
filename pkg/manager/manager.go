@@ -67,7 +67,7 @@ func (u *usapXapp) geteNBList() ([]*xapp.RNIBNbIdentity, error) {
 		eNB_names = append(eNB_names, eNB.GetInventoryName())
 	}
 
-	xapp.Logger.Info("List of connected eNodeBs: [%s]", strings.Join(eNB_names, ", "))
+	xapp.Logger.Info("List of available eNodeBs: [%s]", strings.Join(eNB_names, ", "))
 
 	return eNBs, nil
 }
@@ -85,7 +85,7 @@ func (u *usapXapp) getgNBList() ([]*xapp.RNIBNbIdentity, error) {
 		gNB_names = append(gNB_names, gNB.GetInventoryName())
 	}
 
-	xapp.Logger.Info("List of connected gNodeBs: [%s]", strings.Join(gNB_names, ", "))
+	xapp.Logger.Info("List of available gNodeBs: [%s]", strings.Join(gNB_names, ", "))
 
 	return gNBs, nil
 }

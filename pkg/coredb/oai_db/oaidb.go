@@ -74,12 +74,30 @@ func (cdb *coreDB) Run(wg *sync.WaitGroup) {
 // Start 5GC DB processes
 func (cdb *coreDB) start() error {
 	// Clean up tables used by App (TODO: review this comportament)
-	err := cdb.TruncateAuthSubs()
+	err := cdb.TruncateAuthSubs() // Authentication Table
 	if err != nil {
 		return err
 	}
 
-	err = cdb.TruncateSubscriptionData()
+	err = cdb.TruncateSubscriptionData() // Subscription Table
+	if err != nil {
+		return err
+	}
+
+	// Add initial UEs to default slice
+	//// UE-0
+	cdb.InsertAuthSub("724700000000001") // Authentication Table
+	if err != nil {
+		return err
+	}
+
+	subsData := SessionManagementSubscriptionData{
+		Ueid:              "724700000000001",
+		ServingPlmnid:     "72470",
+		SingleNssai:       defaultSingleNssai,
+		DnnConfigurations: defaultDnnConfigData,
+	}
+	cdb.InsertSubscriptionData(&subsData) // Subscription table
 	if err != nil {
 		return err
 	}

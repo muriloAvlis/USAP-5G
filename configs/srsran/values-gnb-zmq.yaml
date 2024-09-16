@@ -87,7 +87,7 @@ srsue:
 
     slicing: ## Set to false to Open5GS core (Why???????)
       enable: false
-      nssai_sst: 4
+      nssai_sst: 2
       nssai_sd: 000001
 
 config:
@@ -144,7 +144,7 @@ config:
       prach_config_index: 1 # Sets PRACH config to match what is expected by srsUE
 
   e2:
-    enable_du_e2: true # Enable DU E2 agent (one for each DU instance)
+    enable_du_e2: false # Enable DU E2 agent (one for each DU instance)
     e2sm_kpm_enabled: true # Enable KPM service module
     e2sm_rc_enabled: true # Enable KPM service module
     addr: service-ricplt-e2term-sctp-alpha.ricplt # RIC IP address or service name

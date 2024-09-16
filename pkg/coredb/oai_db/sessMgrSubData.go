@@ -17,11 +17,11 @@ var defaultSingleNssai singleNssaiData = singleNssaiData{Sst: 128, Sd: "000001"}
 
 // Default DNN configuration
 var defaultDnnConfigData dnnConfigurationsData = map[string]dnnConfigurationsDataValues{
-	"nongbr": {
-		PduSessionTypes: pduSessionTypesData{DefaultSessionType: "IPV4V6"},
+	"internet": {
+		PduSessionTypes: pduSessionTypesData{DefaultSessionType: "IPV4"},
 		SscModes:        sscModesData{DefaultSscMode: "SSC_MODE_1"},
-		FiveGQosProfile: fiveGQosProfileData{FiveQI: 9, Arp: arpData{PriorityLevel: 15, PreemptCap: "NOT_PREEMPT", PreemptVuln: "PREEMPTABLE"}, PriorityLevel: 1},
-		SessionAmbr:     sessionAmbrData{Uplink: "10Mbps", Downlink: "10Mbps"},
+		FiveGQosProfile: fiveGQosProfileData{FiveQI: 9, Arp: arpData{PriorityLevel: 15, PreemptCap: "NOT_PREEMPT", PreemptVuln: "NOT_PREEMPTABLE"}, PriorityLevel: 1},
+		SessionAmbr:     sessionAmbrData{Uplink: "100Mbps", Downlink: "100Mbps"},
 		StaticIpAddress: []*staticIpAddressData{},
 	},
 }

@@ -14,7 +14,7 @@ kubectl create ns ricplt
 kubectl create ns ricxapp
 ```
 
-### Running Chart Museum
+<!-- ### Running Chart Museum
 
 - docker
 
@@ -70,12 +70,13 @@ Check if chart was installed (repeat `make nearrtric` if not)
 
 ```sh
 helm search repo local/nearrtric
-```
+``` -->
 
 ### Deploy Near-RT RIC
 
 ```sh
-helm upgrade --install nearrtric -n ricplt local/nearrtric -f ~/git/usap-5g/configs/osc-ric/osc_ric_values.yaml --create-namespace
+cd ~/git/usap-5g/charts/osc-nearrtric/nearrtric/
+helm upgrade --install nearrtric -n ricplt . -f ~/git/usap-5g/configs/osc-ric/osc_ric_values.yaml --create-namespace
 ```
 
 ## Clean up
