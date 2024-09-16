@@ -132,11 +132,11 @@ func main() {
 	fmt.Println(measNameList)
 
 	// Event Trigger Format Encoder
-	// reportingPeriod := 10000
-	// encodedEvTriggerDefFmt1 := EncodeEventTriggerDefinitionFormat1(reportingPeriod)
-	// fmt.Printf("Event Trigger Definition Format 1 encoded: %v\n", encodedEvTriggerDefFmt1)
+	reportingPeriod := 10000
+	encodedEvTriggerDefFmt1 := EncodeEventTriggerDefinitionFormat1(reportingPeriod)
+	fmt.Printf("Event Trigger Definition Format 1 encoded: %v\n", encodedEvTriggerDefFmt1)
 
 	// Action definition format 4 encoder
-	encodedActDefFmt4 := EncodeActionDefinitionFmt4(measNameList, 1000)
-	fmt.Println(encodedActDefFmt4)
+	// encodedActDefFmt4 := EncodeActionDefinitionFmt4(measNameList, 1000)
+	// fmt.Println(encodedActDefFmt4)
 }
