@@ -5,8 +5,10 @@ import asn1tools
 class e2sm_kpm_wrapper(object):
     def __init__(self) -> None:
         base_dir = os.path.dirname(os.path.abspath(__file__))
-        asn1_files = [os.path.join(base_dir, "../../asn1/e2sm/e2sm-v5.00.asn"),
-                      os.path.join(base_dir, "../../asn1/e2sm/e2sm-kpm-v4.00.asn")]
+        # asn1_files = [os.path.join(base_dir, "../../asn1/e2sm/e2sm-v5.00.asn"),
+        #               os.path.join(base_dir, "../../asn1/e2sm/e2sm-kpm-v4.00.asn")]
+        asn1_files = [os.path.join(
+            base_dir, "../../asn1/e2sm/oai-e2sm-kpm-v3.00.asn")]
         self.asn1_compiler = asn1tools.compile_files(asn1_files, "per")
 
     def __format_meas_info_list(self, metric_names):
@@ -197,6 +199,15 @@ class e2sm_kpm_wrapper(object):
 
 
 # test = e2sm_kpm_wrapper()
-# act_def = test.encode_action_definition_fmt_4(['CQI', 'DRB.AirIfDelayUl', 'DRB.PacketSuccessRateUlgNBUu', 'DRB.RlcDelayUl', 'DRB.RlcPacketDropRateDl', 'DRB.RlcSduDelayDl', 'DRB.RlcSduTransmittedVolumeDL',
-#                                                'DRB.RlcSduTransmittedVolumeUL', 'DRB.UEThpDl', 'DRB.UEThpUl', 'RRU.PrbAvailDl', 'RRU.PrbAvailUl', 'RRU.PrbTotDl', 'RRU.PrbTotUl', 'RSRP', 'RSRQ'], 1000)
-# print(act_def)
+
+# oai_metrics = ["DRB.PdcpSduVolumeDL", "DRB.PdcpSduVolumeUL", "DRB.RlcSduDelayDl",
+#                "DRB.UEThpDl", "DRB.UEThpUl", "RRU.PrbTotDl", "RRU.PrbTotUl"]
+# srs_metrics = ['CQI', 'DRB.AirIfDelayUl', 'DRB.PacketSuccessRateUlgNBUu', 'DRB.RlcDelayUl', 'DRB.RlcPacketDropRateDl', 'DRB.RlcSduDelayDl', 'DRB.RlcSduTransmittedVolumeDL',
+#                'DRB.RlcSduTransmittedVolumeUL', 'DRB.UEThpDl', 'DRB.UEThpUl', 'RRU.PrbAvailDl', 'RRU.PrbAvailUl', 'RRU.PrbTotDl', 'RRU.PrbTotUl', 'RSRP', 'RSRQ']
+
+# act_def = test.encode_action_definition_fmt_4(oai_metrics, 1000)
+
+# event_trigger_def = test.encode_event_trigger_def_fmt_1(1000)
+# print(f"Action Definition: \n {act_def}")
+
+# print(f"Event Trigger Definition: \n {event_trigger_def}")

@@ -167,7 +167,7 @@ func (cdb *coreDB) InsertAuthSub(ueId string) error {
 	}
 
 	// UE inserted successfully
-	xapp.Logger.Info("UE with ID %s inserted with success into AuthenticationSubscription table\n", ueId)
+	xapp.Logger.Info("UE with ID %s inserted with success into AuthenticationSubscription table", ueId)
 
 	return nil
 }
@@ -194,7 +194,7 @@ func (cdb *coreDB) DeleteAuthSub(ueId string) error {
 	}
 
 	// UE deleted successfully
-	xapp.Logger.Info("UE with ID %s deleted from AuthenticationSubscription table\n", ueId)
+	xapp.Logger.Info("UE with ID %s deleted from AuthenticationSubscription table", ueId)
 
 	return nil
 }

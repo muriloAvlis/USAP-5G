@@ -57,17 +57,17 @@ func main() {
 	}
 	appConfig.OranAsn1CoderEndpoint.Ip = asn1CoderAddr
 
-	// Create a New xApp Manager
-	appMgr := manager.NewManager(appConfig)
-
-	// Run xApp
-	go appMgr.Run(&wg)
-
 	// Create a New 5GC Manager (TODO: adapt to Open5GS)
 	coreDBMgr := oaidb.NewManager(coreDBConfig)
 
 	// Run 5GC DB management
 	go coreDBMgr.Run(&wg)
+
+	// Create a New xApp Manager
+	appMgr := manager.NewManager(appConfig)
+
+	// Run xApp
+	go appMgr.Run(&wg)
 
 	wg.Wait()
 }

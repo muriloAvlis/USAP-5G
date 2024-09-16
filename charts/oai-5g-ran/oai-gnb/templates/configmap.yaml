@@ -269,9 +269,9 @@ data:
       };
 
     e2_agent = {
-      enable = 1;
+      enable = {{ .Values.config.e2_agent.enabled }};
       near_ric_ip_addr = "@RIC_IP_ADDRESS@";
-      port = 36421;
+      port = {{ .Values.config.e2_agent.port | int }};
       sm_dir = "/usr/local/lib/flexric/";
     };
 

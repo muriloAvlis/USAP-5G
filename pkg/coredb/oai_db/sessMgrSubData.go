@@ -190,7 +190,7 @@ func (cdb *coreDB) InsertSubscriptionData(subData *SessionManagementSubscription
 	}
 
 	// UE inserted successfully
-	xapp.Logger.Info("UE session subscription data with ID %s created with success!\n", subData.Ueid)
+	xapp.Logger.Info("UE session subscription data with ID %s created with success!", subData.Ueid)
 
 	return nil
 }
@@ -250,7 +250,7 @@ func (cdb *coreDB) UpdateSubscriptionData(subData *SessionManagementSubscription
 	}
 
 	// UE updated successfully
-	xapp.Logger.Info("UE session subscription data with ID %s updated with success!\n", subData.Ueid)
+	xapp.Logger.Info("UE session subscription data with ID %s updated with success!", subData.Ueid)
 
 	return nil
 }
@@ -277,7 +277,7 @@ func (cdb *coreDB) DeleteSubscriptionData(ueId string) error {
 	}
 
 	// UE deleted successfully
-	xapp.Logger.Info("UE session subscription data with ID %s deleted with success!\n", ueId)
+	xapp.Logger.Info("UE session subscription data with ID %s deleted with success!", ueId)
 
 	return nil
 }
