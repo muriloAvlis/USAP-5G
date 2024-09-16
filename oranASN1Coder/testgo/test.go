@@ -133,7 +133,7 @@ func main() {
 
 	// Event Trigger Format Encoder
 	reportingPeriod := 10000
-	encodedEvTriggerDefFmt1 := EncodeEventTriggerDefinitionFormat1(reportingPeriod)
+	encodedEvTriggerDefFmt1 := EncodeEventTriggerDefinitionFormat1(uint64(reportingPeriod))
 	fmt.Printf("Event Trigger Definition Format 1 encoded: %v\n", encodedEvTriggerDefFmt1)
 
 	// Action definition format 4 encoder
