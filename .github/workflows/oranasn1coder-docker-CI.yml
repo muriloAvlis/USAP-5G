@@ -5,7 +5,7 @@ on:
     branches: ["main"]
     paths:
       - "docker/Dockerfile.usap.oranasn1coder"
-      - "oranASN1Coder"
+      - "oranASN1Coder/*"
   pull_request:
     branches: ["main"]
 
