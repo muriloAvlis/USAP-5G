@@ -14,7 +14,7 @@ var (
 	seqId                = int64(1234)               // XappEventInstanceID
 	ranUeKpis            = make(map[string][]string) // map to [E2NodeID]:[metrics]
 	reportingPeriod      = uint64(1000)              // in ms
-	actionId             = int64(1)
+	actionId             = int64(4)
 	granularityPeriod    = uint64(1000) // in ms
 	actionType           = "report"
 	subsequentActionType = "continue"
