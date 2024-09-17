@@ -123,7 +123,9 @@ func (u *usapXapp) sendSubscription(e2NodeID string) {
 	xapp.Logger.Debug("Encoded eventTriggerDefinitionFormat1: %v", evTriggerDefFmt1)
 
 	// Encode actionDefinitionFormat4 using C encoder
-	actionDefinitionFormat4 := u.asn1Coder.EncodeActionDefinitionFmt4(ranUeKpis[e2NodeID], granularityPeriod)
+	// actionDefinitionFormat4 := u.asn1Coder.EncodeActionDefinitionFmt4(ranUeKpis[e2NodeID], granularityPeriod)
+
+	actionDefinitionFormat4 := []int64{0, 1, 4, 48, 0, 0, 51, 132, 0, 1, 0, 0, 0, 0, 1, 32, 68, 82, 66, 46, 80, 100, 99, 112, 83, 100, 117, 86, 111, 108, 117, 109, 101, 68, 76, 1, 32, 0, 0, 64, 3, 231}
 
 	xapp.Logger.Debug("Encoded actionDefinitionFormat4: %v", actionDefinitionFormat4)
 

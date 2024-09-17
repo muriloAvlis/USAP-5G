@@ -205,6 +205,8 @@ class e2sm_kpm_wrapper(object):
 # srs_metrics = ['CQI', 'DRB.AirIfDelayUl', 'DRB.PacketSuccessRateUlgNBUu', 'DRB.RlcDelayUl', 'DRB.RlcPacketDropRateDl', 'DRB.RlcSduDelayDl', 'DRB.RlcSduTransmittedVolumeDL',
 #                'DRB.RlcSduTransmittedVolumeUL', 'DRB.UEThpDl', 'DRB.UEThpUl', 'RRU.PrbAvailDl', 'RRU.PrbAvailUl', 'RRU.PrbTotDl', 'RRU.PrbTotUl', 'RSRP', 'RSRQ']
 
+# oai_metrics = ["DRB.PdcpSduVolumeDL"]
+
 # act_def = test.encode_action_definition_fmt_4(oai_metrics, 1000)
 
 # event_trigger_def = test.encode_event_trigger_def_fmt_1(1000)
