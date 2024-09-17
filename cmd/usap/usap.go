@@ -1,18 +1,23 @@
 package main
 
 import (
-	"log"
+	"os"
 	"sync"
 
-	"gerrit.o-ran-sc.org/r/ric-plt/xapp-frame/pkg/xapp"
-	"github.com/muriloAvlis/USAP/pkg/coredb"
-	"github.com/muriloAvlis/USAP/pkg/utils"
+	"github.com/muriloAvlis/usap-5g/pkg/coredb"
+	"github.com/muriloAvlis/usap-5g/pkg/logger"
+	"github.com/muriloAvlis/usap-5g/pkg/utils"
 )
 
 var wg sync.WaitGroup
 
 func main() {
-	// Number of App routines
+	// Initialize log
+	log := logger.GetLogger()
+	defer logger.Sync()
+	log.Info("Starting USAP Application...")
+
+	// Set number of App routines
 	wg.Add(2)
 
 	// Set configurations used by xApp
@@ -20,14 +25,14 @@ func main() {
 
 	// Set configuration to connect to 5GC
 	coreDBConfig := coredb.Config{
-		CoreDBUser:     xapp.Config.GetString("coredb.username"),
-		CoreDBPassword: xapp.Config.GetString("coredb.password"),
-		CoreDBPort:     xapp.Config.GetString("coredb.port"),
-		CoreDBName:     xapp.Config.GetString("coredb.dbname"),
+		CoreDBUser:     os.Getenv("CORE_DB_USER"),
+		CoreDBPassword: os.Getenv("CORE_DB_PASSWORD"),
+		CoreDBPort:     os.Getenv("CORE_DB_PORT"),
+		CoreDBName:     os.Getenv("CORE_DB_NAME"),
 	}
 
 	// Get DB IP address
-	coreDBAddr, err := utils.GetIpbyHostname(xapp.Config.GetString("coredb.hostname"))
+	coreDBAddr, err := utils.GetIpbyHostname(os.Getenv("CORE_DB_HOSTNAME"))
 	if err != nil {
 		log.Fatal(err.Error()) // critical application process
 	}
@@ -37,6 +42,7 @@ func main() {
 	coreDBMgr := coredb.NewManager(coreDBConfig)
 
 	// Run 5GC DB management
+	log.Info("Starting 5GC connection...")
 	go coreDBMgr.Run(&wg)
 
 	// Create a New xApp Manager

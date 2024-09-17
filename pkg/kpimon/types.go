@@ -1,4 +1,4 @@
-package manager
+package kpimon
 
 type Config struct {
 }

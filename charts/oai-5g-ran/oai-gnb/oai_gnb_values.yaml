@@ -92,7 +92,7 @@ config:
   n3IfName: "eth0" #if multus.n3Interface.create is true then use n3 or you can only use 1 interface n2 or eth0
   e2_agent:
     enabled: true
-    ric_host: "service-ricplt-e2term-sctp-alpha.ricplt" # RIC ip-address or service-name
+    ric_host: "flexric.flexric" # RIC ip-address or service-name
     port: 36421
 
 ## Debugging section

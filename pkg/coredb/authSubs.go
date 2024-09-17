@@ -8,8 +8,6 @@ import (
 	"database/sql"
 	"encoding/json"
 	"fmt"
-
-	"gerrit.o-ran-sc.org/r/ric-plt/xapp-frame/pkg/xapp"
 )
 
 // Default authentication values by OAI Core
@@ -167,7 +165,7 @@ func (cdb *coreDB) InsertAuthSub(ueId string) error {
 	}
 
 	// UE inserted successfully
-	xapp.Logger.Info("UE with ID %s inserted with success into AuthenticationSubscription table", ueId)
+	log.Info("UE with ID %s inserted with success into AuthenticationSubscription table", ueId)
 
 	return nil
 }
@@ -194,7 +192,7 @@ func (cdb *coreDB) DeleteAuthSub(ueId string) error {
 	}
 
 	// UE deleted successfully
-	xapp.Logger.Info("UE with ID %s deleted from AuthenticationSubscription table", ueId)
+	log.Infof("UE with ID %s deleted from AuthenticationSubscription table", ueId)
 
 	return nil
 }
@@ -206,7 +204,7 @@ func (cdb *coreDB) TruncateAuthSubs() error {
 		return fmt.Errorf("could not truncate table AuthenticationSubscription: %s", err.Error())
 	}
 
-	xapp.Logger.Info("AuthenticationSubscription table successfully cleared!")
+	log.Info("AuthenticationSubscription table successfully cleared!")
 
 	return nil
 }

@@ -7,3 +7,4 @@ build
 .venv
 __pycache__
 e2sm/test*
+compile_commands.json

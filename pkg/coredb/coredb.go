@@ -6,19 +6,21 @@ import (
 	"sync"
 	"time"
 
-	"gerrit.o-ran-sc.org/r/ric-plt/xapp-frame/pkg/xapp"
 	"github.com/go-sql-driver/mysql"
+	"github.com/muriloAvlis/usap-5g/pkg/logger"
 )
+
+var log = logger.GetLogger()
 
 func NewManager(config Config) *coreDB {
 	if config == (Config{}) {
-		xapp.Logger.Error("The database configuration cannot be empty!")
+		log.Error("The database configuration cannot be empty!")
 	}
 
 	// establish 5GC DB connection
 	db, err := connect(config)
 	for err != nil {
-		xapp.Logger.Error(err.Error())
+		log.Error(err.Error())
 		time.Sleep(5 * time.Second) // retry connection after 5 sec
 		db, err = connect(config)
 	}
@@ -58,7 +60,7 @@ func connect(config Config) (*sql.DB, error) {
 
 	}
 
-	xapp.Logger.Info("Connected to 5GC database!")
+	log.Info("Connected to 5GC database!")
 	return db, nil
 }
 
@@ -66,7 +68,7 @@ func connect(config Config) (*sql.DB, error) {
 func (cdb *coreDB) Run(wg *sync.WaitGroup) {
 	if err := cdb.start(); err != nil {
 		defer wg.Done()
-		xapp.Logger.Error(err.Error())
+		log.Error(err.Error())
 		cdb.dbHdlr.Close() // close DB conn
 	}
 }

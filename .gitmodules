@@ -1,3 +1,4 @@
 [submodule "xapp/libs/flexric"]
 	path = xapp/libs/flexric
 	url = https://gitlab.eurecom.fr/mosaic5g/flexric
+	branch = dev

@@ -8,8 +8,6 @@ import (
 	"database/sql"
 	"encoding/json"
 	"fmt"
-
-	"gerrit.o-ran-sc.org/r/ric-plt/xapp-frame/pkg/xapp"
 )
 
 // Default S-NSSAI configuration
@@ -190,7 +188,7 @@ func (cdb *coreDB) InsertSubscriptionData(subData *SessionManagementSubscription
 	}
 
 	// UE inserted successfully
-	xapp.Logger.Info("UE session subscription data with ID %s created with success!", subData.Ueid)
+	log.Infof("UE session subscription data with ID %s created with success!", subData.Ueid)
 
 	return nil
 }
@@ -250,7 +248,7 @@ func (cdb *coreDB) UpdateSubscriptionData(subData *SessionManagementSubscription
 	}
 
 	// UE updated successfully
-	xapp.Logger.Info("UE session subscription data with ID %s updated with success!", subData.Ueid)
+	log.Infof("UE session subscription data with ID %s updated with success!", subData.Ueid)
 
 	return nil
 }
@@ -277,7 +275,7 @@ func (cdb *coreDB) DeleteSubscriptionData(ueId string) error {
 	}
 
 	// UE deleted successfully
-	xapp.Logger.Info("UE session subscription data with ID %s deleted with success!", ueId)
+	log.Infof("UE session subscription data with ID %s deleted with success!", ueId)
 
 	return nil
 }
@@ -289,7 +287,7 @@ func (cdb *coreDB) TruncateSubscriptionData() error {
 		return fmt.Errorf("could not truncate table SessionManagementSubscriptionData: %s", err.Error())
 	}
 
-	xapp.Logger.Info("SessionManagementSubscriptionData table successfully cleared!")
+	log.Info("SessionManagementSubscriptionData table successfully cleared!")
 
 	return nil
 }
