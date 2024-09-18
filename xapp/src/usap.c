@@ -8,4 +8,10 @@ void start_kpm_monitor(char * configPath)
 {
     char * argv[] = {"xapp_usap", "-c", configPath};
     int argc = sizeof(argv)/sizeof(char *);
+
+    printf("Count args: %d\n", argc);
+    for (size_t i = 0; i < argc; ++i)
+    {
+        printf("Args %ld: %s\n", i, argv[i]);
+    }
 }

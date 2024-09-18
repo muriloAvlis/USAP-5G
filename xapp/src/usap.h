@@ -5,6 +5,10 @@
 #ifndef USAP_H
 #define USAP_H
 
+// C libs
+#include <stdio.h>
+
+// FlexRIC libs
 #include "xApp/e42_xapp_api.h"
 #include "util/alg_ds/alg/defer.h"
 #include "util/time_now_us.h"
