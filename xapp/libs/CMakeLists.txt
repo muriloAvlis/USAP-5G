@@ -6,6 +6,9 @@ set(E2AP_VERSION "E2AP_V3" CACHE STRING "E2AP version")
 ## For KPM
 set(KPM_VERSION "KPM_V3_00" CACHE STRING "The KPM SM version to use")
 
+## Disable others xApps build
+set(XAPP_MULTILANGUAGE "OFF" CACHE STRING "xApp Multilanguage")
+
 ##### End set variables used by xapp_sdk #####
 
 add_subdirectory(flexric)

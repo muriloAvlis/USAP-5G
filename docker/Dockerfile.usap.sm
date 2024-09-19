@@ -1,0 +1,41 @@
+#-------------------------------------------------------#
+#--------------- USAP Slice Manager (SM) ---------------#
+#-------------------------------------------------------#
+
+FROM golang:1.23.1-alpine AS builder
+
+WORKDIR /builder
+
+COPY go.mod go.sum ./
+RUN go mod download && go mod verify
+COPY . .
+RUN mkdir -p bin
+
+## Build App
+RUN go build -v -o ./bin ./...
+
+
+#-------------------------------------------------------#
+#--------------------- Final Stage ---------------------#
+#-------------------------------------------------------#
+
+FROM alpine:3.20.3
+
+RUN apk --no-cache -U upgrade && \
+    apk add --no-cache tzdata bind-tools net-tools
+
+## Set Timezone
+ENV TZ=America/Belem
+
+## Copy binary from builder
+COPY --from=builder /builder/bin/usap_sm /usr/local/bin/
+
+## Add labels
+LABEL br.ufpa.gercom.title="USAP" \
+    br.ufpa.gercom.description="UE Smart Allocation Platform on Open 5G Networks (USAP)" \
+    br.ufpa.gercom.source="https://github.com/muriloAvlis/USAP" \
+    br.ufpa.gercom.authors="Murilo Silva" \ 
+    br.ufpa.gercom.maintainer="Murilo Silva <murilosilva@itec.ufpa.br>" \
+    br.ufpa.gercom.licenses=""
+
+ENTRYPOINT ["usap_sm"]

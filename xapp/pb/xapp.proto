@@ -8,12 +8,9 @@ option go_package = "./pb";
 ************************** SERVICES **************************
 *************************************************************/
 
-service e2node {
+service e2NodesInfo {
     rpc getE2Nodes (Empty) returns (e2NodesResponse);
 }
-
-
-
 
 /*************************************************************
 ************************** Messages **************************
@@ -29,7 +26,6 @@ message e2ap_plmn_t {
 
 message e2ap_gnb_id_t {
     uint32 nb_id = 1;
-    uint32 unused = 2;
 }
 
 message global_e2_node_id_t {

@@ -165,7 +165,7 @@ func (cdb *coreDB) InsertAuthSub(ueId string) error {
 	}
 
 	// UE inserted successfully
-	log.Info("UE with ID %s inserted with success into AuthenticationSubscription table", ueId)
+	log.Infof("UE with ID %s inserted with success into AuthenticationSubscription table", ueId)
 
 	return nil
 }
