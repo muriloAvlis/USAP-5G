@@ -4,6 +4,7 @@ on:
   push:
     branches: ["main"]
     paths:
+      - ".github/workflows/usap-sm-docker-CI.yml"
       - "cmd/**"
       - "pkg/**"
       - "go.mod"
