@@ -1,0 +1,50 @@
+syntax = "proto3";
+
+package xapp;
+
+option go_package = "./pb";
+
+/*************************************************************
+************************** SERVICES **************************
+*************************************************************/
+
+service e2node {
+    rpc getE2Nodes (Empty) returns (e2NodesResponse);
+}
+
+
+
+
+/*************************************************************
+************************** Messages **************************
+*************************************************************/
+
+message Empty {}
+
+message e2ap_plmn_t {
+    uint32 mcc = 1;
+    uint32 mnc = 2;
+    uint32 mnc_digit_len = 3;
+}
+
+message e2ap_gnb_id_t {
+    uint32 nb_id = 1;
+    uint32 unused = 2;
+}
+
+message global_e2_node_id_t {
+    string        type = 1;
+    e2ap_plmn_t   plmn = 2;
+    e2ap_gnb_id_t nb_id = 3;
+    uint64 cu_du_id = 4;
+}
+
+message e2_node_connected_xapp_t {
+    global_e2_node_id_t id = 1;
+    uint32 len_cca = 2;
+}
+
+message e2NodesResponse {
+    uint32 len = 1;
+    repeated e2_node_connected_xapp_t e2Node = 2;
+}
