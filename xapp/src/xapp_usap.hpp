@@ -2,8 +2,8 @@
 // Created by murilo on 17/09/24.
 //
 
-#ifndef USAP_HPP
-#define USAP_HPP
+#ifndef USAP_XAPP_HPP
+#define USAP_XAPP_HPP
 
 // C libs
 #include <cstdio>
@@ -20,4 +20,4 @@
 
 constexpr int KPM_RF_ID = 2;
 
-#endif //USAP_HPP
+#endif //USAP_XAPP_HPP

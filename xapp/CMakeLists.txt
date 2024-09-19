@@ -6,17 +6,17 @@ project(usap-xapp VERSION 1.0.0 LANGUAGES CXX)
 set(CMAKE_C_FLAGS_RELEASE "-O3")
 set(CMAKE_CXX_FLAGS_RELEASE "-O3")
 
-## FlexRIC lib
+## Add libs
 add_subdirectory(libs)
 
 ## xApp source files
 set(SOURCE_FILES
-        src/usap.cpp
+        src/xapp_usap.cpp
         src/grpc_server.cpp
 )
 ## xApp header files
 set(HEADER_FILES
-        src/usap.hpp
+        src/xapp_usap.hpp
         src/grpc_server.hpp
         src/defer.hpp
 )
@@ -36,9 +36,9 @@ set(PROTO_FILES ${CMAKE_CURRENT_SOURCE_DIR}/pb/xapp.proto)
 ## Set pb output directory
 set(PROTO_BINARY_DIR "${CMAKE_CURRENT_BINARY_DIR}")
 ## Generate Protobuf files
-protobuf_generate_cpp(
-        PROTO_SRCS PROTO_HDRS
+protobuf_generate(
         TARGET xapp_usap
+        LANGUAGE cpp
         PROTOC_OUT_DIR ${PROTO_BINARY_DIR}
         PROTOS ${PROTO_FILES}
 )
