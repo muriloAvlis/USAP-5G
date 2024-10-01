@@ -57,7 +57,7 @@ void runServer(const std::string& addr)
 
     std::unique_ptr<grpc::Server> server(builder.BuildAndStart());
 
-    std::printf("[xApp-INFO]: gRPC server listening on port %s...\n", addr.c_str());
+    std::printf("[xApp-INFO]: gRPC server listening on port %s\n", addr.c_str());
 
     server->Wait();
 }
