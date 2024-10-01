@@ -1,0 +1,22 @@
+[tool.poetry]
+name = "usap-ai"
+version = "1.0.0"
+description = "USAP AI Module"
+authors = ["Murilo Silva <murilosilva@itec.ufpa.br>"]
+readme = "README.md"
+packages = [{include = "app"}]
+
+[tool.poetry.dependencies]
+python = "^3.12"
+grpcio = "^1.65.5"
+grpcio-tools = "^1.65.5"
+grpc-interceptor = "^0.15.4"
+grpcio-reflection = "^1.66.0"
+colorama = "^0.4.6"
+
+[tool.poetry.scripts]
+app = "app.app:run"
+
+[build-system]
+requires = ["poetry-core"]
+build-backend = "poetry.core.masonry.api"

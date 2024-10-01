@@ -6,9 +6,9 @@ FROM golang:1.23.1-alpine AS builder
 
 WORKDIR /builder
 
-COPY go.mod go.sum ./
+COPY usap-sm/go.mod usap-sm/go.sum ./
 RUN go mod download && go mod verify
-COPY . .
+COPY usap-sm .
 RUN mkdir -p bin
 
 ## Build App
