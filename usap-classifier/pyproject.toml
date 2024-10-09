@@ -1,6 +1,6 @@
 [tool.poetry]
-name = "usap-ai"
-version = "1.0.0"
+name = "usap-classifier"
+version = "0.0.1"
 description = "USAP AI Module"
 authors = ["Murilo Silva <murilosilva@itec.ufpa.br>"]
 readme = "README.md"

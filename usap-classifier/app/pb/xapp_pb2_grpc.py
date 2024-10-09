@@ -5,7 +5,7 @@ import warnings
 
 from . import xapp_pb2 as xapp__pb2
 
-GRPC_GENERATED_VERSION = '1.66.1'
+GRPC_GENERATED_VERSION = '1.66.2'
 GRPC_VERSION = grpc.__version__
 _version_not_supported = False
 
@@ -26,12 +26,11 @@ if _version_not_supported:
     )
 
 
-class E2NodesInfoServiceStub(object):
-    """************************************************************
-    ************************* SERVICES **************************
-    ***********************************************************
+class E2SM_KPM_ServiceStub(object):
+    """------------------------------------//
+    ------------- Services ------------//
+    ----------------------------------//
 
-    Unary
     """
 
     def __init__(self, channel):
@@ -40,147 +39,68 @@ class E2NodesInfoServiceStub(object):
         Args:
             channel: A grpc.Channel.
         """
-        self.getE2Nodes = channel.unary_unary(
-            '/xapp.E2NodesInfoService/getE2Nodes',
-            request_serializer=xapp__pb2.EmptyRequest.SerializeToString,
-            response_deserializer=xapp__pb2.E2NodesResponse.FromString,
+        self.GetIndicationStream = channel.unary_stream(
+            '/xapp.E2SM_KPM_Service/GetIndicationStream',
+            request_serializer=xapp__pb2.KPMIndicationRequest.SerializeToString,
+            response_deserializer=xapp__pb2.KPMIndicationResponse.FromString,
             _registered_method=True)
 
 
-class E2NodesInfoServiceServicer(object):
-    """************************************************************
-    ************************* SERVICES **************************
-    ***********************************************************
+class E2SM_KPM_ServiceServicer(object):
+    """------------------------------------//
+    ------------- Services ------------//
+    ----------------------------------//
 
-    Unary
     """
 
-    def getE2Nodes(self, request, context):
+    def GetIndicationStream(self, request, context):
         """Missing associated documentation comment in .proto file."""
         context.set_code(grpc.StatusCode.UNIMPLEMENTED)
         context.set_details('Method not implemented!')
         raise NotImplementedError('Method not implemented!')
 
 
-def add_E2NodesInfoServiceServicer_to_server(servicer, server):
+def add_E2SM_KPM_ServiceServicer_to_server(servicer, server):
     rpc_method_handlers = {
-        'getE2Nodes': grpc.unary_unary_rpc_method_handler(
-            servicer.getE2Nodes,
-            request_deserializer=xapp__pb2.EmptyRequest.FromString,
-            response_serializer=xapp__pb2.E2NodesResponse.SerializeToString,
+        'GetIndicationStream': grpc.unary_stream_rpc_method_handler(
+            servicer.GetIndicationStream,
+            request_deserializer=xapp__pb2.KPMIndicationRequest.FromString,
+            response_serializer=xapp__pb2.KPMIndicationResponse.SerializeToString,
         ),
     }
     generic_handler = grpc.method_handlers_generic_handler(
-        'xapp.E2NodesInfoService', rpc_method_handlers)
+        'xapp.E2SM_KPM_Service', rpc_method_handlers)
     server.add_generic_rpc_handlers((generic_handler,))
     server.add_registered_method_handlers(
-        'xapp.E2NodesInfoService', rpc_method_handlers)
+        'xapp.E2SM_KPM_Service', rpc_method_handlers)
 
  # This class is part of an EXPERIMENTAL API.
 
 
-class E2NodesInfoService(object):
-    """************************************************************
-    ************************* SERVICES **************************
-    ***********************************************************
+class E2SM_KPM_Service(object):
+    """------------------------------------//
+    ------------- Services ------------//
+    ----------------------------------//
 
-    Unary
     """
 
     @staticmethod
-    def getE2Nodes(request,
-                   target,
-                   options=(),
-                   channel_credentials=None,
-                   call_credentials=None,
-                   insecure=False,
-                   compression=None,
-                   wait_for_ready=None,
-                   timeout=None,
-                   metadata=None):
-        return grpc.experimental.unary_unary(
-            request,
-            target,
-            '/xapp.E2NodesInfoService/getE2Nodes',
-            xapp__pb2.EmptyRequest.SerializeToString,
-            xapp__pb2.E2NodesResponse.FromString,
-            options,
-            channel_credentials,
-            insecure,
-            call_credentials,
-            compression,
-            wait_for_ready,
-            timeout,
-            metadata,
-            _registered_method=True)
-
-
-class KPMIndicationServiceStub(object):
-    """Stream: Server -> Client
-    """
-
-    def __init__(self, channel):
-        """Constructor.
-
-        Args:
-            channel: A grpc.Channel.
-        """
-        self.IndicationStyle4Stream = channel.unary_stream(
-            '/xapp.KPMIndicationService/IndicationStyle4Stream',
-            request_serializer=xapp__pb2.EmptyRequest.SerializeToString,
-            response_deserializer=xapp__pb2.IndStyle4Response.FromString,
-            _registered_method=True)
-
-
-class KPMIndicationServiceServicer(object):
-    """Stream: Server -> Client
-    """
-
-    def IndicationStyle4Stream(self, request, context):
-        """Missing associated documentation comment in .proto file."""
-        context.set_code(grpc.StatusCode.UNIMPLEMENTED)
-        context.set_details('Method not implemented!')
-        raise NotImplementedError('Method not implemented!')
-
-
-def add_KPMIndicationServiceServicer_to_server(servicer, server):
-    rpc_method_handlers = {
-        'IndicationStyle4Stream': grpc.unary_stream_rpc_method_handler(
-            servicer.IndicationStyle4Stream,
-            request_deserializer=xapp__pb2.EmptyRequest.FromString,
-            response_serializer=xapp__pb2.IndStyle4Response.SerializeToString,
-        ),
-    }
-    generic_handler = grpc.method_handlers_generic_handler(
-        'xapp.KPMIndicationService', rpc_method_handlers)
-    server.add_generic_rpc_handlers((generic_handler,))
-    server.add_registered_method_handlers(
-        'xapp.KPMIndicationService', rpc_method_handlers)
-
- # This class is part of an EXPERIMENTAL API.
-
-
-class KPMIndicationService(object):
-    """Stream: Server -> Client
-    """
-
-    @staticmethod
-    def IndicationStyle4Stream(request,
-                               target,
-                               options=(),
-                               channel_credentials=None,
-                               call_credentials=None,
-                               insecure=False,
-                               compression=None,
-                               wait_for_ready=None,
-                               timeout=None,
-                               metadata=None):
+    def GetIndicationStream(request,
+                            target,
+                            options=(),
+                            channel_credentials=None,
+                            call_credentials=None,
+                            insecure=False,
+                            compression=None,
+                            wait_for_ready=None,
+                            timeout=None,
+                            metadata=None):
         return grpc.experimental.unary_stream(
             request,
             target,
-            '/xapp.KPMIndicationService/IndicationStyle4Stream',
-            xapp__pb2.EmptyRequest.SerializeToString,
-            xapp__pb2.IndStyle4Response.FromString,
+            '/xapp.E2SM_KPM_Service/GetIndicationStream',
+            xapp__pb2.KPMIndicationRequest.SerializeToString,
+            xapp__pb2.KPMIndicationResponse.FromString,
             options,
             channel_credentials,
             insecure,

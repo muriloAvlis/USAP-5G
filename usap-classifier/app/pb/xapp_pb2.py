@@ -24,7 +24,7 @@ _sym_db = _symbol_database.Default()
 
 
 
-DESCRIPTOR = _descriptor_pool.Default().AddSerializedFile(b'\n\nxapp.proto\x12\x04xapp\"\x0e\n\x0c\x45mptyRequest\"\x90\x01\n\x11IndStyle4Response\x12\x13\n\x0b\x63ollectTime\x18\x01 \x01(\x04\x12\x16\n\x0emessageCounter\x18\x02 \x01(\x04\x12\x1c\n\x05ueIds\x18\x03 \x01(\x0b\x32\r.xapp.ueIds_t\x12\x30\n\rreported_meas\x18\x04 \x01(\x0b\x32\x19.xapp.kpm_reported_meas_t\"q\n\x13kpm_reported_meas_t\x12+\n\x0bint_metrics\x18\x01 \x03(\x0b\x32\x16.xapp.kpm_int_metric_t\x12-\n\x0creal_metrics\x18\x02 \x03(\x0b\x32\x17.xapp.kpm_real_metric_t\"/\n\x10kpm_int_metric_t\x12\x0c\n\x04name\x18\x01 \x01(\t\x12\r\n\x05value\x18\x02 \x01(\r\"0\n\x11kpm_real_metric_t\x12\x0c\n\x04name\x18\x01 \x01(\t\x12\r\n\x05value\x18\x02 \x01(\x01\"_\n\x07ueIds_t\x12\x13\n\x0b\x61mfUeNgapId\x18\x01 \x01(\t\x12\x0f\n\x07ranUeId\x18\x02 \x01(\t\x12\x17\n\x0fgnbCuCpUeE1apId\x18\x03 \x01(\t\x12\x15\n\rgnbCuUeF1apId\x18\x04 \x01(\t\">\n\x0b\x65\x32\x61p_plmn_t\x12\x0b\n\x03mcc\x18\x01 \x01(\r\x12\x0b\n\x03mnc\x18\x02 \x01(\r\x12\x15\n\rmnc_digit_len\x18\x03 \x01(\r\"\x1e\n\re2ap_gnb_id_t\x12\r\n\x05nb_id\x18\x01 \x01(\r\"z\n\x13global_e2_node_id_t\x12\x0c\n\x04type\x18\x01 \x01(\t\x12\x1f\n\x04plmn\x18\x02 \x01(\x0b\x32\x11.xapp.e2ap_plmn_t\x12\"\n\x05nb_id\x18\x03 \x01(\x0b\x32\x13.xapp.e2ap_gnb_id_t\x12\x10\n\x08\x63u_du_id\x18\x04 \x01(\x04\"R\n\x18\x65\x32_node_connected_xapp_t\x12%\n\x02id\x18\x01 \x01(\x0b\x32\x19.xapp.global_e2_node_id_t\x12\x0f\n\x07len_cca\x18\x02 \x01(\r\"N\n\x0f\x45\x32NodesResponse\x12\x0b\n\x03len\x18\x01 \x01(\r\x12.\n\x06\x65\x32Node\x18\x02 \x03(\x0b\x32\x1e.xapp.e2_node_connected_xapp_t2M\n\x12\x45\x32NodesInfoService\x12\x37\n\ngetE2Nodes\x12\x12.xapp.EmptyRequest\x1a\x15.xapp.E2NodesResponse2_\n\x14KPMIndicationService\x12G\n\x16IndicationStyle4Stream\x12\x12.xapp.EmptyRequest\x1a\x17.xapp.IndStyle4Response0\x01\x42\x06Z\x04./pbb\x06proto3')
+DESCRIPTOR = _descriptor_pool.Default().AddSerializedFile(b'\n\nxapp.proto\x12\x04xapp\"(\n\x14KPMIndicationRequest\x12\x10\n\x08svc_name\x18\x01 \x01(\t\"d\n\x15KPMIndicationResponse\x12\x0f\n\x07latency\x18\x01 \x01(\x04\x12\x1f\n\x04node\x18\x02 \x01(\x0b\x32\x11.xapp.E2NodeInfos\x12\x19\n\x02ue\x18\x03 \x01(\x0b\x32\r.xapp.UEInfos\"\x8c\x01\n\x0b\x45\x32NodeInfos\x12\x10\n\x08nodeb_id\x18\x01 \x01(\r\x12\x16\n\x0enode_type_name\x18\x02 \x01(\t\x12\x0b\n\x03mcc\x18\x03 \x01(\r\x12\x0b\n\x03mnc\x18\x04 \x01(\r\x12\x15\n\rmnc_digit_len\x18\x05 \x01(\r\x12\x15\n\x08\x63u_du_id\x18\x06 \x01(\rH\x00\x88\x01\x01\x42\x0b\n\t_cu_du_id\"%\n\x07UEInfos\x12\x1a\n\x05ue_id\x18\x01 \x01(\x0b\x32\x0b.xapp.UEIDs\"{\n\x05UEIDs\x12\x15\n\rGnbCuUeF1ApId\x18\x01 \x01(\x04\x12\x13\n\x0b\x41mfUeNgApId\x18\x02 \x01(\x04\x12\x1c\n\x05Guami\x18\x03 \x01(\x0b\x32\r.xapp.Guami_t\x12\x17\n\x0fGnbCuCpUeE1ApId\x18\x04 \x01(\r\x12\x0f\n\x07RanUeId\x18\x05 \x01(\x04\"L\n\x07Guami_t\x12\x1a\n\x04Plmn\x18\x01 \x01(\x0b\x32\x0c.xapp.PlmnId\x12\x13\n\x0b\x41mfRegionId\x18\x02 \x01(\r\x12\x10\n\x08\x41mfSetId\x18\x03 \x01(\r\"7\n\x06PlmnId\x12\x0b\n\x03Mcc\x18\x01 \x01(\r\x12\x0b\n\x03Mnc\x18\x02 \x01(\r\x12\x13\n\x0bMncDigitLen\x18\x03 \x01(\r2d\n\x10\x45\x32SM_KPM_Service\x12P\n\x13GetIndicationStream\x12\x1a.xapp.KPMIndicationRequest\x1a\x1b.xapp.KPMIndicationResponse0\x01\x42\x06Z\x04./pbb\x06proto3')
 
 _globals = globals()
 _builder.BuildMessageAndEnumDescriptors(DESCRIPTOR, _globals)
@@ -32,30 +32,20 @@ _builder.BuildTopDescriptorsAndMessages(DESCRIPTOR, 'xapp_pb2', _globals)
 if not _descriptor._USE_C_DESCRIPTORS:
   _globals['DESCRIPTOR']._loaded_options = None
   _globals['DESCRIPTOR']._serialized_options = b'Z\004./pb'
-  _globals['_EMPTYREQUEST']._serialized_start=20
-  _globals['_EMPTYREQUEST']._serialized_end=34
-  _globals['_INDSTYLE4RESPONSE']._serialized_start=37
-  _globals['_INDSTYLE4RESPONSE']._serialized_end=181
-  _globals['_KPM_REPORTED_MEAS_T']._serialized_start=183
-  _globals['_KPM_REPORTED_MEAS_T']._serialized_end=296
-  _globals['_KPM_INT_METRIC_T']._serialized_start=298
-  _globals['_KPM_INT_METRIC_T']._serialized_end=345
-  _globals['_KPM_REAL_METRIC_T']._serialized_start=347
-  _globals['_KPM_REAL_METRIC_T']._serialized_end=395
-  _globals['_UEIDS_T']._serialized_start=397
-  _globals['_UEIDS_T']._serialized_end=492
-  _globals['_E2AP_PLMN_T']._serialized_start=494
-  _globals['_E2AP_PLMN_T']._serialized_end=556
-  _globals['_E2AP_GNB_ID_T']._serialized_start=558
-  _globals['_E2AP_GNB_ID_T']._serialized_end=588
-  _globals['_GLOBAL_E2_NODE_ID_T']._serialized_start=590
-  _globals['_GLOBAL_E2_NODE_ID_T']._serialized_end=712
-  _globals['_E2_NODE_CONNECTED_XAPP_T']._serialized_start=714
-  _globals['_E2_NODE_CONNECTED_XAPP_T']._serialized_end=796
-  _globals['_E2NODESRESPONSE']._serialized_start=798
-  _globals['_E2NODESRESPONSE']._serialized_end=876
-  _globals['_E2NODESINFOSERVICE']._serialized_start=878
-  _globals['_E2NODESINFOSERVICE']._serialized_end=955
-  _globals['_KPMINDICATIONSERVICE']._serialized_start=957
-  _globals['_KPMINDICATIONSERVICE']._serialized_end=1052
+  _globals['_KPMINDICATIONREQUEST']._serialized_start=20
+  _globals['_KPMINDICATIONREQUEST']._serialized_end=60
+  _globals['_KPMINDICATIONRESPONSE']._serialized_start=62
+  _globals['_KPMINDICATIONRESPONSE']._serialized_end=162
+  _globals['_E2NODEINFOS']._serialized_start=165
+  _globals['_E2NODEINFOS']._serialized_end=305
+  _globals['_UEINFOS']._serialized_start=307
+  _globals['_UEINFOS']._serialized_end=344
+  _globals['_UEIDS']._serialized_start=346
+  _globals['_UEIDS']._serialized_end=469
+  _globals['_GUAMI_T']._serialized_start=471
+  _globals['_GUAMI_T']._serialized_end=547
+  _globals['_PLMNID']._serialized_start=549
+  _globals['_PLMNID']._serialized_end=604
+  _globals['_E2SM_KPM_SERVICE']._serialized_start=606
+  _globals['_E2SM_KPM_SERVICE']._serialized_end=706
 # @@protoc_insertion_point(module_scope)
