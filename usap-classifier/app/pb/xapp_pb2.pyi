@@ -1,6 +1,7 @@
+from google.protobuf.internal import containers as _containers
 from google.protobuf import descriptor as _descriptor
 from google.protobuf import message as _message
-from typing import ClassVar as _ClassVar, Mapping as _Mapping, Optional as _Optional, Union as _Union
+from typing import ClassVar as _ClassVar, Iterable as _Iterable, Mapping as _Mapping, Optional as _Optional, Union as _Union
 
 DESCRIPTOR: _descriptor.FileDescriptor
 
@@ -37,10 +38,12 @@ class E2NodeInfos(_message.Message):
     def __init__(self, nodeb_id: _Optional[int] = ..., node_type_name: _Optional[str] = ..., mcc: _Optional[int] = ..., mnc: _Optional[int] = ..., mnc_digit_len: _Optional[int] = ..., cu_du_id: _Optional[int] = ...) -> None: ...
 
 class UEInfos(_message.Message):
-    __slots__ = ("ue_id",)
+    __slots__ = ("ue_id", "ue_meas_info")
     UE_ID_FIELD_NUMBER: _ClassVar[int]
+    UE_MEAS_INFO_FIELD_NUMBER: _ClassVar[int]
     ue_id: UEIDs
-    def __init__(self, ue_id: _Optional[_Union[UEIDs, _Mapping]] = ...) -> None: ...
+    ue_meas_info: _containers.RepeatedCompositeFieldContainer[MeasInfo]
+    def __init__(self, ue_id: _Optional[_Union[UEIDs, _Mapping]] = ..., ue_meas_info: _Optional[_Iterable[_Union[MeasInfo, _Mapping]]] = ...) -> None: ...
 
 class UEIDs(_message.Message):
     __slots__ = ("GnbCuUeF1ApId", "AmfUeNgApId", "Guami", "GnbCuCpUeE1ApId", "RanUeId")
@@ -75,3 +78,13 @@ class PlmnId(_message.Message):
     Mnc: int
     MncDigitLen: int
     def __init__(self, Mcc: _Optional[int] = ..., Mnc: _Optional[int] = ..., MncDigitLen: _Optional[int] = ...) -> None: ...
+
+class MeasInfo(_message.Message):
+    __slots__ = ("meas_name", "int_value", "real_value")
+    MEAS_NAME_FIELD_NUMBER: _ClassVar[int]
+    INT_VALUE_FIELD_NUMBER: _ClassVar[int]
+    REAL_VALUE_FIELD_NUMBER: _ClassVar[int]
+    meas_name: str
+    int_value: int
+    real_value: float
+    def __init__(self, meas_name: _Optional[str] = ..., int_value: _Optional[int] = ..., real_value: _Optional[float] = ...) -> None: ...

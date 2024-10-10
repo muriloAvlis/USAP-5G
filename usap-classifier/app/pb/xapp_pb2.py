@@ -24,7 +24,7 @@ _sym_db = _symbol_database.Default()
 
 
 
-DESCRIPTOR = _descriptor_pool.Default().AddSerializedFile(b'\n\nxapp.proto\x12\x04xapp\"(\n\x14KPMIndicationRequest\x12\x10\n\x08svc_name\x18\x01 \x01(\t\"d\n\x15KPMIndicationResponse\x12\x0f\n\x07latency\x18\x01 \x01(\x04\x12\x1f\n\x04node\x18\x02 \x01(\x0b\x32\x11.xapp.E2NodeInfos\x12\x19\n\x02ue\x18\x03 \x01(\x0b\x32\r.xapp.UEInfos\"\x8c\x01\n\x0b\x45\x32NodeInfos\x12\x10\n\x08nodeb_id\x18\x01 \x01(\r\x12\x16\n\x0enode_type_name\x18\x02 \x01(\t\x12\x0b\n\x03mcc\x18\x03 \x01(\r\x12\x0b\n\x03mnc\x18\x04 \x01(\r\x12\x15\n\rmnc_digit_len\x18\x05 \x01(\r\x12\x15\n\x08\x63u_du_id\x18\x06 \x01(\rH\x00\x88\x01\x01\x42\x0b\n\t_cu_du_id\"%\n\x07UEInfos\x12\x1a\n\x05ue_id\x18\x01 \x01(\x0b\x32\x0b.xapp.UEIDs\"{\n\x05UEIDs\x12\x15\n\rGnbCuUeF1ApId\x18\x01 \x01(\x04\x12\x13\n\x0b\x41mfUeNgApId\x18\x02 \x01(\x04\x12\x1c\n\x05Guami\x18\x03 \x01(\x0b\x32\r.xapp.Guami_t\x12\x17\n\x0fGnbCuCpUeE1ApId\x18\x04 \x01(\r\x12\x0f\n\x07RanUeId\x18\x05 \x01(\x04\"L\n\x07Guami_t\x12\x1a\n\x04Plmn\x18\x01 \x01(\x0b\x32\x0c.xapp.PlmnId\x12\x13\n\x0b\x41mfRegionId\x18\x02 \x01(\r\x12\x10\n\x08\x41mfSetId\x18\x03 \x01(\r\"7\n\x06PlmnId\x12\x0b\n\x03Mcc\x18\x01 \x01(\r\x12\x0b\n\x03Mnc\x18\x02 \x01(\r\x12\x13\n\x0bMncDigitLen\x18\x03 \x01(\r2d\n\x10\x45\x32SM_KPM_Service\x12P\n\x13GetIndicationStream\x12\x1a.xapp.KPMIndicationRequest\x1a\x1b.xapp.KPMIndicationResponse0\x01\x42\x06Z\x04./pbb\x06proto3')
+DESCRIPTOR = _descriptor_pool.Default().AddSerializedFile(b'\n\nxapp.proto\x12\x04xapp\"(\n\x14KPMIndicationRequest\x12\x10\n\x08svc_name\x18\x01 \x01(\t\"d\n\x15KPMIndicationResponse\x12\x0f\n\x07latency\x18\x01 \x01(\x04\x12\x1f\n\x04node\x18\x02 \x01(\x0b\x32\x11.xapp.E2NodeInfos\x12\x19\n\x02ue\x18\x03 \x01(\x0b\x32\r.xapp.UEInfos\"\x8c\x01\n\x0b\x45\x32NodeInfos\x12\x10\n\x08nodeb_id\x18\x01 \x01(\r\x12\x16\n\x0enode_type_name\x18\x02 \x01(\t\x12\x0b\n\x03mcc\x18\x03 \x01(\r\x12\x0b\n\x03mnc\x18\x04 \x01(\r\x12\x15\n\rmnc_digit_len\x18\x05 \x01(\r\x12\x15\n\x08\x63u_du_id\x18\x06 \x01(\rH\x00\x88\x01\x01\x42\x0b\n\t_cu_du_id\"K\n\x07UEInfos\x12\x1a\n\x05ue_id\x18\x01 \x01(\x0b\x32\x0b.xapp.UEIDs\x12$\n\x0cue_meas_info\x18\x02 \x03(\x0b\x32\x0e.xapp.MeasInfo\"{\n\x05UEIDs\x12\x15\n\rGnbCuUeF1ApId\x18\x01 \x01(\x04\x12\x13\n\x0b\x41mfUeNgApId\x18\x02 \x01(\x04\x12\x1c\n\x05Guami\x18\x03 \x01(\x0b\x32\r.xapp.Guami_t\x12\x17\n\x0fGnbCuCpUeE1ApId\x18\x04 \x01(\r\x12\x0f\n\x07RanUeId\x18\x05 \x01(\x04\"L\n\x07Guami_t\x12\x1a\n\x04Plmn\x18\x01 \x01(\x0b\x32\x0c.xapp.PlmnId\x12\x13\n\x0b\x41mfRegionId\x18\x02 \x01(\r\x12\x10\n\x08\x41mfSetId\x18\x03 \x01(\r\"7\n\x06PlmnId\x12\x0b\n\x03Mcc\x18\x01 \x01(\r\x12\x0b\n\x03Mnc\x18\x02 \x01(\r\x12\x13\n\x0bMncDigitLen\x18\x03 \x01(\r\"V\n\x08MeasInfo\x12\x11\n\tmeas_name\x18\x01 \x01(\t\x12\x13\n\tint_value\x18\x02 \x01(\x04H\x00\x12\x14\n\nreal_value\x18\x03 \x01(\x02H\x00\x42\x0c\n\nmeas_value2d\n\x10\x45\x32SM_KPM_Service\x12P\n\x13GetIndicationStream\x12\x1a.xapp.KPMIndicationRequest\x1a\x1b.xapp.KPMIndicationResponse0\x01\x42\x06Z\x04./pbb\x06proto3')
 
 _globals = globals()
 _builder.BuildMessageAndEnumDescriptors(DESCRIPTOR, _globals)
@@ -39,13 +39,15 @@ if not _descriptor._USE_C_DESCRIPTORS:
   _globals['_E2NODEINFOS']._serialized_start=165
   _globals['_E2NODEINFOS']._serialized_end=305
   _globals['_UEINFOS']._serialized_start=307
-  _globals['_UEINFOS']._serialized_end=344
-  _globals['_UEIDS']._serialized_start=346
-  _globals['_UEIDS']._serialized_end=469
-  _globals['_GUAMI_T']._serialized_start=471
-  _globals['_GUAMI_T']._serialized_end=547
-  _globals['_PLMNID']._serialized_start=549
-  _globals['_PLMNID']._serialized_end=604
-  _globals['_E2SM_KPM_SERVICE']._serialized_start=606
-  _globals['_E2SM_KPM_SERVICE']._serialized_end=706
+  _globals['_UEINFOS']._serialized_end=382
+  _globals['_UEIDS']._serialized_start=384
+  _globals['_UEIDS']._serialized_end=507
+  _globals['_GUAMI_T']._serialized_start=509
+  _globals['_GUAMI_T']._serialized_end=585
+  _globals['_PLMNID']._serialized_start=587
+  _globals['_PLMNID']._serialized_end=642
+  _globals['_MEASINFO']._serialized_start=644
+  _globals['_MEASINFO']._serialized_end=730
+  _globals['_E2SM_KPM_SERVICE']._serialized_start=732
+  _globals['_E2SM_KPM_SERVICE']._serialized_end=832
 # @@protoc_insertion_point(module_scope)

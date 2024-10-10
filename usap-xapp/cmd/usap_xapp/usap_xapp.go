@@ -45,7 +45,6 @@ func main() {
 	wg.Add(1)
 	go func() { // launch a Monitor Go routine
 		defer wg.Done()
-
 		monitor.Run()
 	}()
 

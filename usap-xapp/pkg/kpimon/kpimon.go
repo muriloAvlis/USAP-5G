@@ -1,6 +1,5 @@
 package kpimon
 
-import "C"
 import (
 	"os"
 	"strings"
@@ -75,10 +74,13 @@ func (k *Kpimon) Run() {
 
 				// Ignore RAN types not in the configuration file
 				if ranTypeName != cfgRanType {
+					// log.Debugf("%s isn't equal to %s, ignoring...", cfgRanType, ranTypeName)
 					continue
 				}
 
 				log.Infof("E2 Node %s with NbID %d has support to E2SM-KPM, sending subscription...", ranTypeName, e2node.GetId().GetNb_id().GetNb_id())
+
+				log.Debug(xapp.SlToStrVec(measNameList).Size())
 
 				callback := xapp.NewDirectorKpm_cb(k)
 				hdlr := xapp.Report_kpm_sm(e2node.GetId(), tti, xapp.SlToStrVec(measNameList), callback)
@@ -152,50 +154,107 @@ func (k *Kpimon) Handle(ind xapp.Swig_kpm_ind_data_t) {
 
 	// process message payload
 	if ind.GetMsg() != nil {
-		if msg_fmt_3 := ind.GetMsg().GetFrm_3(); msg_fmt_3 != nil {
-			// get UE ID
-			for i := 0; i < int(msg_fmt_3.GetUe_meas_report_lst_len()); i++ {
-				ue := msg_fmt_3.GetMeas_report_per_ue().Get(i)
-				// check UE ID Node Type
-				switch int(ind.GetId().GetXtype()) {
+		switch int(ind.GetMsg().GetXtype()) {
+		case xapp.FORMAT_1_INDICATION_MESSAGE:
+			log.Warn("KPM Indication Message Format 1 not implemented!")
+		case xapp.FORMAT_2_INDICATION_MESSAGE:
+			log.Warn("KPM Indication Message Format 2 not implemented!")
+		case xapp.FORMAT_3_INDICATION_MESSAGE:
+			msgFmt3 := ind.GetMsg().GetFrm_3()
+			for i := 0; i < int(msgFmt3.GetUe_meas_report_lst_len()); i++ {
+				ueMeasurementReportItem := msgFmt3.GetMeas_report_per_ue().Get(i)
+				// process UEID
+				// check UE ID by Node Type
+				switch int(ind.GetId().GetXtype()) { // FIXME: Not working with E2AP UE ID Type
 				case utils.Ngran_gNB: // gNB | CU | CU-CP
-					if ue.GetUe_meas_report_lst().GetGnb().GetGnb_cu_ue_f1ap_lst_len() != 0 {
+					if ueMeasurementReportItem.GetUe_meas_report_lst().GetGnb().GetGnb_cu_ue_f1ap_lst_len() != 0 {
 						// F1AP UE ID (only for CU and DU)
-						kpmInd.UEIDs.GnbCuUeF1ApId = *ue.GetUe_meas_report_lst().GetGnb().GetGnb_cu_ue_f1ap_lst()
+						kpmInd.UEIDs.GnbCuUeF1ApId = *ueMeasurementReportItem.GetUe_meas_report_lst().GetGnb().GetGnb_cu_ue_f1ap_lst()
 					}
 
 					// AMF UE NGAP ID
-					kpmInd.UEIDs.AmfUeNgApId = ue.GetUe_meas_report_lst().GetGnb().GetAmf_ue_ngap_id()
+					kpmInd.UEIDs.AmfUeNgApId = ueMeasurementReportItem.GetUe_meas_report_lst().GetGnb().GetAmf_ue_ngap_id()
 
 					// GUAMI (PLMN ID + AMF ID (AMF Region ID + AMF Set ID))
-					kpmInd.UEIDs.Guami.Plmn.Mcc = ue.GetUe_meas_report_lst().GetGnb().GetGuami().GetPlmn_id().GetMcc()
-					kpmInd.UEIDs.Guami.Plmn.Mnc = ue.GetUe_meas_report_lst().GetGnb().GetGuami().GetPlmn_id().GetMnc()
-					kpmInd.UEIDs.Guami.Plmn.MncDigitLen = ue.GetUe_meas_report_lst().GetGnb().GetGuami().GetPlmn_id().GetMnc_digit_len()
-					kpmInd.UEIDs.Guami.AmfRegionId = ue.GetUe_meas_report_lst().GetGnb().GetGuami().GetAmf_region_id()
-					kpmInd.UEIDs.Guami.AmfSetId = ue.GetUe_meas_report_lst().GetGnb().GetGuami().GetAmf_set_id()
+					kpmInd.UEIDs.Guami.Plmn.Mcc = ueMeasurementReportItem.GetUe_meas_report_lst().GetGnb().GetGuami().GetPlmn_id().GetMcc()
+					kpmInd.UEIDs.Guami.Plmn.Mnc = ueMeasurementReportItem.GetUe_meas_report_lst().GetGnb().GetGuami().GetPlmn_id().GetMnc()
+					kpmInd.UEIDs.Guami.Plmn.MncDigitLen = ueMeasurementReportItem.GetUe_meas_report_lst().GetGnb().GetGuami().GetPlmn_id().GetMnc_digit_len()
+					kpmInd.UEIDs.Guami.AmfRegionId = ueMeasurementReportItem.GetUe_meas_report_lst().GetGnb().GetGuami().GetAmf_region_id()
+					kpmInd.UEIDs.Guami.AmfSetId = ueMeasurementReportItem.GetUe_meas_report_lst().GetGnb().GetGuami().GetAmf_set_id()
 
 					// RAN UE ID
-					if ue.GetUe_meas_report_lst().GetGnb_cu_up().GetRan_ue_id() != nil {
-						kpmInd.UEIDs.RanUeId = *ue.GetUe_meas_report_lst().GetGnb_cu_up().GetRan_ue_id()
-					}
-				case utils.Ngran_gNB_CUUP:
-					// gNB-CU-CP UE E1AP ID
-					kpmInd.UEIDs.GnbCuCpUeE1ApId = ue.GetUe_meas_report_lst().GetGnb_cu_up().GetGnb_cu_cp_ue_e1ap()
-
-					// RAN UE ID
-					if ue.GetUe_meas_report_lst().GetGnb_cu_up().GetRan_ue_id() != nil {
-						kpmInd.UEIDs.RanUeId = *ue.GetUe_meas_report_lst().GetGnb_cu_up().GetRan_ue_id()
+					if ueMeasurementReportItem.GetUe_meas_report_lst().GetGnb_cu_up().GetRan_ue_id() != nil {
+						kpmInd.UEIDs.RanUeId = *ueMeasurementReportItem.GetUe_meas_report_lst().GetGnb_cu_up().GetRan_ue_id()
 					}
 				case utils.Ngran_gNB_DU:
 					// F1AP UE ID (only for CU and DU)
-					kpmInd.UEIDs.GnbCuUeF1ApId = ue.GetUe_meas_report_lst().GetGnb_du().GetGnb_cu_ue_f1ap()
+					kpmInd.UEIDs.GnbCuUeF1ApId = ueMeasurementReportItem.GetUe_meas_report_lst().GetGnb_du().GetGnb_cu_ue_f1ap()
 
 					// RAN UE ID
-					if ue.GetUe_meas_report_lst().GetGnb_cu_up().GetRan_ue_id() != nil {
-						kpmInd.UEIDs.RanUeId = *ue.GetUe_meas_report_lst().GetGnb_cu_up().GetRan_ue_id()
+					if ueMeasurementReportItem.GetUe_meas_report_lst().GetGnb_cu_up().GetRan_ue_id() != nil {
+						kpmInd.UEIDs.RanUeId = *ueMeasurementReportItem.GetUe_meas_report_lst().GetGnb_cu_up().GetRan_ue_id()
+					}
+				case utils.Ngran_gNB_CUUP:
+					// gNB-CU-CP UE E1AP ID
+					kpmInd.UEIDs.GnbCuCpUeE1ApId = ueMeasurementReportItem.GetUe_meas_report_lst().GetGnb_cu_up().GetGnb_cu_cp_ue_e1ap()
+
+					// RAN UE ID
+					if ueMeasurementReportItem.GetUe_meas_report_lst().GetGnb_cu_up().GetRan_ue_id() != nil {
+						kpmInd.UEIDs.RanUeId = *ueMeasurementReportItem.GetUe_meas_report_lst().GetGnb_cu_up().GetRan_ue_id()
+					}
+				default:
+					log.Warnf("UE ID node type %v not supported!", ueMeasurementReportItem.GetUe_meas_report_lst().GetXtype())
+					continue
+				}
+
+				// process measReport
+				msgFmt1 := ueMeasurementReportItem.GetInd_msg_format_1()
+				// ueMeasList := make([]UEMeasInfo, 0, int(msgFmt1.GetMeas_data_lst_len()))
+				for j := 0; j < int(msgFmt1.GetMeas_data_lst_len()); j++ {
+					for k := 0; k < int(msgFmt1.GetMeas_data_lst().Get(j).GetMeas_record_len()); k++ {
+						if msgFmt1.GetMeas_info_lst_len() > 0 { // meas list
+							log.Debug(msgFmt1.GetMeas_info_lst_len())
+							os.Exit(0)
+							ueMeasList := make([]UEMeasInfo, 0, msgFmt1.GetMeas_info_lst_len())
+							switch int(msgFmt1.GetMeas_info_lst().Get(k).GetMeas_type().GetXtype()) {
+							case xapp.NAME_MEAS_TYPE:
+								// Meas Name
+								measName := msgFmt1.GetMeas_info_lst().Get(k).GetMeas_type().GetName()
+
+								// Meas Value
+								var measValue interface{}
+								switch int(msgFmt1.GetMeas_data_lst().Get(j).GetMeas_record_lst().Get(k).GetValue()) {
+								case xapp.INTEGER_MEAS_VALUE:
+									measValue = msgFmt1.GetMeas_data_lst().Get(j).GetMeas_record_lst().Get(k).GetInt_val()
+								case xapp.REAL_MEAS_VALUE:
+									measValue = msgFmt1.GetMeas_data_lst().Get(j).GetMeas_record_lst().Get(k).GetReal_val()
+								default:
+									log.Warnf("%s meas value not recognized", measName)
+									continue
+								}
+
+								ueMeasList = append(ueMeasList, UEMeasInfo{
+									MeasName:  measName,
+									MeasValue: measValue,
+								})
+							default:
+								log.Warnf("Measurement type %v not yet implemented", msgFmt1.GetMeas_info_lst().Get(k).GetMeas_type().GetXtype())
+								continue
+							}
+
+							// check if value is reliable
+							if int(msgFmt1.GetMeas_data_lst().Get(j).GetIncomplete_flag()) == xapp.TRUE_ENUM_VALUE {
+								log.Warn("Measurement record not reliable!")
+							}
+
+							// Add UE meas to list
+							kpmInd.UEInfos.UEMeasList = ueMeasList
+						}
 					}
 				}
 			}
+		default:
+			log.Error("Unknown KPM Indication Message Format")
 		}
 	}
 

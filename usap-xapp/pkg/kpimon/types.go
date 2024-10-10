@@ -62,6 +62,7 @@ type E2NodeInfos struct {
 
 type UEInfos struct {
 	UEIDs
+	UEMeasList []UEMeasInfo
 }
 
 type UEIDs struct {
@@ -82,6 +83,11 @@ type PlmnId struct {
 	Mcc         uint16
 	Mnc         uint16
 	MncDigitLen byte
+}
+
+type UEMeasInfo struct {
+	MeasName  string
+	MeasValue interface{} // Real or Int
 }
 
 //-------------------------------------------------//

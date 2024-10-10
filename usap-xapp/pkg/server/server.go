@@ -52,6 +52,8 @@ func (s *Server) GetIndicationStream(req *pb.KPMIndicationRequest, stream pb.E2S
 				res.Node.CuDuId = kpmInd.CuDuID
 			}
 
+			// iterate over UE measurements
+
 			// send response
 			if err := stream.Send(res); err != nil {
 				return fmt.Errorf("error to sending gRPC stream: %v", err)

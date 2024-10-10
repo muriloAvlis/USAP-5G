@@ -3,7 +3,7 @@
 import grpc
 import warnings
 
-from . import xapp_pb2 as xapp__pb2
+import xapp_pb2 as xapp__pb2
 
 GRPC_GENERATED_VERSION = '1.66.2'
 GRPC_VERSION = grpc.__version__
@@ -11,8 +11,7 @@ _version_not_supported = False
 
 try:
     from grpc._utilities import first_version_is_lower
-    _version_not_supported = first_version_is_lower(
-        GRPC_VERSION, GRPC_GENERATED_VERSION)
+    _version_not_supported = first_version_is_lower(GRPC_VERSION, GRPC_GENERATED_VERSION)
 except ImportError:
     _version_not_supported = True
 
@@ -40,10 +39,10 @@ class E2SM_KPM_ServiceStub(object):
             channel: A grpc.Channel.
         """
         self.GetIndicationStream = channel.unary_stream(
-            '/xapp.E2SM_KPM_Service/GetIndicationStream',
-            request_serializer=xapp__pb2.KPMIndicationRequest.SerializeToString,
-            response_deserializer=xapp__pb2.KPMIndicationResponse.FromString,
-            _registered_method=True)
+                '/xapp.E2SM_KPM_Service/GetIndicationStream',
+                request_serializer=xapp__pb2.KPMIndicationRequest.SerializeToString,
+                response_deserializer=xapp__pb2.KPMIndicationResponse.FromString,
+                _registered_method=True)
 
 
 class E2SM_KPM_ServiceServicer(object):
@@ -62,21 +61,19 @@ class E2SM_KPM_ServiceServicer(object):
 
 def add_E2SM_KPM_ServiceServicer_to_server(servicer, server):
     rpc_method_handlers = {
-        'GetIndicationStream': grpc.unary_stream_rpc_method_handler(
-            servicer.GetIndicationStream,
-            request_deserializer=xapp__pb2.KPMIndicationRequest.FromString,
-            response_serializer=xapp__pb2.KPMIndicationResponse.SerializeToString,
-        ),
+            'GetIndicationStream': grpc.unary_stream_rpc_method_handler(
+                    servicer.GetIndicationStream,
+                    request_deserializer=xapp__pb2.KPMIndicationRequest.FromString,
+                    response_serializer=xapp__pb2.KPMIndicationResponse.SerializeToString,
+            ),
     }
     generic_handler = grpc.method_handlers_generic_handler(
-        'xapp.E2SM_KPM_Service', rpc_method_handlers)
+            'xapp.E2SM_KPM_Service', rpc_method_handlers)
     server.add_generic_rpc_handlers((generic_handler,))
-    server.add_registered_method_handlers(
-        'xapp.E2SM_KPM_Service', rpc_method_handlers)
+    server.add_registered_method_handlers('xapp.E2SM_KPM_Service', rpc_method_handlers)
+
 
  # This class is part of an EXPERIMENTAL API.
-
-
 class E2SM_KPM_Service(object):
     """------------------------------------//
     ------------- Services ------------//
@@ -86,15 +83,15 @@ class E2SM_KPM_Service(object):
 
     @staticmethod
     def GetIndicationStream(request,
-                            target,
-                            options=(),
-                            channel_credentials=None,
-                            call_credentials=None,
-                            insecure=False,
-                            compression=None,
-                            wait_for_ready=None,
-                            timeout=None,
-                            metadata=None):
+            target,
+            options=(),
+            channel_credentials=None,
+            call_credentials=None,
+            insecure=False,
+            compression=None,
+            wait_for_ready=None,
+            timeout=None,
+            metadata=None):
         return grpc.experimental.unary_stream(
             request,
             target,

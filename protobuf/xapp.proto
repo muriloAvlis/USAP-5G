@@ -17,30 +17,31 @@ option go_package = "./pb";
 // ----------------------------------//
 
  message KPMIndicationRequest {
-   string svc_name = 1;
+  string svc_name = 1;
  }
 
  message KPMIndicationResponse {
-   uint64 latency = 1;
-   E2NodeInfos node = 2;
-   UEInfos ue = 3;
+  uint64 latency = 1;
+  E2NodeInfos node = 2;
+  UEInfos ue = 3;
  }
 
  message E2NodeInfos {
-   uint32 nodeb_id = 1;
-   string node_type_name = 2;
-   uint32 mcc = 3;
-   uint32 mnc = 4;
-   uint32 mnc_digit_len = 5;
-   optional uint32 cu_du_id = 6;
+  uint32 nodeb_id = 1;
+  string node_type_name = 2;
+  uint32 mcc = 3;
+  uint32 mnc = 4;
+  uint32 mnc_digit_len = 5;
+  optional uint32 cu_du_id = 6;
  }
 
  message UEInfos {
-   UEIDs ue_id = 1;
+  UEIDs ue_id = 1;
+  repeated MeasInfo ue_meas_info = 2;
  }
 
  message UEIDs {
-   uint64 GnbCuUeF1ApId = 1;
+  uint64 GnbCuUeF1ApId = 1;
 	uint64 AmfUeNgApId = 2;
 	Guami_t Guami = 3;   
 	uint32 GnbCuCpUeE1ApId = 4;
@@ -48,13 +49,21 @@ option go_package = "./pb";
  }
 
  message Guami_t {
-   PlmnId Plmn = 1;
+  PlmnId Plmn = 1;
 	uint32 AmfRegionId = 2;
 	uint32 AmfSetId = 3;
  }
 
  message PlmnId {
-   uint32 Mcc = 1;
+  uint32 Mcc = 1;
 	uint32 Mnc = 2;        
 	uint32 MncDigitLen = 3;
+ }
+
+ message MeasInfo {
+  string meas_name = 1;
+  oneof meas_value {
+    uint64 int_value = 2;
+    float real_value = 3; 
+   }
  }
