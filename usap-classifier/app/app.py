@@ -12,7 +12,7 @@ async def main(args) -> None:
 
 
 def run() -> None:
-    # process args
+    # Process args
     parse = argparse.ArgumentParser(description="USAP-Classifier arguments")
     parse.add_argument("--server-address", dest="server_address", type=str,
                        help="gRPC server address to connect classifier", default="127.0.0.1")

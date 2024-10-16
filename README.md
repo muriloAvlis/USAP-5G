@@ -13,9 +13,9 @@ The UE Smart Allocation Platform on Open 5G Networks (USAP) is a project to mana
 ### Requirements
 
 - Kubernetes Cluster (tutorial on [K8s Installation Using Kubeadm](https://github.com/muriloAvlis/k8s-utils/blob/main/docs/cluster_deploy/kubeadm/install.md))
-- 5G Core (OAI-CN was used)
-- OSC Near-RT RIC
-- 5G RAN (OAI-RAN was used)
+- OAI-5G Core
+- FlexRIC
+- OAI-5G RAN
 
 ### Build Docker Image
 

@@ -12,14 +12,12 @@ class KPMIndicationRequest(_message.Message):
     def __init__(self, svc_name: _Optional[str] = ...) -> None: ...
 
 class KPMIndicationResponse(_message.Message):
-    __slots__ = ("latency", "node", "ue")
+    __slots__ = ("latency", "ue")
     LATENCY_FIELD_NUMBER: _ClassVar[int]
-    NODE_FIELD_NUMBER: _ClassVar[int]
     UE_FIELD_NUMBER: _ClassVar[int]
-    latency: int
-    node: E2NodeInfos
+    latency: float
     ue: UEInfos
-    def __init__(self, latency: _Optional[int] = ..., node: _Optional[_Union[E2NodeInfos, _Mapping]] = ..., ue: _Optional[_Union[UEInfos, _Mapping]] = ...) -> None: ...
+    def __init__(self, latency: _Optional[float] = ..., ue: _Optional[_Union[UEInfos, _Mapping]] = ...) -> None: ...
 
 class E2NodeInfos(_message.Message):
     __slots__ = ("nodeb_id", "node_type_name", "mcc", "mnc", "mnc_digit_len", "cu_du_id")
@@ -46,38 +44,36 @@ class UEInfos(_message.Message):
     def __init__(self, ue_id: _Optional[_Union[UEIDs, _Mapping]] = ..., ue_meas_info: _Optional[_Iterable[_Union[MeasInfo, _Mapping]]] = ...) -> None: ...
 
 class UEIDs(_message.Message):
-    __slots__ = ("GnbCuUeF1ApId", "AmfUeNgApId", "Guami", "GnbCuCpUeE1ApId", "RanUeId")
-    GNBCUUEF1APID_FIELD_NUMBER: _ClassVar[int]
-    AMFUENGAPID_FIELD_NUMBER: _ClassVar[int]
-    GUAMI_FIELD_NUMBER: _ClassVar[int]
-    GNBCUCPUEE1APID_FIELD_NUMBER: _ClassVar[int]
-    RANUEID_FIELD_NUMBER: _ClassVar[int]
-    GnbCuUeF1ApId: int
-    AmfUeNgApId: int
-    Guami: Guami_t
-    GnbCuCpUeE1ApId: int
-    RanUeId: int
-    def __init__(self, GnbCuUeF1ApId: _Optional[int] = ..., AmfUeNgApId: _Optional[int] = ..., Guami: _Optional[_Union[Guami_t, _Mapping]] = ..., GnbCuCpUeE1ApId: _Optional[int] = ..., RanUeId: _Optional[int] = ...) -> None: ...
+    __slots__ = ("gnb_cu_ue_f1ap_id", "amf_ue_ngap_id", "gnb_cu_cp_ue_e1ap_id", "ran_ue_id")
+    GNB_CU_UE_F1AP_ID_FIELD_NUMBER: _ClassVar[int]
+    AMF_UE_NGAP_ID_FIELD_NUMBER: _ClassVar[int]
+    GNB_CU_CP_UE_E1AP_ID_FIELD_NUMBER: _ClassVar[int]
+    RAN_UE_ID_FIELD_NUMBER: _ClassVar[int]
+    gnb_cu_ue_f1ap_id: int
+    amf_ue_ngap_id: int
+    gnb_cu_cp_ue_e1ap_id: int
+    ran_ue_id: int
+    def __init__(self, gnb_cu_ue_f1ap_id: _Optional[int] = ..., amf_ue_ngap_id: _Optional[int] = ..., gnb_cu_cp_ue_e1ap_id: _Optional[int] = ..., ran_ue_id: _Optional[int] = ...) -> None: ...
 
 class Guami_t(_message.Message):
-    __slots__ = ("Plmn", "AmfRegionId", "AmfSetId")
+    __slots__ = ("plmn", "amf_region_id", "amf_set_id")
     PLMN_FIELD_NUMBER: _ClassVar[int]
-    AMFREGIONID_FIELD_NUMBER: _ClassVar[int]
-    AMFSETID_FIELD_NUMBER: _ClassVar[int]
-    Plmn: PlmnId
-    AmfRegionId: int
-    AmfSetId: int
-    def __init__(self, Plmn: _Optional[_Union[PlmnId, _Mapping]] = ..., AmfRegionId: _Optional[int] = ..., AmfSetId: _Optional[int] = ...) -> None: ...
+    AMF_REGION_ID_FIELD_NUMBER: _ClassVar[int]
+    AMF_SET_ID_FIELD_NUMBER: _ClassVar[int]
+    plmn: PlmnId
+    amf_region_id: int
+    amf_set_id: int
+    def __init__(self, plmn: _Optional[_Union[PlmnId, _Mapping]] = ..., amf_region_id: _Optional[int] = ..., amf_set_id: _Optional[int] = ...) -> None: ...
 
 class PlmnId(_message.Message):
-    __slots__ = ("Mcc", "Mnc", "MncDigitLen")
+    __slots__ = ("mcc", "mnc", "mnc_digit_len")
     MCC_FIELD_NUMBER: _ClassVar[int]
     MNC_FIELD_NUMBER: _ClassVar[int]
-    MNCDIGITLEN_FIELD_NUMBER: _ClassVar[int]
-    Mcc: int
-    Mnc: int
-    MncDigitLen: int
-    def __init__(self, Mcc: _Optional[int] = ..., Mnc: _Optional[int] = ..., MncDigitLen: _Optional[int] = ...) -> None: ...
+    MNC_DIGIT_LEN_FIELD_NUMBER: _ClassVar[int]
+    mcc: int
+    mnc: int
+    mnc_digit_len: int
+    def __init__(self, mcc: _Optional[int] = ..., mnc: _Optional[int] = ..., mnc_digit_len: _Optional[int] = ...) -> None: ...
 
 class MeasInfo(_message.Message):
     __slots__ = ("meas_name", "int_value", "real_value")
