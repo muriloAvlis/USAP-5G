@@ -5,6 +5,8 @@
 #include "kpm_monitor.hpp"
 
 std::mutex Kpm_monitor::mtx; // mutex for reveive metrics
+uint32_t Kpm_monitor::REPORT_PERIOD;
+uint32_t Kpm_monitor::GRANULARITY_PERIOD;
 
 // Shared vars with gRPC server process
 std::queue<Kpm_monitor::kpm_ind_fmt_3_t> Kpm_monitor::kpm_ind_fmt_3_queue;
@@ -327,8 +329,27 @@ Kpm_monitor::Kpm_monitor()
         SPDLOG_WARN("No E2 nodes connected to network, retrying...");
         nodes = {e2_nodes_xapp_api()};
     }
-    // defer(free_e2_node_arr_xapp(&nodes));
+
     SPDLOG_INFO("{} E2 nodes found", nodes.len);
+
+    // set granularity and report period
+    const char* gran_period {std::getenv("GRANULARITY_PERIOD")};
+    if (gran_period)
+    {
+        GRANULARITY_PERIOD = std::stoi(gran_period);
+    } else
+    {
+        GRANULARITY_PERIOD = 1000; // default
+    }
+
+    const char* report_period {std::getenv("REPORT_PERIOD")};
+    if (report_period)
+    {
+        REPORT_PERIOD = std::stoi(report_period);
+    } else
+    {
+        REPORT_PERIOD = 1000; // default
+    }
 
     // create handle
     hndl = {static_cast<sm_ans_xapp_t*>(calloc(nodes.len, sizeof(sm_ans_xapp_t)))};

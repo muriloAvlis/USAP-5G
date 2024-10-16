@@ -4,9 +4,6 @@
 
 #include "utils.hpp"
 
-#include "spdlog/spdlog.h"
-
-
 size_t utils::find_sm_idx(e2_node_connected_xapp_t *node, int rf_id)
 {
     for (size_t i = 0; i < node->len_rf; i++)
@@ -37,4 +34,39 @@ u_int64_t utils::get_current_time_in_us() {
 std::string utils::ba_to_str(byte_array_t const* ba)
 {
     return std::string{reinterpret_cast<const char*>(ba->buf), ba->len};
+}
+
+void utils::config_logger()
+{
+    const char* log_level = std::getenv("LOG_LEVEL");
+
+    std::map<std::string, spdlog::level::level_enum> log_levels = {
+        {"DEBUG", spdlog::level::debug},
+        {"INFO", spdlog::level::info},
+        {"WARN", spdlog::level::warn},
+        {"ERROR", spdlog::level::err},
+        {"TRACE", spdlog::level::trace},
+        {"CRITICAL", spdlog::level::critical},
+        {"OFF", spdlog::level::off}
+    };
+
+    if (log_level)
+    {
+        std::string log_level_str = log_level;
+
+        // transform to upper case
+        std::transform(log_level_str.begin(), log_level_str.end(), log_level_str.begin(), ::toupper);
+
+        auto it = log_levels.find(log_level_str);
+        if (it != log_levels.end()) // match log level
+        {
+            spdlog::set_level(it->second);
+        } else
+        {
+            spdlog::set_level(spdlog::level::debug); // default
+        }
+    } else
+    {
+        spdlog::set_level(spdlog::level::debug); // default
+    }
 }

@@ -59,8 +59,8 @@ private:
     sm_ans_xapp_t *hndl; // KPM subscription handle
     e2_node_arr_xapp_t nodes{}; // Connected E2 nodes
     const int KPM_RF_ID = 2;
-    static constexpr uint32_t GRANULARITY_PERIOD = 1000; // in milliseconds (std::getenv maybe?)
-    static constexpr uint32_t REPORT_PERIOD = 1000; // in milliseconds
+    static uint32_t GRANULARITY_PERIOD; // in milliseconds
+    static uint32_t REPORT_PERIOD; // in milliseconds
 
     // Gen KPM subscription data
     static kpm_sub_data_t gen_kpm_sub_data(kpm_ran_function_def_t const* ran_func);

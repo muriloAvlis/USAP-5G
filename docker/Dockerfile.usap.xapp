@@ -1,13 +1,11 @@
 ARG BASE_IMAGE=ubuntu:24.04
-ARG FLEXRIC_VERSION=br-flexric
+ARG FLEXRIC_VERSION=dev
 # E2AP_V1/E2AP_V2/E2AP_V3
 ARG E2AP_VERSION=E2AP_V3
 # KPM_V2_01/KPM_V2_03/KPM_V3_00
 ARG KPM_VERSION=KPM_V3_00
-ARG XAPP_PYTHON_SWIG=OFF
-ARG XAPP_GO_SWIG=ON
-# Disable xApp DB
-ARG XAPP_DB=NONE_XAPP
+# Disable xApps build
+ARG XAPP_MULTILANGUAGE=OFF
 
 #---------------------------------------------------------------------
 # DEPENDENCIES BUILDER STAGE
@@ -43,13 +41,7 @@ RUN apt-get update && \
     mold \
     ninja-build \
     ccache \
-    autoconf \
-    pkg-config \
-    autotools-dev \
-    yacc \
-    libconfig-dev \
-    libconfig++-dev \
-    libncurses-dev && \
+    libspdlog-dev && \
     apt-get clean
 
 ## Swig
@@ -58,16 +50,19 @@ RUN git clone https://github.com/swig/swig.git && \
     git checkout v4.2.1 && \
     ./autogen.sh && \
     ./configure --prefix=/usr/ && \
-    make -j8 && \
+    make -j $(nproc) && \
     make install && \
     ldconfig
 
-## Golang
-RUN wget https://go.dev/dl/go1.23.2.linux-amd64.tar.gz \
-    && rm -rf /usr/local/go \
-    && tar -C /usr/local -xzf go1.23.2.linux-amd64.tar.gz
-
-ENV PATH=$PATH:/usr/local/go/bin
+## gRPC and Protocol buffers
+RUN git clone --recurse-submodules -b v1.67.0 --depth 1 --shallow-submodules https://github.com/grpc/grpc && \
+    cd grpc && \
+    mkdir -p cmake/build && \
+    cd cmake/build && \
+    cmake -DgRPC_INSTALL=ON \
+    -DgRPC_BUILD_TESTS=OFF ../.. && \
+    make -j $(nproc) && \
+    make install
 
 #---------------------------------------------------------------------
 # FLEXRIC SMs BUILDER STAGE
@@ -77,18 +72,11 @@ FROM oai-flexric-base AS oai-flexric-builder
 ARG FLEXRIC_VERSION
 ARG E2AP_VERSION
 ARG KPM_VERSION
-ARG XAPP_PYTHON_SWIG
-ARG XAPP_GO_SWIG
-ARG XAPP_DB
+ARG XAPP_MULTILANGUAGE
 
 WORKDIR /
 
 RUN git clone https://gitlab.eurecom.fr/mosaic5g/flexric.git -b ${FLEXRIC_VERSION}
-
-## That is need to fix errors in compilation stage
-COPY br-flexric_fix/slice.go /flexric/examples/xApp/go/FlexPolicy/utils/sm/slice/slice.go
-COPY br-flexric_fix/xapp_slice_moni_ctrl_main.go /flexric/examples/xApp/go/slice_moni_ctrl/xapp_slice_moni_ctrl_main.go
-COPY br-flexric_fix/xapp_slice_term_ui_main.go /flexric/examples/xApp/go/slice_term_ui/xapp_slice_term_ui_main.go
 
 RUN cd flexric && \
     mkdir build && \
@@ -100,13 +88,9 @@ RUN cd flexric && \
     -DCMAKE_CXX_COMPILER=g++-13 \
     -DE2AP_VERSION=${E2AP_VERSION} \
     -DKPM_VERSION=${KPM_VERSION} \
-    -DXAPP_PYTHON_SWIG=${XAPP_PYTHON_SWIG} \
-    -DXAPP_GO_SWIG=${XAPP_GO_SWIG} \
-    -DXAPP_DB=${XAPP_DB} .. && \
-    ninja xapp_sdk_go && \
-    ninja install xapp_sdk_go && \
-    echo "--- Check shared objects dependencies for xApp shared library ---" && \
-    ldd /usr/local/lib/libxapp_sdk.so && \
+    -DXAPP_MULTILANGUAGE=${XAPP_MULTILANGUAGE} .. && \
+    ninja && \
+    ninja install && \
     echo "--- Check shared objects dependencies for xApp shared library ---" && \
     ldd /flexric/build/src/xApp/libe42_xapp_shared.so
 
@@ -114,15 +98,19 @@ RUN cd flexric && \
 # xApp BUILDER STAGE
 #---------------------------------------------------------------------
 
-FROM oai-flexric-builder AS xapp-builder
+FROM oai-flexric-base AS xapp-builder
 
 WORKDIR /builder
 
 ## Build usap-xapp
-COPY usap-xapp/go.mod usap-xapp/go.sum ./
-RUN go mod download && go mod verify
-COPY usap-xapp .
-RUN go build -v -o /usr/local/bin/usap_xapp ./cmd/usap_xapp/usap_xapp.go
+COPY usap-xapp /builder/
+RUN rm -rf build && \
+    mkdir -p build && \
+    cd build && \
+    cmake -GNinja -DCMAKE_BUILD_TYPE=Release .. && \
+    ninja xapp_usap && \
+    echo "--- Check shared objects dependencies for executable xapp_usap ---" && \
+    ldd xapp_usap
 
 #---------------------------------------------------------------------
 # TARGET IMAGE
@@ -132,19 +120,18 @@ FROM $BASE_IMAGE AS usap-xapp
 
 WORKDIR /
 
-# install pkgs needed to run
+## Install pkg/repo needed to run
 RUN apt-get update && \
     DEBIAN_FRONTEND=noninteractive apt-get upgrade --yes && \
     DEBIAN_FRONTEND=noninteractive apt-get install --yes \
     psmisc \
     gpg \
     wget \
-    tzdata \
     libsctp1 \
     python3 \
     python3-pip \
-    libconfig-dev \
-    libconfig++-dev && \
+    tzdata \
+    libspdlog-dev && \
     apt-get autoremove -y && \
     apt-get autoclean -y
 
@@ -163,34 +150,40 @@ COPY --from=oai-flexric-builder \
     /usr/local/lib/flexric/librc_sm.so \
     /usr/local/lib/flexric/
 
-## Copy Go SDK
-COPY --from=oai-flexric-builder \
-    /usr/local/lib/libxapp_sdk.so \
-    /usr/local/lib/libxapp_sdk.so
-
 ## Copy xApp SDK
 COPY --from=oai-flexric-builder \
     /flexric/build/src/xApp/libe42_xapp_shared.so \
     /usr/local/lib/libe42_xapp_shared.so
 
 ## Copy xApp 
-COPY --from=xapp-builder /usr/local/bin/usap_xapp /usr/local/bin/usap_xapp
+COPY --from=xapp-builder /builder/build/xapp_usap /usr/local/bin/xapp_usap
 
 ## Copy Config file
-COPY usap-xapp/configs/xapp.conf /etc/usap-xapp/xapp.conf
+COPY usap-xapp/config/xapp.conf /etc/usap-xapp/xapp.conf
 
 RUN ldconfig && \
-    echo "--- Check shared objects dependencies for xApp shared library ---" && \
-    ldd /usr/local/lib/libxapp_sdk.so && \
     echo "--- Check shared objects dependencies for xApp shared library ---" && \
     ldd /usr/local/lib/libe42_xapp_shared.so && \
     echo "--- Check shared objects dependencies for flexric shared libraries ---" && \
     ldd /usr/local/lib/flexric/*.so && \
     echo "--- Check shared objects dependencies for executable xapp_usap ---" && \
-    ldd /usr/local/bin/usap_xapp
+    ldd /usr/local/bin/xapp_usap
+
+## Config envs
+ENV LOG_LEVEL=debug
+ENV GRANULARITY_PERIOD=1000
+ENV REPORT_PERIOD=1000
+
+## Add labels
+LABEL br.ufpa.gercom.title="USAP" \
+    br.ufpa.gercom.description="UE Smart Allocation Platform on Open 5G Networks (USAP)" \
+    br.ufpa.gercom.source="https://github.com/muriloAvlis/usap-5g" \
+    br.ufpa.gercom.authors="Murilo Silva" \ 
+    br.ufpa.gercom.maintainer="Murilo Silva <murilosilva@itec.ufpa.br>" \
+    br.ufpa.gercom.licenses=""
 
 ## E42
 EXPOSE 36422/sctp
 
 CMD ["-c", "/etc/usap-xapp/xapp.conf" ]
-ENTRYPOINT [ "usap_xapp" ]
+ENTRYPOINT [ "xapp_usap" ]

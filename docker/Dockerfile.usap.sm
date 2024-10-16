@@ -33,7 +33,7 @@ COPY --from=builder /builder/bin/usap_sm /usr/local/bin/
 ## Add labels
 LABEL br.ufpa.gercom.title="USAP" \
     br.ufpa.gercom.description="UE Smart Allocation Platform on Open 5G Networks (USAP)" \
-    br.ufpa.gercom.source="https://github.com/muriloAvlis/USAP" \
+    br.ufpa.gercom.source="https://github.com/muriloAvlis/usap-5g" \
     br.ufpa.gercom.authors="Murilo Silva" \ 
     br.ufpa.gercom.maintainer="Murilo Silva <murilosilva@itec.ufpa.br>" \
     br.ufpa.gercom.licenses=""

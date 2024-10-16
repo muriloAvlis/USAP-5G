@@ -7,6 +7,8 @@
 
 #include <atomic>
 #include <string>
+#include <map>
+#include "spdlog/spdlog.h"
 
 #include "e2_node_connected_xapp.h"
 
@@ -23,6 +25,8 @@ namespace utils
     u_int64_t get_current_time_in_us();
 
     std::string ba_to_str(byte_array_t const* ba);
+
+    void config_logger();
 }
 
 #endif //UTILS_HPP

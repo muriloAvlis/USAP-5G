@@ -15,19 +15,16 @@
 
 int main(int argc, char* argv[])
 {
+    // Configure logger
+    utils::config_logger();
+
     SPDLOG_INFO("Initializing usap-xapp...");
 
     // Set xApp signal handler
     std::signal(SIGINT, utils::signal_handler);
     std::signal(SIGTERM, utils::signal_handler);
 
-    // Configure logger
-    spdlog::set_level(spdlog::level::debug);
-
     fr_args_t args {init_fr_args(argc, argv)};
-
-    // REMOVE ME: for dev only
-    args.ip = "192.168.100.44";
 
     // Init xApp
     init_xapp_api(&args);
