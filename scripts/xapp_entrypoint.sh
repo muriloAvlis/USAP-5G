@@ -7,7 +7,7 @@ if [[ -n "$NEAR_RIC_HOST" ]] ; then
     if [[ ${NEAR_RIC_HOST} =~ ${ip_check} ]] ; then
         export NEAR_RIC_IP=${NEAR_RIC_HOST} ## is a IP format
     else
-        export NEAR_RIC_IP="$(host -4 $NEAR_RIC_IP | awk '/has.*address/{print $NF; exit}')" ## is a hostname format -> convert to ipv4
+        export NEAR_RIC_IP="$(host -4 $NEAR_RIC_HOST | awk '/has.*address/{print $NF; exit}')" ## is a hostname format -> convert to ipv4
     fi
 fi
 

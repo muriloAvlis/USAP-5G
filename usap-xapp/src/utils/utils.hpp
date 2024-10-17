@@ -9,6 +9,7 @@
 #include <string>
 #include <map>
 #include "spdlog/spdlog.h"
+#include <spdlog/sinks/stdout_color_sinks.h>
 
 #include "e2_node_connected_xapp.h"
 

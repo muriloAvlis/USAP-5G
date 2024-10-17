@@ -31,16 +31,30 @@ spec:
       securityContext:
         {{- toYaml .Values.podSecurityContext | nindent 8 }}
       containers:
+        ## FlexRIC
+        - name: {{ .Values.flexric.containerName }}
+          image: "{{ .Values.flexric.image.repository }}:{{ .Values.flexric.image.tag | default .Chart.AppVersion }}"
+          imagePullPolicy: {{ .Values.flexric.image.pullPolicy }}
+          ports:
+          {{- range $port := .Values.flexric.service.ports }}  
+            - name: {{ $port.name }}
+              containerPort: {{ $port.targetPort }}
+              protocol: {{ $port.protocol }}
+          {{- end }}
+
+        ## USAP-xApp
         - name: {{ .Chart.Name }}
           securityContext:
             {{- toYaml .Values.securityContext | nindent 12 }}
           image: "{{ .Values.image.repository }}:{{ .Values.image.tag | default .Chart.AppVersion }}"
           imagePullPolicy: {{ .Values.image.pullPolicy }}
           ports:
-          {{- range $port := .Values.service.ports }}  
+          {{- range $port := .Values.flexric.service.ports }}
+          {{- if eq $port.name "e42" }}
             - name: {{ $port.name }}
               containerPort: {{ $port.targetPort }}
               protocol: {{ $port.protocol }}
+          {{- end }}
           {{- end }}
           livenessProbe:
             {{- toYaml .Values.livenessProbe | nindent 12 }}
@@ -56,13 +70,7 @@ spec:
             - name: REPORT_PERIOD
               value: {{ .Values.config.e2sm.report_period }}
           volumeMounts: []
-            # - name: xapp-config
-            #   mountPath: /etc/usap-xapp/xapp.conf
-            #   subPath: xapp.conf
       volumes: []
-        # - name: xapp-config
-        #   configMap:
-        #     name: {{ include "usap-xapp.fullname" . }}-configmap
       {{- with .Values.nodeSelector }}
       nodeSelector:
         {{- toYaml . | nindent 8 }}

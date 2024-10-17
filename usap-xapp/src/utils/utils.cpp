@@ -38,6 +38,9 @@ std::string utils::ba_to_str(byte_array_t const* ba)
 
 void utils::config_logger()
 {
+    // define default console log
+    auto console = spdlog::stdout_color_st("console");
+
     const char* log_level = std::getenv("LOG_LEVEL");
 
     std::map<std::string, spdlog::level::level_enum> log_levels = {
@@ -60,13 +63,15 @@ void utils::config_logger()
         auto it = log_levels.find(log_level_str);
         if (it != log_levels.end()) // match log level
         {
-            spdlog::set_level(it->second);
+            console->set_level(it->second);
         } else
         {
-            spdlog::set_level(spdlog::level::debug); // default
+            console->set_level(spdlog::level::debug); // default
         }
     } else
     {
-        spdlog::set_level(spdlog::level::debug); // default
+        console->set_level(spdlog::level::debug); // default
     }
+
+    spdlog::set_default_logger(console);
 }

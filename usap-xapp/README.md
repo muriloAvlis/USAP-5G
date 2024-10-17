@@ -14,7 +14,7 @@
 ### On the Arch linux
 
 ```shell
-sudo pacman -Syu grpc protobuf spdlog
+sudo pacman -Syu grpc protobuf spdlog lksctp-tools pcre2
 ```
 
 ### On the Ubuntu

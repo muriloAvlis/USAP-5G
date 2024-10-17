@@ -51,17 +51,27 @@ securityContext:
   # runAsNonRoot: true
   # runAsUser: 1000
 
-service: ## Not created
-  type: ClusterIP
-  ports:
-    - name: e42
-      protocol: SCTP
-      port: 36422
-      targetPort: 36422
+flexric:
+  containerName: flexric
+  image:
+    repository: muriloavlis/flexric
+    pullPolicy: Always
+    tag: "latest"
+  service:
+    type: ClusterIP
+    ports:
+      - name: e2
+        protocol: SCTP
+        port: 36421
+        targetPort: 36421
+      - name: e42
+        protocol: SCTP
+        port: 36422
+        targetPort: 36422
 
 config:
   ric:
-    near_ric_host: flexric.svc.flexric ## IPv4 or Service Name
+    near_ric_host: 127.0.0.1 ## IPv4 or Service Name
   e2sm:
     kpm:
       granularity_period: 1000
@@ -75,7 +85,8 @@ autoscaling:
   targetCPUUtilizationPercentage: 80
   # targetMemoryUtilizationPercentage: 80
 
-nodeSelector: {}
+nodeSelector:
+  kubernetes.io/hostname: nrtric
 
 tolerations: []
 

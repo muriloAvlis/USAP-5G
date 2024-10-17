@@ -322,9 +322,11 @@ Kpm_monitor::Kpm_monitor()
     SPDLOG_INFO("Initializing KPM Monitor...");
     SPDLOG_INFO("Scanning for E2 nodes on the network");
     nodes = {e2_nodes_xapp_api()};
+    u_int16_t retry_timeout {5};
     while (nodes.len < 1)
     {
-        SPDLOG_WARN("No E2 nodes connected to network, retrying...");
+        SPDLOG_WARN("No E2 nodes connected to network, retrying in {:d} seconds...", retry_timeout);
+        std::this_thread::sleep_for(std::chrono::seconds(retry_timeout));
         nodes = {e2_nodes_xapp_api()};
     }
 
