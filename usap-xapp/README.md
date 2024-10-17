@@ -3,6 +3,8 @@
 ## Requirements
 
 - FlexRIC Service Models;
+- libpcre2-dev;
+- libsctp-dev;
 - gRPC;
 - Protobuf;
 - spdlog.
@@ -19,7 +21,7 @@ sudo pacman -Syu grpc protobuf spdlog
 
 ```shell
 ## spdlog
-sudo apt install -y libspdlog-dev
+sudo apt install -y libspdlog-dev libpcre2-dev libsctp-dev
 
 ## gRPC and Protocol buffers
 git clone --recurse-submodules -b v1.67.0 --depth 1 --shallow-submodules https://github.com/grpc/grpc && \
