@@ -12,8 +12,6 @@ ARG XAPP_MULTILANGUAGE=OFF
 #---------------------------------------------------------------------
 
 FROM $BASE_IMAGE AS oai-flexric-base
-ENV DEBIAN_FRONTEND=noninteractive
-ENV TZ=America/Belem
 
 #install developers pkg/repo
 RUN apt-get update && \
@@ -69,10 +67,10 @@ RUN git clone --recurse-submodules -b v1.67.0 --depth 1 --shallow-submodules htt
 #---------------------------------------------------------------------
 FROM oai-flexric-base AS oai-flexric-builder
 
-ARG FLEXRIC_VERSION
-ARG E2AP_VERSION
-ARG KPM_VERSION
-ARG XAPP_MULTILANGUAGE
+ARG FLEXRIC_VERSION \
+    E2AP_VERSION \
+    KPM_VERSION \
+    XAPP_MULTILANGUAGE
 
 WORKDIR /
 
@@ -131,12 +129,15 @@ RUN apt-get update && \
     python3 \
     python3-pip \
     tzdata \
-    libspdlog-dev && \
+    libspdlog-dev \
+    nano \
+    net-tools \
+    dnsutils && \
     apt-get autoremove -y && \
     apt-get autoclean -y
 
-ENV DEBIAN_FRONTEND=noninteractive
-ENV TZ=America/Belem
+ENV DEBIAN_FRONTEND=noninteractive \
+    TZ=America/Belem
 
 ## Copy FlexRIC Service Models
 COPY --from=oai-flexric-builder \
@@ -170,12 +171,12 @@ RUN ldconfig && \
     ldd /usr/local/bin/xapp_usap
 
 ## Config envs
-ENV LOG_LEVEL=debug
-ENV GRANULARITY_PERIOD=1000
-ENV REPORT_PERIOD=1000
+ENV LOG_LEVEL=debug \
+    GRANULARITY_PERIOD=1000 \
+    REPORT_PERIOD=1000
 
 ## Add labels
-LABEL br.ufpa.gercom.title="USAP" \
+LABEL br.ufpa.gercom.title="usap-5g" \
     br.ufpa.gercom.description="UE Smart Allocation Platform on Open 5G Networks (USAP)" \
     br.ufpa.gercom.source="https://github.com/muriloAvlis/usap-5g" \
     br.ufpa.gercom.authors="Murilo Silva" \ 
@@ -185,5 +186,9 @@ LABEL br.ufpa.gercom.title="USAP" \
 ## E42
 EXPOSE 36422/sctp
 
-CMD ["-c", "/etc/usap-xapp/xapp.conf" ]
-ENTRYPOINT [ "xapp_usap" ]
+## Copy entrypoint
+COPY scripts/xapp_entrypoint.sh /entrypoint.sh
+
+RUN chmod +x /entrypoint.sh
+
+ENTRYPOINT [ "/entrypoint.sh" ]

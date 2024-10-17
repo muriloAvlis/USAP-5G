@@ -26,6 +26,8 @@ int main(int argc, char* argv[])
 
     fr_args_t args {init_fr_args(argc, argv)};
 
+    // args.ip = {"192.168.100.44"};
+
     // Init xApp
     init_xapp_api(&args);
     std::this_thread::sleep_for(std::chrono::seconds(1));

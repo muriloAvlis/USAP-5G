@@ -136,13 +136,13 @@ void Kpm_monitor::kpm_sm_cb(sm_ag_if_rd_t const* rd)
     // Payload (message)
     kpm_ind_msg_format_3_t const* msg_format_3 {&ind->msg.frm_3};
 
-    const u_int64_t now {utils::get_current_time_in_us()};
+    u_int64_t now {utils::get_current_time_in_us()};
     static u_int64_t counter {1};
 
     {
         std::lock_guard<std::mutex> lock(mtx);
 
-
+        SPDLOG_DEBUG("now: {}, collect time: {}", now, hdr_format_1->collectStartTime);
         float latency {static_cast<float>(now - hdr_format_1->collectStartTime) / 1000}; // convert to millisecond
         kpm_ind_fmt_3_t kpm_ind_fmt_3 {}; // stores UE IDs and its metrics
 

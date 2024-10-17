@@ -1,0 +1,7 @@
+apiVersion: v2
+name: usap-xapp
+description: UE Smart Allocation Platform xApp (usap-xapp) helm chart
+type: application
+version: 0.0.1
+appVersion: "latest"
+icon: https://avatars.githubusercontent.com/t/10186206?s=116&v=4

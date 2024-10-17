@@ -31,7 +31,7 @@ ENV TZ=America/Belem
 COPY --from=builder /builder/bin/usap_sm /usr/local/bin/
 
 ## Add labels
-LABEL br.ufpa.gercom.title="USAP" \
+LABEL br.ufpa.gercom.title="usap-5g" \
     br.ufpa.gercom.description="UE Smart Allocation Platform on Open 5G Networks (USAP)" \
     br.ufpa.gercom.source="https://github.com/muriloAvlis/usap-5g" \
     br.ufpa.gercom.authors="Murilo Silva" \ 

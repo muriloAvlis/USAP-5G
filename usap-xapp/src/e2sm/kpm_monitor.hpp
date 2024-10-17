@@ -6,7 +6,6 @@
 #define KPM_MONITOR_HPP
 
 #include <queue>
-
 #include "e42_xapp_api.h"
 #include "spdlog/spdlog.h"
 #include "defer.hpp"
