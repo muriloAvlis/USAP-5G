@@ -30,8 +30,10 @@ public:
     // Start gRPC server
     void Start();
 
+    static void Stop();
+
 private:
-    std::unique_ptr<Server> server;
+    static std::unique_ptr<Server> server;
     ServerBuilder builder;
     const std::string server_address {"0.0.0.0:5051"};
     std::mutex mtx;

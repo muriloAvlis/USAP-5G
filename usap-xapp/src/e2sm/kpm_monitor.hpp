@@ -6,6 +6,7 @@
 #define KPM_MONITOR_HPP
 
 #include <queue>
+#include <csignal>
 #include "e42_xapp_api.h"
 #include "spdlog/spdlog.h"
 #include "defer.hpp"
@@ -50,13 +51,13 @@ public:
     void Start();
 
     // Stop Monitor
-    void Stop();
+    static void Stop();
 
 private:
     // Constants
     static std::mutex mtx; // Mutex to control received metrics
-    sm_ans_xapp_t *hndl; // KPM subscription handle
-    e2_node_arr_xapp_t nodes{}; // Connected E2 nodes
+    static sm_ans_xapp_t *hndl; // KPM subscription handle
+    static e2_node_arr_xapp_t nodes; // Connected E2 nodes
     const int KPM_RF_ID = 2;
     static uint32_t GRANULARITY_PERIOD; // in milliseconds
     static uint32_t REPORT_PERIOD; // in milliseconds

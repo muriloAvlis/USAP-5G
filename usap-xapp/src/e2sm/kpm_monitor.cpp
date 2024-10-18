@@ -7,6 +7,8 @@
 std::mutex Kpm_monitor::mtx; // mutex for reveive metrics
 uint32_t Kpm_monitor::REPORT_PERIOD;
 uint32_t Kpm_monitor::GRANULARITY_PERIOD;
+sm_ans_xapp_t *Kpm_monitor::hndl; // KPM subscription handle
+e2_node_arr_xapp_t Kpm_monitor::nodes; // Connected E2 nodes
 
 // Shared vars with gRPC server process
 std::queue<Kpm_monitor::kpm_ind_fmt_3_t> Kpm_monitor::kpm_ind_fmt_3_queue;
@@ -319,15 +321,15 @@ kpm_sub_data_t Kpm_monitor::gen_kpm_sub_data(kpm_ran_function_def_t const* ran_f
 
 Kpm_monitor::Kpm_monitor()
 {
-    SPDLOG_INFO("Initializing KPM Monitor...");
+    SPDLOG_INFO("Initializing KPM Monitor");
     SPDLOG_INFO("Scanning for E2 nodes on the network");
     nodes = {e2_nodes_xapp_api()};
-    u_int16_t retry_timeout {5};
-    while (nodes.len < 1)
+
+    if (nodes.len < 1)
     {
-        SPDLOG_WARN("No E2 nodes connected to network, retrying in {:d} seconds...", retry_timeout);
-        std::this_thread::sleep_for(std::chrono::seconds(retry_timeout));
-        nodes = {e2_nodes_xapp_api()};
+        SPDLOG_WARN("No E2 nodes connected to Near-RT RIC, finishing xapp");
+        std::raise(SIGTERM); // stop xApp
+        return;
     }
 
     SPDLOG_INFO("{} E2 nodes found", nodes.len);
@@ -358,7 +360,7 @@ Kpm_monitor::Kpm_monitor()
 
 void Kpm_monitor::Stop()
 {
-    SPDLOG_WARN("Stopping kpm monitor...");
+    SPDLOG_WARN("Stopping kpm monitor");
 
     for (size_t i = 0; i < nodes.len; i++) {
         // Remove the handle previously returned
@@ -376,7 +378,10 @@ void Kpm_monitor::Stop()
     }
 
     // free memory
-    free(hndl);
+    if (hndl != nullptr)
+    {
+        free(hndl);
+    }
     free_e2_node_arr_xapp(&nodes);
 }
 
@@ -399,6 +404,8 @@ void Kpm_monitor::Start()
         // if REPORT Service is supported by E2 node, send SUBSCRIPTION
         if (node->rf[kpm_idx].defn.kpm.ric_report_style_list != nullptr)
         {
+            SPDLOG_INFO("Node {} with ID {} support KPM Report Style, sending subscription...", get_ngran_name(node->id.type) , node->id.nb_id.nb_id);
+
             // Generate KPM SUBSCRIPTION message
             kpm_sub_data_t sub_data {gen_kpm_sub_data(&node->rf[kpm_idx].defn.kpm)};
 
@@ -410,11 +417,10 @@ void Kpm_monitor::Start()
         }
     }
 
-    while (utils::stop_app_flag.load() == false)
+    // Is it needed ?
+    while (!utils::stop_app_flag.load())
     {
         std::this_thread::sleep_for(std::chrono::seconds(1));
     }
-
-    Stop();
 }
 

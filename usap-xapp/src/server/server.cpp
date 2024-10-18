@@ -4,6 +4,8 @@
 
 #include "server.hpp"
 
+std::unique_ptr<Server> E2SM_KPM_ServiceImpl::server {};
+
 Status E2SM_KPM_ServiceImpl::GetIndicationStream(grpc::ServerContext* context,
                                                      const xapp::KPMIndicationRequest* request,
                                                      grpc::ServerWriter<xapp::KPMIndicationResponse>* writer)
@@ -68,6 +70,16 @@ Status E2SM_KPM_ServiceImpl::GetIndicationStream(grpc::ServerContext* context,
     return Status::OK;
 }
 
+void E2SM_KPM_ServiceImpl::Stop()
+{
+    if (server)
+    {
+        SPDLOG_WARN("Stopping server");
+        server->Shutdown();
+        server->Wait();
+    }
+}
+
 void E2SM_KPM_ServiceImpl::Start()
 {
     // Register services
@@ -83,10 +95,5 @@ void E2SM_KPM_ServiceImpl::Start()
     {
         std::this_thread::sleep_for(std::chrono::seconds(1));
     }
-
-    SPDLOG_WARN("Stopping server...");
-
-    server->Shutdown();
-    server->Wait();
 }
 

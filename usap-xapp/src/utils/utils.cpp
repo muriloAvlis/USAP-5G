@@ -4,6 +4,7 @@
 
 #include "utils.hpp"
 
+
 size_t utils::find_sm_idx(e2_node_connected_xapp_t *node, int rf_id)
 {
     for (size_t i = 0; i < node->len_rf; i++)
@@ -18,8 +19,16 @@ size_t utils::find_sm_idx(e2_node_connected_xapp_t *node, int rf_id)
 
 void utils::signal_handler(int signum)
 {
-    SPDLOG_ERROR("Received a stop signal {}, finishing xApp processes...", signum);
+    SPDLOG_ERROR("Received a stop signal {}, finishing xApp processes", signum);
     stop_app_flag.store(true);
+
+    // Stop KPM Monitor
+    Kpm_monitor::Stop();
+
+    // Stop gRPC Server
+    E2SM_KPM_ServiceImpl::Stop();
+
+    exit(0);
 }
 
 u_int64_t utils::get_current_time_in_us() {
@@ -39,7 +48,7 @@ std::string utils::ba_to_str(byte_array_t const* ba)
 void utils::config_logger()
 {
     // define default console log
-    auto console = spdlog::stdout_color_st("console");
+    auto console = spdlog::stdout_color_st("usap-xapp");
 
     const char* log_level = std::getenv("LOG_LEVEL");
 

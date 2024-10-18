@@ -12,6 +12,8 @@
 #include <spdlog/sinks/stdout_color_sinks.h>
 
 #include "e2_node_connected_xapp.h"
+#include "e2sm/kpm_monitor.hpp"
+#include "server/server.hpp"
 
 namespace utils
 {
