@@ -51,23 +51,13 @@ securityContext:
   # runAsNonRoot: true
   # runAsUser: 1000
 
-flexric:
-  containerName: flexric
-  image:
-    repository: muriloavlis/flexric
-    pullPolicy: Always
-    tag: "latest"
-  service:
-    type: ClusterIP
-    ports:
-      - name: e2
-        protocol: SCTP
-        port: 36421
-        targetPort: 36421
-      - name: e42
-        protocol: SCTP
-        port: 36422
-        targetPort: 36422
+service:
+  type: ClusterIP
+  ports:
+    - name: e42
+      protocol: SCTP
+      port: 36422
+      targetPort: 36422
 
 config:
   ric:

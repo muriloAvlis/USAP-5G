@@ -31,17 +31,6 @@ spec:
       securityContext:
         {{- toYaml .Values.podSecurityContext | nindent 8 }}
       containers:
-        ## FlexRIC
-        - name: {{ .Values.flexric.containerName }}
-          image: "{{ .Values.flexric.image.repository }}:{{ .Values.flexric.image.tag | default .Chart.AppVersion }}"
-          imagePullPolicy: {{ .Values.flexric.image.pullPolicy }}
-          ports:
-          {{- range $port := .Values.flexric.service.ports }}  
-            - name: {{ $port.name }}
-              containerPort: {{ $port.targetPort }}
-              protocol: {{ $port.protocol }}
-          {{- end }}
-
         ## USAP-xApp
         - name: {{ .Chart.Name }}
           securityContext:
@@ -49,12 +38,10 @@ spec:
           image: "{{ .Values.image.repository }}:{{ .Values.image.tag | default .Chart.AppVersion }}"
           imagePullPolicy: {{ .Values.image.pullPolicy }}
           ports:
-          {{- range $port := .Values.flexric.service.ports }}
-          {{- if eq $port.name "e42" }}
+          {{- range $port := .Values.service.ports }}
             - name: {{ $port.name }}
               containerPort: {{ $port.targetPort }}
               protocol: {{ $port.protocol }}
-          {{- end }}
           {{- end }}
           livenessProbe:
             {{- toYaml .Values.livenessProbe | nindent 12 }}

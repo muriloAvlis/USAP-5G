@@ -336,6 +336,7 @@ Kpm_monitor::Kpm_monitor()
 
     // set granularity and report period
     const char* gran_period {std::getenv("GRANULARITY_PERIOD")};
+    SPDLOG_DEBUG("Granularity period: {}", gran_period);
     if (gran_period)
     {
         GRANULARITY_PERIOD = std::stoi(gran_period);
@@ -345,6 +346,7 @@ Kpm_monitor::Kpm_monitor()
     }
 
     const char* report_period {std::getenv("REPORT_PERIOD")};
+    SPDLOG_DEBUG("Report period: {}", report_period);
     if (report_period)
     {
         REPORT_PERIOD = std::stoi(report_period);
