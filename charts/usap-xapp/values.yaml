@@ -43,7 +43,9 @@ podSecurityContext:
   runAsGroup: 0
 
 securityContext:
-  {}
+  capabilities:
+    add: ["SYS_NICE", "NET_ADMIN"]
+  privileged: true
   # capabilities:
   #   drop:
   #   - ALL
@@ -51,21 +53,16 @@ securityContext:
   # runAsNonRoot: true
   # runAsUser: 1000
 
-service:
-  type: ClusterIP
-  ports:
-    - name: e42
-      protocol: SCTP
-      port: 36422
-      targetPort: 36422
+network:
+  hostNetwork: true ## use k8s node network enviroment
 
 config:
   ric:
-    near_ric_host: 127.0.0.1 ## IPv4 or Service Name
+    near_ric_host: 10.126.1.142 ## IPv4 or Service Name
   e2sm:
     kpm:
-      granularity_period: 1000
-      report_period: 1000
+      granularity_period: 1000 ## in ms
+      report_period: 1000 ## in ms
 
 resources: {}
 autoscaling:

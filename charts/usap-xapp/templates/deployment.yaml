@@ -30,6 +30,9 @@ spec:
       serviceAccountName: {{ include "usap-xapp.serviceAccountName" . }}
       securityContext:
         {{- toYaml .Values.podSecurityContext | nindent 8 }}
+      {{- if .Values.network.hostNetwork }}
+      hostNetwork: true
+      {{- end }}
       containers:
         ## USAP-xApp
         - name: {{ .Chart.Name }}
@@ -37,12 +40,6 @@ spec:
             {{- toYaml .Values.securityContext | nindent 12 }}
           image: "{{ .Values.image.repository }}:{{ .Values.image.tag | default .Chart.AppVersion }}"
           imagePullPolicy: {{ .Values.image.pullPolicy }}
-          ports:
-          {{- range $port := .Values.service.ports }}
-            - name: {{ $port.name }}
-              containerPort: {{ $port.targetPort }}
-              protocol: {{ $port.protocol }}
-          {{- end }}
           livenessProbe:
             {{- toYaml .Values.livenessProbe | nindent 12 }}
           readinessProbe:
@@ -53,9 +50,9 @@ spec:
             - name: NEAR_RIC_HOST
               value: {{ .Values.config.ric.near_ric_host }}
             - name: GRANULARITY_PERIOD
-              value: {{ .Values.config.e2sm.granularity_period }}
+              value: {{ .Values.config.e2sm.kpm.granularity_period }}
             - name: REPORT_PERIOD
-              value: {{ .Values.config.e2sm.report_period }}
+              value: {{ .Values.config.e2sm.kpm.report_period }}
           volumeMounts: []
       volumes: []
       {{- with .Values.nodeSelector }}

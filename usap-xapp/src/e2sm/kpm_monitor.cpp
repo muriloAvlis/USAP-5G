@@ -334,25 +334,44 @@ Kpm_monitor::Kpm_monitor()
 
     SPDLOG_INFO("{} E2 nodes found", nodes.len);
 
-    // set granularity and report period
+    // set granularity
     const char* gran_period {std::getenv("GRANULARITY_PERIOD")};
-    SPDLOG_DEBUG("Granularity period: {}", gran_period);
-    if (gran_period)
+    if (gran_period && std::strlen(gran_period) > 0)
     {
-        GRANULARITY_PERIOD = std::stoi(gran_period);
-    } else
-    {
-        GRANULARITY_PERIOD = 1000; // default
+        try
+        {
+            SPDLOG_INFO("Found granularity period in environment, setting to {} ms", gran_period);
+            GRANULARITY_PERIOD = std::stoi(gran_period);
+        }
+        catch (const std::invalid_argument& e)
+        {
+            SPDLOG_ERROR("Invalid argument: '{}' cannot be converted to an integer, setting GRANULARITY_PERIOD to default value", gran_period);
+            GRANULARITY_PERIOD = 1000; // default value
+        } catch (const std::out_of_range& e)
+        {
+            SPDLOG_ERROR("Out of range: '{}' is too large to be converted to an integer, setting GRANULARITY_PERIOD to default value", gran_period);
+            GRANULARITY_PERIOD = 1000; // default value
+        }
     }
 
+    // set report period
     const char* report_period {std::getenv("REPORT_PERIOD")};
-    SPDLOG_DEBUG("Report period: {}", report_period);
-    if (report_period)
+    if (report_period && std::strlen(report_period) > 0)
     {
-        REPORT_PERIOD = std::stoi(report_period);
-    } else
-    {
-        REPORT_PERIOD = 1000; // default
+        try
+        {
+            SPDLOG_INFO("Found granularity period in environment, setting to {} ms", report_period);
+            REPORT_PERIOD = std::stoi(report_period);
+        }
+        catch (const std::invalid_argument& e)
+        {
+            SPDLOG_ERROR("Invalid argument: '{}' cannot be converted to an integer, setting REPORT_PERIOD to default value", report_period);
+            REPORT_PERIOD = 1000; // default value
+        } catch (const std::out_of_range& e)
+        {
+            SPDLOG_ERROR("Out of range: '{}' is too large to be converted to an integer, setting REPORT_PERIOD to default value", report_period);
+            REPORT_PERIOD = 1000; // default value
+        }
     }
 
     // create handle
