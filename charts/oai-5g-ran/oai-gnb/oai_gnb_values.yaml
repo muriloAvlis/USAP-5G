@@ -4,7 +4,7 @@ kubernetesType: Vanilla #Vanilla for community kubernetes distribution else Open
 ## To know more about them follow this tutorial https://gitlab.eurecom.fr/oai/cn5g/oai-cn5g-fed/-/tree/master/openshift
 nfimage: # image name either locally present or in a public/private repository
   repository: muriloavlis/oai-gnb
-  version: fhi72_develop # image tag or develop
+  version: uhd_develop # image tag or develop
   # pullPolicy: IfNotPresent or Never or Always
   pullPolicy: Always
 
@@ -79,13 +79,13 @@ config:
   tac: "1" # check the information with AMF
   snssaiList:
     - sst: "1" # eMBB
-      sd: "000001"
+      sd: "0xFFFFFF"
     - sst: "2" # URLLC
-      sd: "000001"
+      sd: "0xFFFFFF"
     - sst: "3" # MIoT
-      sd: "000001"
+      sd: "0xFFFFFF"
     - sst: "128" # default
-      sd: "000001"
+      sd: "0xFFFFFF"
   usrp: rfsim #allowed values rfsim, b2xx, n3xx or x3xx
   amfhost: "oai-amf.oai5gcn" # amf ip-address or service-name oai-amf-svc or 172.21.6.94
   n2IfName: "eth0" # if multus.n2Interface.create is true then use n2
@@ -93,7 +93,6 @@ config:
   e2_agent:
     enabled: true
     ric_host: "flexric.flexric" # RIC ip-address or service-name
-    port: 36421
 
 ## Debugging section
 start:

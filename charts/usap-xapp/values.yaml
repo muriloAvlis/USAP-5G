@@ -59,6 +59,8 @@ network:
 config:
   ric:
     near_ric_host: 10.126.1.142 ## IPv4 or Service Name
+  log:
+    level: debug
   e2sm:
     kpm:
       granularity_period: 1000 ## in ms

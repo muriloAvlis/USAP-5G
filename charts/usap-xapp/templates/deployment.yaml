@@ -48,11 +48,13 @@ spec:
             {{- toYaml .Values.resources | nindent 12 }}
           env:
             - name: NEAR_RIC_HOST
-              value: {{ .Values.config.ric.near_ric_host }}
+              value: {{ .Values.config.ric.near_ric_host | quote }}
             - name: GRANULARITY_PERIOD
-              value: {{ .Values.config.e2sm.kpm.granularity_period }}
+              value: {{ .Values.config.e2sm.kpm.granularity_period | quote }}
             - name: REPORT_PERIOD
-              value: {{ .Values.config.e2sm.kpm.report_period }}
+              value: {{ .Values.config.e2sm.kpm.report_period | quote }}
+            - name: LOG_LEVEL
+              value: {{ .Values.config.log.level | quote }}
           volumeMounts: []
       volumes: []
       {{- with .Values.nodeSelector }}

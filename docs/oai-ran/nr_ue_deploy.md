@@ -20,9 +20,7 @@ git checkout develop
 Copy the custom files in the configs folder to the chart directory and install them.
 
 ```sh 
-cd ~/git/oai-cn5g-fed/charts/oai-5g-ran/oai-nr-ue
-cp ~/git/usap-5g/configs/oai-ran/oai_nr_ue_values.yaml .
-cp ~/git/usap-5g/configs/oai-ran/oai_nr_ue_configmap.yaml ./templates/configmap.yaml
+cd ~/git/usap-5g/charts/oai-5g-ran/oai-nr-ue
 helm dependency update
 helm upgrade --install -n oairan --create-namespace oai-ue . -f oai_nr_ue_values.yaml
 ```

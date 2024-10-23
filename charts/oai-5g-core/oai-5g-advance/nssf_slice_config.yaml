@@ -6,25 +6,25 @@ configuration:
   nsiInfoList:
     - snssai:
         sst: 1
-        sd: "000001"
+        sd: "FFFFFF"
       nsiInformationList:
         nrfId: http://oai-nrf:80/nnrf-disc/v1/nf-instances
         nsiId: "1"
     - snssai:
         sst: 2
-        sd: "000001"
+        sd: "FFFFFF"
       nsiInformationList:
         nrfId: http://oai-nrf:80/nnrf-disc/v1/nf-instances
         nsiId: "2"
     - snssai:
         sst: 3
-        sd: "000001"
+        sd: "FFFFFF"
       nsiInformationList:
         nrfId: http://oai-nrf:80/nnrf-disc/v1/nf-instances
         nsiId: "3"
     - snssai:
         sst: 128
-        sd: "000001"
+        sd: "FFFFFF"
       nsiInformationList:
         nrfId: http://oai-nrf:80/nnrf-disc/v1/nf-instances
         nsiId: "4"
@@ -36,13 +36,13 @@ configuration:
         tac: "00001"
       supportedSnssaiList:
         - sst: 1
-          sd: "000001"
+          sd: "FFFFFF"
         - sst: 2
-          sd: "000001"
+          sd: "FFFFFF"
         - sst: 3
-          sd: "000001"
+          sd: "FFFFFF"
         - sst: 128
-          sd: "000001"
+          sd: "FFFFFF"
   amfInfoList:
     - targetAmfSet: 724-70-01-001
       nrfAmfSet: http://oai-nrf:80/nnrf-disc/v1/nf-instances'
@@ -57,13 +57,13 @@ configuration:
               tac: 00001
             supportedSnssaiList:
               - sst: 1
-                sd: "000001"
+                sd: "FFFFFF"
               - sst: 2
-                sd: "000001"
+                sd: "FFFFFF"
               - sst: 3
-                sd: "000001"
+                sd: "FFFFFF"
               - sst: 128
-                sd: "000001"
+                sd: "FFFFFF"
   plmnInfoList:
     - operatorName: yoshisauro
       homePlmnId:

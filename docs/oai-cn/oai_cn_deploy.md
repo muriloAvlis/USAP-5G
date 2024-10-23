@@ -22,8 +22,7 @@ git checkout develop
 Copy the custom files in the configs folder to the chart directory and install them.
 
 ```sh 
-cd ~/git/oai-cn5g-fed/charts/oai-5g-core/oai-5g-advance
-cp ~/git/usap-5g/configs/oai-cn/* .
+cd ~/git/usap-5g/charts/oai-5g-core/oai-5g-advance
 helm dependency update
 helm upgrade --install -n oai5gcn --create-namespace oai-5gcn . -f values.yaml
 ```

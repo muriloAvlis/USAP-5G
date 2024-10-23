@@ -2,28 +2,17 @@
 
 ## Requirements
 
+- Ubuntu (22.04 or 24.04);
 - FlexRIC Service Models;
-- libpcre2-dev;
-- libsctp-dev;
 - gRPC;
 - Protobuf;
 - spdlog.
 
 ## Install Prerequisites
 
-### On the Arch linux
+### gRPC and Protobuf
 
 ```shell
-sudo pacman -Syu grpc protobuf spdlog lksctp-tools pcre2
-```
-
-### On the Ubuntu
-
-```shell
-## spdlog
-sudo apt install -y libspdlog-dev libpcre2-dev libsctp-dev
-
-## gRPC and Protocol buffers
 git clone --recurse-submodules -b v1.67.0 --depth 1 --shallow-submodules https://github.com/grpc/grpc && \
     cd grpc && \
     mkdir -p cmake/build && \
@@ -31,7 +20,13 @@ git clone --recurse-submodules -b v1.67.0 --depth 1 --shallow-submodules https:/
     cmake -DgRPC_INSTALL=ON \
     -DgRPC_BUILD_TESTS=OFF ../.. && \
     make -j $(nproc) && \
-    make install
+    sudo make install
+```
+
+### Ubuntu packages
+
+```shell
+sudo apt install -y libsctp-dev cmake-curses-gui libpcre2-dev libspdlog-dev python3-dev
 ```
 
 ## Building from source code

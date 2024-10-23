@@ -25,23 +25,14 @@ docker image build -t muriloavlis/usap:latest -f docker/Dockerfile.usap .
 
 ### Network Slicing Configuration
 
-#### NFs
-
-|                    | **SST** | **SD** |
-|--------------------|---------|--------|
-| **SMF/UPF-eMBB**     | 1       | 0x1  | 
-| **SMF/UPF-URLLC**    | 2       | 0x1  |
-| **SMF/UPF-mIoT**     | 3       | 0x1  |
-| **SMF/UPF-default**  | 4       | 0x1  |
-
-#### Service Types 
+#### 5GC Slice Types
 
 |                    | **SST** | **SD** | **DNN** | **Subnet**  | **MCC** | **MNC** |
 |--------------------|---------|--------|---------|-------------|---------|---------|
-| **embb_slice**     | 1       | 000001 | internet  | 10.45.0.0/24 |   724   |   70    |
-| **urllc_slice**    | 2       | 000001 | internet  | 10.45.1.0/24 |   724   |   70    |
-| **miot_slice**     | 3       | 000001 | internet  | 10.45.2.0/24 |   724   |   70    |
-| **default_slice**  | 4       | 000001 | internet  | 10.45.3.0/24 |   724   |   70    |
+| **embb_slice**     | 1       | FFFFFF | embb  | 10.45.0.0/24 |   724   |   70    |
+| **urllc_slice**    | 2       | FFFFFF | urllc  | 10.45.1.0/24 |   724   |   70    |
+| **miot_slice**     | 3       | FFFFFF | miot  | 10.45.2.0/24 |   724   |   70    |
+| **default_slice**  | 128     | FFFFFF | default  | 10.45.3.0/24 |   724   |   70    |
 
 ### Proposal topology
 

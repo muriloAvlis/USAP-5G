@@ -4,7 +4,7 @@ kubernetesType: Vanilla #Vanilla for community kubernetes distribution else Open
 ## To know more about them follow this tutorial https://gitlab.eurecom.fr/oai/cn5g/oai-cn5g-fed/-/tree/master/openshift
 nfimage:
   repository: docker.io/oaisoftwarealliance/oai-nr-ue # dockehub oaisoftwarealliance/oai-nr-ue
-  version: 2024.w36 # image tag or develop
+  version: 2024.w41 # image tag or develop
   # pullPolicy: IfNotPresent or Never or Always
   pullPolicy: IfNotPresent
 
@@ -36,9 +36,9 @@ config:
   fullImsi: "724700000000001" # make sure all the below entries are present in the subscriber database
   fullKey: "fec86ba6eb707ed08905757b1bb44b8f"
   opc: "C42449363BBAD02B66D16BC975D77CC1"
-  dnn: "internet"
+  dnn: "default"
   sst: "128" # configure according to gnb and amf, smf and upf
-  sd: "000001"
+  sd: "0xFFFFFF"
   usrp: "rfsim" # allowed rfsim, b2xx, n3xx, x3xx
   useAdditionalOptions: "--sa --rfsim -r 106 --numerology 1 --band 78 -C 3619200000 --log_config.global_log_options level,nocolor,time"
 

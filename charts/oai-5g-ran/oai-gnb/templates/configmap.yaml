@@ -268,10 +268,10 @@ data:
         f1ap_log_level                         ="debug";
       };
 
+    {{- if .Values.config.e2_agent.enabled }}
     e2_agent = {
-      enable = {{ .Values.config.e2_agent.enabled }};
       near_ric_ip_addr = "@RIC_IP_ADDRESS@";
-      port = {{ .Values.config.e2_agent.port | int }};
       sm_dir = "/usr/local/lib/flexric/";
     };
+    {{- end}}
 

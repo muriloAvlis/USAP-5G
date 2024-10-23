@@ -15,16 +15,16 @@ http_version: 2
 snssais:
   - &embb_slice
     sst: 1
-    sd: 000001 # in hex
+    sd: FFFFFF # in hex
   - &urllc_slice
     sst: 2
-    sd: 000001 # in hex
+    sd: FFFFFF # in hex
   - &miot_slice
     sst: 3
-    sd: 000001 # in hex
+    sd: FFFFFF # in hex
   - &default_slice
     sst: 128
-    sd: 000001 # in hex
+    sd: FFFFFF # in hex
 
 ############## SBI Interfaces
 ### Each NF takes its local SBI interfaces and remote interfaces from here, unless it gets them using NRF discovery mechanisms

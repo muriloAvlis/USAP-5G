@@ -66,7 +66,8 @@ private:
     static kpm_sub_data_t gen_kpm_sub_data(kpm_ran_function_def_t const* ran_func);
 
     static kpm_act_def_t get_kpm_act_def(ric_report_style_item_t *report_style_item);
-    static test_info_lst_t gen_test_info_lst();
+    static test_info_lst_t gen_snssai_test_info_lst(u_int8_t sst);
+    static test_info_lst_t gen_ul_rsrp_test_info_lst(int64_t testValue);
 
     // Action Definitions
     static kpm_act_def_format_1_t gen_act_def_fmt_1(ric_report_style_item_t const* report_style_item);
