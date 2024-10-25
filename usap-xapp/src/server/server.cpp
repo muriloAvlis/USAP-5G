@@ -6,6 +6,24 @@
 
 std::unique_ptr<Server> E2SM_KPM_ServiceImpl::server {};
 
+E2SM_KPM_ServiceImpl::E2SM_KPM_ServiceImpl()
+{
+    // Check server IP and Port
+    const char* server_ip {std::getenv("SERVER_IP")};
+    const char* server_port {std::getenv("SERVER_PORT")};
+
+    if ((server_ip != nullptr && std::strlen(server_ip) > 0) && (server_port != nullptr && std::strlen(server_port) > 0))
+    {
+        server_address = std::string(server_ip) + ':' + std::string(server_port);
+        // SPDLOG_INFO("gRPC server address set to {}", server_address);
+    } else
+    {
+        SPDLOG_ERROR("Server IP and port cannot be empty!");
+        std::raise(SIGINT); // exit xapp
+    }
+}
+
+
 Status E2SM_KPM_ServiceImpl::GetIndicationStream(grpc::ServerContext* context,
                                                      const xapp::KPMIndicationRequest* request,
                                                      grpc::ServerWriter<xapp::KPMIndicationResponse>* writer)
@@ -89,7 +107,7 @@ void E2SM_KPM_ServiceImpl::Start()
 
     // Start server
     server = {builder.BuildAndStart()};
-    SPDLOG_INFO("Server listening on *:{}", server_address.substr(server_address.find(':') + 1));
+    SPDLOG_INFO("Server listening on {}", server_address);
 
     while (!utils::stop_app_flag.load())
     {

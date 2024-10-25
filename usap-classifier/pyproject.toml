@@ -13,6 +13,11 @@ grpcio-tools = "^1.65.5"
 grpc-interceptor = "^0.15.4"
 grpcio-reflection = "^1.66.0"
 colorama = "^0.4.6"
+pandas = "^2.2.3"
+autopep8 = "^2.3.1"
+scikit-learn = "^1.5.2"
+tensorflow = "^2.18.0"
+keras = "^3.6.0"
 
 [tool.poetry.scripts]
 app = "app.app:run"

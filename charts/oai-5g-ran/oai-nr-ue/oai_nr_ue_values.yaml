@@ -30,6 +30,9 @@ multus:
   defaultGateway: "172.21.7.254"
   hostInterface: "bond0"
 
+nameOverride: ""
+fullnameOverride: ""
+
 config:
   timeZone: "America/Belem"
   rfSimServer: "oai-ran.oairan" # ip-address of rfsim or service name oai-gnb or oai-du

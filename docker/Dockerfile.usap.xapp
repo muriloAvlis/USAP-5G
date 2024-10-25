@@ -132,7 +132,8 @@ RUN apt-get update && \
     libspdlog-dev \
     nano \
     net-tools \
-    dnsutils && \
+    dnsutils \
+    iproute2 && \
     apt-get autoremove -y && \
     apt-get autoclean -y
 
@@ -170,10 +171,12 @@ RUN ldconfig && \
     echo "--- Check shared objects dependencies for executable xapp_usap ---" && \
     ldd /usr/local/bin/xapp_usap
 
-## Config envs
+## Default envs
 ENV LOG_LEVEL=debug \
     GRANULARITY_PERIOD=1000 \
-    REPORT_PERIOD=1000
+    REPORT_PERIOD=1000 \
+    SERVER_IP=127.0.0.1 \
+    SERVER_PORT=5051
 
 ## Add labels
 LABEL br.ufpa.gercom.title="usap-5g" \

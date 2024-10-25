@@ -49,6 +49,10 @@ spec:
           env:
             - name: NEAR_RIC_HOST
               value: {{ .Values.config.ric.near_ric_host | quote }}
+            - name: SERVER_BIND_INTERFACE
+              value: {{ .Values.config.server.bind_interface | quote }}
+            - name: SERVER_PORT
+              value: {{ .Values.config.server.port | quote }}
             - name: GRANULARITY_PERIOD
               value: {{ .Values.config.e2sm.kpm.granularity_period | quote }}
             - name: REPORT_PERIOD

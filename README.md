@@ -5,23 +5,17 @@ The UE Smart Allocation Platform on Open 5G Networks (USAP) is a project to mana
 ## Modules
 
 - 5GC Slice Manager (muriloavlis/usap-sm) - Ok
-- KPM Monitor (muriloavlis/usap-xapp) - in development
-- UE's slice classifier (muriloavlis/usap-ai) - TODO
+- KPM Monitor (muriloavlis/usap-xapp) - Ok
+- UE's slice classifier (muriloavlis/usap-ai) - In development
 
 ## Getting Started
 
 ### Requirements
 
-- Kubernetes Cluster (tutorial on [K8s Installation Using Kubeadm](https://github.com/muriloAvlis/k8s-utils/blob/main/docs/cluster_deploy/kubeadm/install.md))
-- OAI-5G Core
-- FlexRIC
-- OAI-5G RAN
-
-### Build Docker Image
-
-```sh
-docker image build -t muriloavlis/usap:latest -f docker/Dockerfile.usap .
-```
+- Kubernetes Cluster (tutorial in [K8s Installation Using Kubeadm](https://github.com/muriloAvlis/k8s-utils/blob/main/docs/cluster_deploy/kubeadm/install.md));
+- OAI-5G Core (tutorial in [OAI-CN deploy](/docs/oai-cn/oai_cn_deploy.md));
+- FlexRIC (tutorial in [FlexRIC deploy](https://github.com/muriloAvlis/flexric));
+- OAI-5G RAN (tutorial in [OAI-RAN deploy](/docs/oai-ran/gnb_deploy.md));
 
 ### Network Slicing Configuration
 

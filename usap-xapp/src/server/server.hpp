@@ -25,6 +25,7 @@ using xapp::MeasInfo;
 class E2SM_KPM_ServiceImpl : public E2SM_KPM_Service::Service
 {
 public:
+    E2SM_KPM_ServiceImpl();
     Status GetIndicationStream(grpc::ServerContext* context, const xapp::KPMIndicationRequest* request, grpc::ServerWriter<xapp::KPMIndicationResponse>* writer) override;
 
     // Start gRPC server
@@ -35,7 +36,7 @@ public:
 private:
     static std::unique_ptr<Server> server;
     ServerBuilder builder;
-    const std::string server_address {"0.0.0.0:5051"};
+    std::string server_address {};
     std::mutex mtx;
 };
 

@@ -1,0 +1,15 @@
+apiVersion: v1
+kind: Service
+metadata:
+  name: {{ include "usap-xapp.fullname" . }}-server
+  labels:
+    {{- include "usap-xapp.labels" . | nindent 4 }}
+spec:
+  type: ClusterIP
+  ports:
+    - port: {{ .Values.config.server.port }}
+      targetPort: {{ .Values.config.server.port }}
+      protocol: TCP
+      name: server
+  selector:
+    {{- include "usap-xapp.selectorLabels" . | nindent 4 }}

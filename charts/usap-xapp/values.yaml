@@ -59,6 +59,9 @@ network:
 config:
   ric:
     near_ric_host: 10.126.1.142 ## IPv4 or Service Name
+  server:
+    bind_interface: enp1s0
+    port: 5051
   log:
     level: debug
   e2sm:

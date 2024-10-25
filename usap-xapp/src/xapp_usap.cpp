@@ -33,15 +33,17 @@ int main(int argc, char* argv[])
     init_xapp_api(&args);
     std::this_thread::sleep_for(std::chrono::seconds(1));
 
-    // Init KPM monitor
+    // Prepare xApp Processes
     auto kpimon {Kpm_monitor()};
+    auto server {E2SM_KPM_ServiceImpl()};
+
+    // Start KPM Monitor
     std::thread kpimon_thread([&kpimon]()
     {
         kpimon.Start();
     });
 
-    // Init gRPC Server
-    auto server {E2SM_KPM_ServiceImpl()};
+    // Start gRPC Server
     std::thread server_thread([&server]()
     {
         server.Start();

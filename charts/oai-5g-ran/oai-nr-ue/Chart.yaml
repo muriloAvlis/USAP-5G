@@ -54,5 +54,5 @@ sources:
   - https://gitlab.eurecom.fr/oai/openairinterface5g
 
 maintainers:
-  - name:  OPENAIRINTERFACE
+  - name: OPENAIRINTERFACE
     email: contact@openairinterface.org

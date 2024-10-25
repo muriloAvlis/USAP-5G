@@ -122,7 +122,9 @@ spec:
         name: configuration
       dnsPolicy: ClusterFirst
       restartPolicy: Always
+      {{- if .Values.serviceAccount.create }}
       serviceAccountName: {{ .Values.serviceAccount.name }}
+      {{- end }}
       terminationGracePeriodSeconds: {{ .Values.terminationGracePeriodSeconds }}
       {{- if .Values.nodeSelector}}
       nodeSelector: 

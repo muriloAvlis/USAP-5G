@@ -347,7 +347,7 @@ kpm_sub_data_t Kpm_monitor::gen_kpm_sub_data(kpm_ran_function_def_t const* ran_f
     assert(ran_func->ric_event_trigger_style_list[0].format_type == FORMAT_1_RIC_EVENT_TRIGGER);
     // only 1 is supported on O-RAN specs
     sub_data.ev_trg_def.type = FORMAT_1_RIC_EVENT_TRIGGER;
-    sub_data.ev_trg_def.kpm_ric_event_trigger_format_1.report_period_ms = GRANULARITY_PERIOD;
+    sub_data.ev_trg_def.kpm_ric_event_trigger_format_1.report_period_ms = REPORT_PERIOD;
 
     // Generate Action Definition
     sub_data.sz_ad = 1;
@@ -383,22 +383,26 @@ Kpm_monitor::Kpm_monitor()
     {
         try
         {
-            SPDLOG_INFO("Found granularity period in environment, setting to {} ms", gran_period);
+            SPDLOG_INFO("Granularity period set to {} ms", gran_period);
             GRANULARITY_PERIOD = std::stoi(gran_period);
         }
         catch (const std::invalid_argument& e)
         {
             SPDLOG_ERROR(
-                "Invalid argument: '{}' cannot be converted to an integer, setting GRANULARITY_PERIOD to default value",
+                "Invalid argument: '{}' cannot be converted to an integer!",
                 gran_period);
-            GRANULARITY_PERIOD = 1000; // default value
+                std::raise(SIGINT);
         } catch (const std::out_of_range& e)
         {
             SPDLOG_ERROR(
-                "Out of range: '{}' is too large to be converted to an integer, setting GRANULARITY_PERIOD to default value",
+                "Out of range: '{}' is too large to be converted to an integer!",
                 gran_period);
-            GRANULARITY_PERIOD = 1000; // default value
+            std::raise(SIGINT);
         }
+    } else
+    {
+        SPDLOG_ERROR("Granularity period cannot be empty!");
+        std::raise(SIGINT);
     }
 
     // set report period
@@ -407,7 +411,7 @@ Kpm_monitor::Kpm_monitor()
     {
         try
         {
-            SPDLOG_INFO("Found report period in environment, setting to {} ms", report_period);
+            SPDLOG_INFO("Report period set to {} ms", report_period);
             REPORT_PERIOD = std::stoi(report_period);
         }
         catch (const std::invalid_argument& e)
