@@ -16,7 +16,8 @@ from tensorflow.keras.callbacks import EarlyStopping
 
 class Model(object):
     def __init__(self):
-        file_path = Path(__file__).resolve().parent.parent / \
+        self.local_path = Path(__file__).resolve().parent
+        file_path = self.local_path.parent / \
             'data/oran-dataset-slice-traffic.csv'
         self.df = pd.read_csv(file_path)
 
@@ -56,7 +57,7 @@ class Model(object):
         # Normalization data
         X_scaled = self.scaler.fit_transform(X)
         self.y = self.df["slice_target"].values
-        joblib.dump(self.scaler, Path(__file__).resolve().parent /
+        joblib.dump(self.scaler, self.local_path /
                     "compiled/scaler.pkl")  # save scaler
 
         # Encode Y
@@ -127,7 +128,7 @@ class Model(object):
 
     def export_dnn_model(self):
         if self.model != None:
-            self.model.save("dnn_model")
+            self.model.save(self.local_path / "compiled/dnn_model.keras")
 
 
 if __name__ == "__main__":
