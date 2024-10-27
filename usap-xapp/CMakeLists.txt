@@ -14,7 +14,6 @@ set(XAPP_MULTILANGUAGE OFF CACHE BOOL "xApp multilanguage support")
 ## For pb
 set(ABSL_PROPAGATE_CXX_STD ON)
 
-
 ## Definitions
 add_compile_definitions(SPDLOG_ACTIVE_LEVEL)
 

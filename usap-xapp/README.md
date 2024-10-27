@@ -10,6 +10,12 @@
 
 ## Install Prerequisites
 
+### Ubuntu packages
+
+```shell
+sudo apt install -y libsctp-dev cmake-curses-gui libpcre2-dev libspdlog-dev python3-dev
+```
+
 ### gRPC and Protobuf
 
 ```shell
@@ -23,10 +29,12 @@ git clone --recurse-submodules -b v1.67.0 --depth 1 --shallow-submodules https:/
     sudo make install
 ```
 
-### Ubuntu packages
+### FlexRIC SMs
+
+TODO:
 
 ```shell
-sudo apt install -y libsctp-dev cmake-curses-gui libpcre2-dev libspdlog-dev python3-dev
+
 ```
 
 ## Building from source code
@@ -35,4 +43,10 @@ sudo apt install -y libsctp-dev cmake-curses-gui libpcre2-dev libspdlog-dev pyth
 mkdir -p build && cd build
 cmake -GNinja -DCMAKE_BUILD_TYPE=Release  ..
 ninja xapp_usap
+```
+
+## Running xapp
+
+```shell
+./xapp_usap -c ../config/xapp.conf
 ```

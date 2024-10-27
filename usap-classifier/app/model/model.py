@@ -42,7 +42,6 @@ class Model(object):
         # Rename columns
         self.df.rename(
             columns={
-                "Timestamp": "timestamp",
                 "tx_brate downlink (kbps)": "tx_brate_downlink_kbps",
                 "tx_pkts downlink": "tx_pkts_downlink",
                 "rx_brate uplink (kbps)": "rx_brate_uplink_kbps",
@@ -78,20 +77,22 @@ class Model(object):
         # Build model
         self.model = Sequential([
             Input(shape=(self.X_train.shape[1],)),  # input with 4 neurons
-            Dense(1024, activation="relu"),
+            Dense(5120, activation="relu"),
+            Dropout(0.4),
+            Dense(5120, activation="relu"),
+            Dropout(0.4),
+            Dense(5120, activation="relu"),
+            Dropout(0.4),
+            Dense(2560, activation="relu"),
             Dropout(0.3),
-            Dense(512, activation="relu"),
-            Dense(256, activation="relu"),
-            Dropout(0.3),
-            Dense(128, activation="relu"),
-            Dense(64, activation="relu"),
+            Dense(1280, activation="relu"),
             Dense(4, activation="softmax")
         ])
 
         # model parameters
-        learning_rate = 0.00001
-        batch_size = 16
-        epochs = 200
+        learning_rate = 0.001
+        batch_size = 32
+        epochs = 100
         opt = Adam(learning_rate=learning_rate)  # optimizer
 
         # Compile model
