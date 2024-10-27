@@ -130,10 +130,11 @@ class Model(object):
     def export_dnn_model(self):
         if self.model != None:
             self.model.save(self.local_path / "compiled/dnn_model.keras")
+            print("DNN model exported in ./compiled/dnn_model.keras path")
 
 
 if __name__ == "__main__":
     model = Model()
     model.train_dnn_model()
     model.export_dnn_model()
-    # model.evaluate_model()
+    model.evaluate_model()
