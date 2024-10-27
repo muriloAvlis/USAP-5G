@@ -4,11 +4,11 @@ import joblib
 
 from pathlib import Path
 from sklearn import metrics
-from sklearn.preprocessing import MinMaxScaler, scale, LabelEncoder
+from sklearn.preprocessing import MinMaxScaler, LabelEncoder
 from sklearn.utils.class_weight import compute_class_weight
 from sklearn.model_selection import train_test_split
 from sklearn.metrics import classification_report, confusion_matrix, accuracy_score
-from tensorflow.keras.models import Sequential
+from tensorflow.keras.models import Sequential, load_model
 from tensorflow.keras.layers import Dense, Input, Dropout
 from tensorflow.keras.optimizers import Adam
 from tensorflow.keras.callbacks import EarlyStopping
@@ -57,10 +57,11 @@ class Model(object):
         X_scaled = self.scaler.fit_transform(X)
         self.y = self.df["slice_target"].values
         joblib.dump(self.scaler, self.local_path /
-                    "compiled/scaler.pkl")  # save scaler
+                    "compiled/scaler.pkl")  # export scaler
 
         # Encode Y
         self.y = self.label_encoder.fit_transform(self.y)
+        # export encoder
         joblib.dump(self.label_encoder, Path(
             __file__).resolve().parent / "compiled/label_encoder.pkl")
 
@@ -77,15 +78,15 @@ class Model(object):
         # Build model
         self.model = Sequential([
             Input(shape=(self.X_train.shape[1],)),  # input with 4 neurons
-            Dense(5120, activation="relu"),
-            Dropout(0.4),
-            Dense(5120, activation="relu"),
-            Dropout(0.4),
-            Dense(5120, activation="relu"),
-            Dropout(0.4),
-            Dense(2560, activation="relu"),
+            Dense(512, activation="relu"),
+            Dropout(0.3),  # reduces overfitting by deactivating 30% of neurons
+            Dense(512, activation="relu"),
             Dropout(0.3),
-            Dense(1280, activation="relu"),
+            Dense(256, activation="relu"),
+            Dropout(0.3),
+            Dense(128, activation="relu"),
+            Dropout(0.2),
+            Dense(64, activation="relu"),
             Dense(4, activation="softmax")
         ])
 
@@ -129,10 +130,18 @@ class Model(object):
 
     def export_dnn_model(self):
         if self.model != None:
-            self.model.save(self.local_path / "compiled/dnn_model.keras")
+            self.model.save(self.local_path /
+                            "compiled/dnn_model.keras", overwrite=True)
             print("DNN model exported in ./compiled/dnn_model.keras path")
 
 
+def load_dnn_model():  # funcion called in running environment
+    local_path = Path(__file__).resolve().parent
+    model = load_model(local_path / "compiled/dnn_model.keras")
+    return model
+
+
+# Training process
 if __name__ == "__main__":
     model = Model()
     model.train_dnn_model()

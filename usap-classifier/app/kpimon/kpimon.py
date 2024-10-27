@@ -1,6 +1,7 @@
 import asyncio
 import logging
 import grpc
+import sys
 import numpy as np
 from ..pb import xapp_pb2
 from ..pb import xapp_pb2_grpc
@@ -12,8 +13,9 @@ class Client(object):
     def __init__(self, server_addr: str, server_port: int):
         self.server_addr = server_addr
         self.server_port = server_port
-        # ue_metrics["ue_id"] = {"metric_name": "metric_value"}
+        # TODO: This is insecure!! Replace it to a database in future version :)
         self.amf_ue_ngap_id_lst = np.array([])
+        # ue_metrics["ue_id"] = {"metric_name": "metric_value"}
         self.ue_metrics = dict()
 
     # Update amf ue ngap ID list
@@ -35,7 +37,7 @@ class Client(object):
         ue_id = self.__get_ue_id_by_amf_ue_ngap_id(amf_ue_ngap_id)
 
         if ue_id == -1:  # check if UE ID was found
-            return "UE ID not found!"
+            sys.exit("UE ID not found!")
 
         ue_id = str(ue_id).zfill(3)  # 3 digits
         imsi = plmn + zeros + ue_id  # 15 digits (3GPP standard)
