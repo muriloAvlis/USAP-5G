@@ -215,7 +215,7 @@ test_info_lst_t Kpm_monitor::gen_snssai_test_info_lst(u_int8_t sst)
     return test_info_lst;
 }
 
-// Not working with OAI-RAN
+// Get UEs by UL RSRP value (PS: not working with OAI-RAN)
 test_info_lst_t Kpm_monitor::gen_ul_rsrp_test_info_lst(int64_t testValue)
 {
     test_info_lst_t test_info_lst{};

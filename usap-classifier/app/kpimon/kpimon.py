@@ -2,9 +2,11 @@ import asyncio
 import logging
 import grpc
 import sys
+import time
 import numpy as np
 from ..pb import xapp_pb2
 from ..pb import xapp_pb2_grpc
+from ..model.load_models import load_dnn_model, load_label_encoder, load_scaler
 
 log = logging.getLogger(__name__)
 
@@ -17,6 +19,11 @@ class Client(object):
         self.amf_ue_ngap_id_lst = np.array([])
         # ue_metrics["ue_id"] = {"metric_name": "metric_value"}
         self.ue_metrics = dict()
+
+        # load model, scaler and label_encoder
+        self.model = load_dnn_model()
+        self.label_encoder = load_label_encoder()
+        self.scaler = load_scaler()
 
     # Update amf ue ngap ID list
     def __update_amf_ue_ngap_id_list(self, amf_ue_ngap_id: int):
@@ -43,6 +50,23 @@ class Client(object):
         imsi = plmn + zeros + ue_id  # 15 digits (3GPP standard)
 
         return imsi
+    
+    def predict_slice(self, metrics_dict):
+        # FIXME: for RRU.PrbTotDl and RRU.PrbTotUl when the UE is in standby the PRBs allocated not is 0 by default
+        # calculate sum_granted_prbs
+        sum_granted_prbs = (metrics_dict['RRU.PrbTotDl'] + metrics_dict['RRU.PrbTotUl']) - 300
+
+        # Filter features
+        features = np.array([metrics_dict['DRB.UEThpDl'], metrics_dict['DRB.PdcpSduVolumeDL'], metrics_dict['DRB.UEThpUl'], metrics_dict['DRB.PdcpSduVolumeUL'], sum_granted_prbs], ndmin=2)
+        scaled_features = self.scaler.transform(features)
+
+        # for debug
+        log.debug(features)
+        log.debug(scaled_features)
+
+        predicted_slice_probability = self.model.predict(scaled_features).argmax(axis=1)
+        predicted_slice = self.label_encoder.inverse_transform(predicted_slice_probability)
+        return predicted_slice
 
     async def get_kpm_indication(self):
         async with grpc.aio.insecure_channel(f"{self.server_addr}:{self.server_port}") as ch:
@@ -61,6 +85,11 @@ class Client(object):
                 response_stream = stub.GetIndicationStream(request)
 
                 async for res in response_stream:
+                    now = int(time.time() * 1000)
+                    print(now)
+                    print(res.latency)
+                    log.debug(f"Receiving a indication message from UE with amf_ue_ngap_id {res.ue.ue_id.amf_ue_ngap_id} | timeout: {now - res.latency}")
+
                     # Update UE ID list
                     self.__update_amf_ue_ngap_id_list(
                         res.ue.ue_id.amf_ue_ngap_id)
@@ -71,6 +100,8 @@ class Client(object):
                     # Update IMSI in dict if not exist
                     if imsi not in self.ue_metrics:
                         self.ue_metrics[imsi] = {}
+                        log.info(f"Success mapping amf_ue_ngap_id {res.ue.ue_id.amf_ue_ngap_id} to IMSI {imsi}")
+
 
                     for meas_info in res.ue.ue_meas_info:
                         meas_name = meas_info.meas_name
@@ -88,7 +119,11 @@ class Client(object):
                        # Update UE metrics
                         self.ue_metrics[imsi][meas_name] = meas_value
 
-                    log.debug(self.ue_metrics)
+                    log.info(f"Processing metrics from UE {imsi}")
+                    sst = self.predict_slice(self.ue_metrics[imsi])
+                    log.debug(f"Predict UE slice: {sst}")
+
+
 
             except grpc.aio.AioRpcError as e:
                 log.error(f"Error to call gRPC service: {e.details()}")

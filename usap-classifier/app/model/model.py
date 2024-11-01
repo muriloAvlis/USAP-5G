@@ -3,12 +3,11 @@ import pandas as pd
 import joblib
 
 from pathlib import Path
-from sklearn import metrics
 from sklearn.preprocessing import MinMaxScaler, LabelEncoder
 from sklearn.utils.class_weight import compute_class_weight
 from sklearn.model_selection import train_test_split
 from sklearn.metrics import classification_report, confusion_matrix, accuracy_score
-from tensorflow.keras.models import Sequential, load_model
+from tensorflow.keras.models import Sequential
 from tensorflow.keras.layers import Dense, Input, Dropout
 from tensorflow.keras.optimizers import Adam
 from tensorflow.keras.callbacks import EarlyStopping
@@ -77,7 +76,7 @@ class Model(object):
 
         # Build model
         self.model = Sequential([
-            Input(shape=(self.X_train.shape[1],)),  # input with 4 neurons
+            Input(shape=(self.X_train.shape[1],)),  # input with X_columns neurons
             Dense(512, activation="relu"),
             Dropout(0.3),  # reduces overfitting by deactivating 30% of neurons
             Dense(512, activation="relu"),
@@ -102,31 +101,11 @@ class Model(object):
 
         # stop training if validation does not improve
         early_stopping = EarlyStopping(
-            monitor='val_loss', patience=20, restore_best_weights=True)
+            monitor='val_loss', patience=15, restore_best_weights=True)
 
         # train model
         self.model.fit(self.X_train, self.y_train, epochs=epochs,
                        batch_size=batch_size, class_weight=class_weights, validation_split=0.1, callbacks=[early_stopping])
-
-    def evaluate_model(self):
-        if self.model != None:
-            # accuracy
-            y_pred_prob = self.model.predict(self.X_val)
-            y_pred = np.argmax(y_pred_prob, axis=1)  # get highest probability
-            accuracy = accuracy_score(self.y_val, y_pred)
-            # predicted_slices = self.label_encoder.inverse_transform(np.argmax(predictions, axis=1))
-            print(f"Model accuracy: {accuracy:.4f}")
-
-            # Confusion matrix
-            conf_matrix = confusion_matrix(self.y_val, y_pred)
-            print('Confusion matrix:')
-            print(conf_matrix)
-
-            # F1 score, recall and precision
-            report = classification_report(
-                self.y_val, y_pred, target_names=["1", "2", "3", "128"])
-            print("Classification report:")
-            print(report)
 
     def export_dnn_model(self):
         if self.model != None:
@@ -135,15 +114,8 @@ class Model(object):
             print("DNN model exported in ./compiled/dnn_model.keras path")
 
 
-def load_dnn_model():  # funcion called in running environment
-    local_path = Path(__file__).resolve().parent
-    model = load_model(local_path / "compiled/dnn_model.keras")
-    return model
-
-
 # Training process
 if __name__ == "__main__":
     model = Model()
     model.train_dnn_model()
     model.export_dnn_model()
-    model.evaluate_model()
