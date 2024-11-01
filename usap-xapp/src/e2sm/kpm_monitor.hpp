@@ -35,7 +35,7 @@ public:
 
     using kpm_ind_fmt_3_t = struct
     {
-        float latency;
+        u_int64_t collect_start_time;
         ue_ids_t ue_ids;
         ue_ind_metrics_t ue_metrics;
     };

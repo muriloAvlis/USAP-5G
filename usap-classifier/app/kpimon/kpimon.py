@@ -2,7 +2,7 @@ import asyncio
 import logging
 import grpc
 import sys
-import time
+import datetime
 import numpy as np
 from ..pb import xapp_pb2
 from ..pb import xapp_pb2_grpc
@@ -60,10 +60,6 @@ class Client(object):
         features = np.array([metrics_dict['DRB.UEThpDl'], metrics_dict['DRB.PdcpSduVolumeDL'], metrics_dict['DRB.UEThpUl'], metrics_dict['DRB.PdcpSduVolumeUL'], sum_granted_prbs], ndmin=2)
         scaled_features = self.scaler.transform(features)
 
-        # for debug
-        log.debug(features)
-        log.debug(scaled_features)
-
         predicted_slice_probability = self.model.predict(scaled_features).argmax(axis=1)
         predicted_slice = self.label_encoder.inverse_transform(predicted_slice_probability)
         return predicted_slice
@@ -85,10 +81,9 @@ class Client(object):
                 response_stream = stub.GetIndicationStream(request)
 
                 async for res in response_stream:
-                    now = int(time.time() * 1000)
-                    print(now)
-                    print(res.latency)
-                    log.debug(f"Receiving a indication message from UE with amf_ue_ngap_id {res.ue.ue_id.amf_ue_ngap_id} | timeout: {now - res.latency}")
+                    now = int(datetime.now().timestamp() * 1_000_000)
+                    latency = now - res.collect_start_time
+                    log.debug(f"Receiving a indication message from UE with amf_ue_ngap_id {res.ue.ue_id.amf_ue_ngap_id} | timeout: {latency:.3f}")
 
                     # Update UE ID list
                     self.__update_amf_ue_ngap_id_list(

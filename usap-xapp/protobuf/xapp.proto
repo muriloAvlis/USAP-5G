@@ -21,7 +21,7 @@ option go_package = "./pb";
  }
 
  message KPMIndicationResponse {
-  float latency = 1;
+  uint64 collectStartTime = 1;
   UEInfos ue = 2;
  }
 

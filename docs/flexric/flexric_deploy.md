@@ -11,7 +11,7 @@
 
 ```sh
 cd ~/git/flexric/helm-chart/flexric
-helm upgrade --install flexric -n flexric . --create-namespace -f ~/git/usap-5g/charts/flexric/flexric_values.yaml
+helm upgrade --install flexric -n flexric . --create-namespace -f usapValues.yaml
 ```
 
 ### Clean up

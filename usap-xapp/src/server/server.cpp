@@ -42,7 +42,7 @@ Status E2SM_KPM_ServiceImpl::GetIndicationStream(grpc::ServerContext* context,
         KPMIndicationResponse response;
 
         // Latency
-        response.set_latency(metrics.latency);
+        response.set_collectstarttime(metrics.collect_start_time);
 
         // UE Infos
         UEInfos *ue_infos = {response.mutable_ue()};
