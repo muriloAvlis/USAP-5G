@@ -2,7 +2,7 @@ import asyncio
 import logging
 import grpc
 import sys
-import datetime
+from datetime import datetime
 import numpy as np
 from ..pb import xapp_pb2
 from ..pb import xapp_pb2_grpc
@@ -81,9 +81,9 @@ class Client(object):
                 response_stream = stub.GetIndicationStream(request)
 
                 async for res in response_stream:
-                    now = int(datetime.now().timestamp() * 1_000_000)
-                    latency = now - res.collect_start_time
-                    log.debug(f"Receiving a indication message from UE with amf_ue_ngap_id {res.ue.ue_id.amf_ue_ngap_id} | timeout: {latency:.3f}")
+                    now = int(datetime.now().timestamp() * 1_000_000) # current time is microseconds
+                    latency = (now - res.collectStartTime) / 1000 # microseconds -> milliseconds
+                    log.debug(f"Receiving a indication message from UE with amf_ue_ngap_id {res.ue.ue_id.amf_ue_ngap_id} | timeout: {latency:.2f} ms")
 
                     # Update UE ID list
                     self.__update_amf_ue_ngap_id_list(
@@ -114,9 +114,8 @@ class Client(object):
                        # Update UE metrics
                         self.ue_metrics[imsi][meas_name] = meas_value
 
-                    log.info(f"Processing metrics from UE {imsi}")
                     sst = self.predict_slice(self.ue_metrics[imsi])
-                    log.debug(f"Predict UE slice: {sst}")
+                    log.debug(f"Predict UE slice to UE {imsi}: {sst[0]}")
 
 
 

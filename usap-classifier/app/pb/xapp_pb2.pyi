@@ -12,12 +12,12 @@ class KPMIndicationRequest(_message.Message):
     def __init__(self, svc_name: _Optional[str] = ...) -> None: ...
 
 class KPMIndicationResponse(_message.Message):
-    __slots__ = ("latency", "ue")
-    LATENCY_FIELD_NUMBER: _ClassVar[int]
+    __slots__ = ("collectStartTime", "ue")
+    COLLECTSTARTTIME_FIELD_NUMBER: _ClassVar[int]
     UE_FIELD_NUMBER: _ClassVar[int]
-    latency: float
+    collectStartTime: int
     ue: UEInfos
-    def __init__(self, latency: _Optional[float] = ..., ue: _Optional[_Union[UEInfos, _Mapping]] = ...) -> None: ...
+    def __init__(self, collectStartTime: _Optional[int] = ..., ue: _Optional[_Union[UEInfos, _Mapping]] = ...) -> None: ...
 
 class E2NodeInfos(_message.Message):
     __slots__ = ("nodeb_id", "node_type_name", "mcc", "mnc", "mnc_digit_len", "cu_du_id")
