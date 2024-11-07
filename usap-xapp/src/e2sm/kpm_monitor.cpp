@@ -146,7 +146,7 @@ void Kpm_monitor::kpm_sm_cb(sm_ag_if_rd_t const* rd)
 
     {
         std::lock_guard<std::mutex> lock(mtx);
-        float latency = static_cast<float>(now - hdr_format_1->collectStartTime) / 1000; // convert to millisecond
+        double latency = static_cast<double>(now - hdr_format_1->collectStartTime) / 1000; // convert to millisecond
         kpm_ind_fmt_3_t kpm_ind_fmt_3{}; // stores UE IDs and its metrics
 
         kpm_ind_fmt_3.collect_start_time = hdr_format_1->collectStartTime;

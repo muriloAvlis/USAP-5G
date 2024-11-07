@@ -2,6 +2,7 @@ import asyncio
 import logging
 import grpc
 import sys
+import csv
 from datetime import datetime
 import numpy as np
 from ..pb import xapp_pb2
@@ -80,6 +81,9 @@ class Client(object):
                 # Make requisition
                 response_stream = stub.GetIndicationStream(request)
 
+                count = 1
+                latency_data = []
+
                 async for res in response_stream:
                     now = int(datetime.now().timestamp() * 1_000_000) # current time is microseconds
                     latency = (now - res.collectStartTime) / 1000 # microseconds -> milliseconds
@@ -117,7 +121,22 @@ class Client(object):
                     sst = self.predict_slice(self.ue_metrics[imsi])
                     log.debug(f"Predict UE slice to UE {imsi}: {sst[0]}")
 
+                    # Recalculate latency after app operations
+                    now = int(datetime.now().timestamp() * 1_000_000) # current time is microseconds
+                    latency = (now - res.collectStartTime) / 1000 # microseconds -> milliseconds
+                    log.debug(f"Message {count} | Latency pos-processing {latency} ms")
 
+                    # To result analysis
+                    if count > 100:
+                        break
+
+                    latency_data.append((count, latency))
+                    count+=1
+
+                with open('./app/data/latency_data.csv', mode='w', newline='') as file:
+                    writer = csv.writer(file)
+                    writer.writerow(['msg_counter', 'latency_ms'])  # csv header
+                    writer.writerows(latency_data)  # write data
 
             except grpc.aio.AioRpcError as e:
                 log.error(f"Error to call gRPC service: {e.details()}")

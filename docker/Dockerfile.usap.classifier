@@ -1,0 +1,28 @@
+# Usando uma imagem base do Python
+FROM python:3.12-slim
+
+# Definindo variáveis de ambiente
+ENV PATH="/root/.local/bin:$PATH"
+
+# Instalando dependências do sistema
+RUN apt-get update && apt-get install -y \
+    curl
+
+# Instalando o Poetry
+RUN curl -sSL https://install.python-poetry.org | python3 -
+
+# Definindo o diretório de trabalho
+WORKDIR /usap-classifier
+
+# Copiando arquivos de configuração do Poetry
+COPY usap-classifier/pyproject.toml usap-classifier/poetry.lock* ./
+
+# Instalando dependências do projeto
+RUN poetry install --no-root --no-dev
+
+# Copiando o restante do código da aplicação
+COPY usap-classifier/* .
+
+# Comando padrão para executar sua aplicação
+CMD ["run", "app"]
+ENTRYPOINT [ "poetry" ]
