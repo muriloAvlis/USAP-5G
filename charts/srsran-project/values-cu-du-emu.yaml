@@ -1,0 +1,203 @@
+#
+# Copyright 2021-2023 Software Radio Systems Limited
+#
+# By using this file, you agree to the terms and conditions set
+# forth in the LICENSE file which can be found at the top level of
+# the distribution.
+#
+
+replicaCount: 1
+
+image:
+  # Check https://hub.docker.com/u/softwareradiosystems for available images
+  repository: softwareradiosystems/srsran-project
+  pullPolicy: IfNotPresent
+  tag: split72_release_avx512-latest
+
+imagePullSecrets:
+  - name: regcred
+
+nameOverride: ""
+fullnameOverride: "srsran-cu-du"
+
+serviceAccount:
+  create: true
+  annotations: {}
+  name: "srsadmin-cu-du"
+
+podAnnotations: {}
+
+podSecurityContext: {}
+
+securityContext:
+  capabilities:
+    add: ["SYS_NICE", "NET_ADMIN"]
+  privileged: true
+  # readOnlyRootFilesystem: true
+  # runAsNonRoot: true
+  # runAsUser: 1000
+
+network:
+  hostNetwork: true
+
+resources:
+  enable_hugepages_1gi: false
+  # enable_hugepages_2mi: false
+  # limits:
+  #   cpu: 12
+  #   memory: 16Gi
+  #   hugepages-1Gi: 2Gi
+  # requests:
+  #   cpu: 12
+  #   memory: 16Gi
+  #   hugepages-1Gi: 2Gi
+
+nodeSelector: {}
+  # kubernetes.io/hostname: node1
+
+tolerations: {}
+  # - key: "purpose"
+  #   value: "manual-testing"
+  #   operator: "Equal"
+  #   effect: "NoSchedule"
+
+affinity: {}
+
+debugging:
+  enabled: false
+  storageCapacity: "100Mi"
+  hostPath: "/mnt/debugging-logs"
+  containerPath: "/tmp"
+
+services:
+  gtpu:
+    type: ClusterIP
+    ports:
+      gtpu: 2152
+    loadBalancerSourceRanges: []
+    loadBalancerIP: ""
+    nodePorts:
+      gtpu: ""
+    externalTrafficPolicy: Cluster
+    clusterIP: ""
+    annotations: {}
+    sessionAffinity: None
+    sessionAffinityConfig: {}
+
+envs:
+  core:
+    amf_hostname: amf-open5gs.open5gs
+    amf_bind_iface: enp1s0
+  ric:
+    ric_hostname: ric-plt-ngap.ricplt
+    ric_bind_iface: enp1s0
+
+ue:
+  image:
+    registry: docker.io
+    repository: gradiant/srsran-4g
+    tag: "23_11"
+    digest: ""
+    pullPolicy: IfNotPresent
+  config:
+    opc: 'E8ED289DEBA952E4283B54E88E6183CA'
+    k: '465B5CE8B199B49FAA5F0A2EE238A6BC'
+    imsi: '724700000000001'
+    imei: '000000000000001'
+    resources: {}
+
+config:
+  run_as: gnb
+  gnb-config.yml: |-
+    gnb_id: 0
+    gnb_du_id: 0
+    ran_node_name: srsran_cu_du
+    gnb_id_bit_length: 32
+
+    cu_cp:
+      amf:
+        addr: $AMF_ADDR
+        port: 38412
+        bind_addr: $AMF_BIND_ADDR
+        supported_tracking_areas:
+          - tac: 1
+            plmn_list:
+              - plmn: "72470"
+                tai_slice_support_list:
+                  - sst: 1 # eMBB
+                    sd: 0 
+                  - sst: 2 # URLLC
+                    sd: 0
+                  - sst: 3 # mIoT
+                    sd: 0
+                  - sst: 128 # Default
+                    sd: 0
+
+    ru_sdr:
+      srate: 115.2                          # (100 MHz) -> Bandwidth (MHz) x 1.152
+      device_driver: zmq                    # Required TEXT (uhd). RF device driver name. Supported: [uhd, zmq].
+      device_args: tx_port=tcp://127.0.0.1:2000,rx_port=tcp://127.0.0.1:2001,id=gnb,base_srate=115.2e6
+      tx_gain: 75                           
+      rx_gain: 75     
+
+    cell_cfg:
+      dl_arfcn: 650000
+      band: 78
+      channel_bandwidth_MHz: 100
+      common_scs: 30
+      plmn: "72470"
+      tac: 1
+      slicing:                                # Optional TEXT. Configure network slicing options. This can only be set via the configuration file :(
+        - sst: 1                              
+          sd: 0
+          sched_cfg:      
+            min_prb_policy_ratio: 30           # Sets the minimum percentage of PRBs to be allocated to the slice. Supported [0 - 100].
+            max_prb_policy_ratio: 60         # Sets the maximum percentage of PRBs to be allocated to the slice. Supported [1 - 100].
+        - sst: 2
+          sd: 0
+          sched_cfg:      
+            min_prb_policy_ratio: 20        
+            max_prb_policy_ratio: 40        
+        - sst: 3                             
+          sd: 0
+          sched_cfg:      
+            min_prb_policy_ratio: 10        
+            max_prb_policy_ratio: 30       
+        - sst: 128                              
+          sd: 0
+          sched_cfg:      
+            min_prb_policy_ratio: 0     
+            max_prb_policy_ratio: 10
+
+    e2:
+      enable_cu_e2: true
+      enable_du_e2: true                   
+      addr: $RIC_ADDR                      
+      port: 36421                          
+      bind_addr: $RIC_BIND_ADDR                 
+      e2sm_kpm_enabled: true               
+      e2sm_rc_enabled: true                
+
+    metrics:
+      addr: 127.0.0.1                       
+      port: 55555                           
+      cu_cp_statistics_report_period: 1     
+      cu_up_statistics_report_period: 1     
+      pdcp_report_period: 1000              
+      rlc_report_period: 1000               
+      rlc_json_enable: true                 # Enable RLC metrics reporting (need to deliver measurements to E2SM_KPM service model).
+      enable_json_metrics: false           
+      autostart_stdout_metrics: true        
+      sched_report_period: 1000         
+
+    log:
+      filename: /tmp/gnb.log
+      all_level: info
+
+    pcap:
+      mac_enable: false
+      mac_filename: /tmp/gnb_mac.pcap
+      ngap_enable: false
+      ngap_filename: /tmp/gnb_ngap.pcap
+      e2ap_enable: false                    
+      e2ap_filename: /tmp/gnb_e2ap.pcap

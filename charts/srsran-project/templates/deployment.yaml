@@ -1,0 +1,125 @@
+#
+# Copyright 2021-2023 Software Radio Systems Limited
+#
+# By using this file, you agree to the terms and conditions set
+# forth in the LICENSE file which can be found at the top level of
+# the distribution.
+#
+
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: {{ include "srsran-cudu.fullname" . }}
+  labels:
+    {{- include "srsran-cudu.labels" . | nindent 4 }}
+spec:
+  selector:
+    matchLabels:
+      {{- include "srsran-cudu.selectorLabels" . | nindent 6 }}
+  template:
+    metadata:
+      {{- with .Values.podAnnotations }}
+      annotations:
+        {{- toYaml . | nindent 8 }}
+      {{- end }}
+      labels:
+        {{- include "srsran-cudu.selectorLabels" . | nindent 8 }}
+    spec:
+      serviceAccountName: {{ include "srsran-cudu.serviceAccountName" . }}
+      securityContext:
+        {{- toYaml .Values.podSecurityContext | nindent 8 }}
+      {{- if .Values.network.hostNetwork }}
+      hostNetwork: true
+      {{- end }}
+      volumes:
+        - name: config-volume
+          configMap:
+            name: {{ .Release.Name }}-configmap
+            defaultMode: 0777
+        {{- if .Values.debugging.enabled }}
+        - name: srs-host-volume
+          hostPath:
+            path: {{ .Values.debugging.hostPath }}/{{ now | date "2006-01-02--15:04:05" }}
+            type: DirectoryOrCreate
+        {{- end }}
+        {{- if .Values.resources.enable_hugepages_1gi }}
+        - name: hugepage-1gi
+          emptyDir:
+            medium: HugePages-1Gi
+        {{- end }}
+        {{- if .Values.resources.enable_hugepages_2mi }}
+        - name: hugepage-2mi
+          emptyDir:
+            medium: HugePages-2Mi
+        {{- end }}
+      containers:
+        - name: {{ .Release.Name }}
+          securityContext:
+            {{- toYaml .Values.securityContext | nindent 12 }}
+          image: "{{ .Values.image.repository }}:{{ .Values.image.tag | default .Chart.AppVersion }}"
+          imagePullPolicy: {{ .Values.image.pullPolicy }}
+          resources:
+            {{- toYaml .Values.resources | nindent 12 }}
+          command: [ "sh" ]
+          args: ["-c", "/entrypoint.sh"]
+          # args: [ "-o0", "gnb", "-c", "/etc/config/gnb-config.yml" ]
+          env:
+            - name: RUN_AS
+              value: {{ .Values.config.run_as | quote }}
+            - name: AMF_HOSTNAME
+              value: {{ .Values.envs.core.amf_hostname }}
+            - name: AMF_BIND_INTERFACE
+              value: {{ .Values.envs.core.amf_bind_iface }}
+            - name: RIC_HOSTNAME
+              value: {{ .Values.envs.core.ric_hostname }}
+            - name: RIC_BIND_INTERFACE
+              value: {{ .Values.envs.core.ric_bind_iface }}
+          volumeMounts:
+            - name: config-volume
+              mountPath: /entrypoint.sh
+              subPath: entrypoint.sh
+            - name: config-volume
+              mountPath: /etc/config/gnb-template.yml
+              subPath: gnb-template.yml
+            {{- if .Values.debugging.enabled }}
+            - mountPath: {{ .Values.debugging.containerPath }}
+              name: srs-host-volume
+            {{- end }}
+            {{- if .Values.resources.enable_hugepages_1gi }}
+            - name: hugepage-1gi
+              mountPath: /hugepages-1Gi
+            {{- end }}
+            {{- if .Values.resources.enable_hugepages_2mi }}
+            - name: hugepage-2mi
+              mountPath: /hugepages-2Mi
+            {{- end }}
+        - name: {{ .Release.Name }}-ue
+          image: {{ .Values.ue.image.registry }}/{{ .Values.ue.image.repository }}:{{ .Values.ue.image.tag }}
+          imagePullPolicy: {{ .Values.ue.image.pullPolicy | quote }}
+          args:
+          - ue
+          securityContext:
+            privileged: true
+          resources:
+            {{ toYaml .Values.ue.config.resources | indent 10 }}
+          volumeMounts:
+            - name: config-volume
+              mountPath: /etc/srsran/ue.conf
+              subPath: ue.conf
+      dnsPolicy: ClusterFirstWithHostNet
+      {{- with .Values.nodeSelector }}
+      nodeSelector:
+        {{- toYaml . | nindent 8 }}
+      {{- end }}
+      {{- with .Values.affinity }}
+      affinity:
+        {{- toYaml . | nindent 8 }}
+      {{- end }}
+      {{- with .Values.imagePullSecrets }}
+      imagePullSecrets:
+        {{- toYaml . | nindent 8 }}
+      {{- end }}
+      {{- with .Values.tolerations }}
+      tolerations:
+        {{- toYaml . | nindent 8 }}
+      {{- end }}
