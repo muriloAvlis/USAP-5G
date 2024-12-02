@@ -1,0 +1,19 @@
+#
+# Copyright 2021-2024 Software Radio Systems Limited
+#
+# By using this file, you agree to the terms and conditions set
+# forth in the LICENSE file which can be found at the top level of
+# the distribution.
+#
+
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: {{ .Release.Name }}-configmap
+data:
+  entrypoint.sh: |
+    {{- tpl (.Files.Get "resources/entrypoint.sh") . | indent 4 }}
+  gnb-template.yaml: |
+    {{- .Values.config | toYaml | nindent 2 }}
+  ue.conf: |
+    {{ tpl (.Files.Get "resources/ue.conf") . | indent 4 }}

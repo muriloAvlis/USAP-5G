@@ -1,7 +1,6 @@
 go.work*
 Chart.lock
 .vagrant
-charts
 cmake-build-debug
 build
 .idea
