@@ -1,2 +1,0 @@
-add_subdirectory(kpm_encoder)
-add_subdirectory(kpm_decoder)
