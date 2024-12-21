@@ -2,7 +2,7 @@
 
 The UE Smart Allocation Platform on Open 5G Networks (USAP) is a project to manage and optimize the allocation of UEs and UE QoS, using slices on Open 5G Networks with support for the ORAN Alliance O-RAN standard.
 
-## Tutorials
+<!-- ## Tutorials
 
 ### 5GC
 
@@ -17,7 +17,7 @@ The UE Smart Allocation Platform on Open 5G Networks (USAP) is a project to mana
 
 ### RIC
 
-1. [OSC Near-RT RIC Deployment](docs/osc-ric/osc_nrt_ric_deploy.md)
+1. [OSC Near-RT RIC Deployment](docs/osc-ric/osc_nrt_ric_deploy.md) -->
 
 ## Standardizations
 
@@ -42,28 +42,30 @@ Definitions used by the application to interact with the RIC
 
 ### Requirements
 
-- Kubernetes Cluster (tutorial on [K8s Installation Using the RKE2](https://github.com/muriloAvlis/k8s-utils/blob/main/docs/cluster_deploy/rke2/README.md))
-- 5G Core (OAI-CN was used)
-- 5G RAN (SRSRAN was used)
-
-### Build Docker Image
-
-```sh
-docker image build -t muriloavlis/usap:latest -f docker/Dockerfile.usap .
-```
+- [Kubernetes Cluster](https://github.com/muriloAvlis/k8s-utils/blob/main/docs/cluster_deploy/kubeadm/install.md)
+- [Open5gs 5GC](./charts/open5gs/README.md)
+- SRSRAN 5G RAN
 
 ### Network Configurations
 
+The following 5G slice configurations were used for our experiments
+
 |                    | **sst** | **sd** | **dnn** | **Subnet**  | **MCC** | **MNC** |
 |--------------------|---------|--------|---------|-------------|---------|---------|
-| **embb_slice**     | 1       | 000001 | nongbr  | 12.1.1.0/24 |   724   |   70    |
-| **urllc_slice**    | 2       | 000001 | gbr     | 12.1.2.0/24 |   724   |   70    |
-| **miot_slice**     | 3       | 000001 | iot     | 12.1.3.0/24 |   724   |   70    |
-| **default_slice**  | 128     | 000001 | default | 12.1.4.0/24 |   724   |   70    |
+| **embb_slice**     | 1       | 000000 | embb    | 10.45.0.0/24 |   724   |   70    |
+| **urllc_slice**    | 2       | 000000 | urllc   | 10.45.1.0/24 |   724   |   70    |
+| **miot_slice**     | 3       | 000000 | miot    | 10.45.2.0/24 |   724   |   70    |
+| **default_slice**  | 128     | 000000 | default | 10.45.3.0/24 |   724   |   70    |
+
+### Deployment
+
+```sh
+# TODO
+```
 
 ### Proposal topology
 
-![proposal-topology-v1](./assets/images/proposal_diagram-topology-v1.png)
+![proposal-topology-v1](./assets/images/proposal_topology.png)
 
 ### How It Works
 

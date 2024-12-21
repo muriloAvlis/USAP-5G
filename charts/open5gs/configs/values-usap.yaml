@@ -1,0 +1,210 @@
+dbURI: "mongodb://{{ .Release.Name }}-mongodb/open5gs"
+
+populate:
+  enabled: true
+  image:
+    registry: docker.io
+    repository: gradiant/open5gs-dbctl
+    tag: 0.10.3
+    pullPolicy: IfNotPresent
+  initCommands:
+  # example of initCommands:
+  #  - open5gs-dbctl add 999700000000001 465B5CE8B199B49FAA5F0A2EE238A6BC E8ED289DEBA952E4283B54E88E6183CA
+  #  - open5gs-dbctl add_ue_with_apn 999700000000002 465B5CE8B199B49FAA5F0A2EE238A6BC E8ED289DEBA952E4283B54E88E6183CA internet
+  #  - open5gs-dbctl add_ue_with_slice 999700000000003 465B5CE8B199B49FAA5F0A2EE238A6BC E8ED289DEBA952E4283B54E88E6183CA internet 1 111111
+    - open5gs-dbctl add_ue_with_slice 724700000000001 E8ED289DEBA952E4283B54E88E6183CA 465B5CE8B199B49FAA5F0A2EE238A6BC default 1 000000
+
+# Common
+mongodb:
+  enabled: true
+  image:
+    tag: 8.0.3
+  auth:
+    enabled: false
+  global:
+    storageClass: openebs-hostpath
+  nodeSelector:
+    kubernetes.io/hostname: core5g
+
+
+smf:
+  enabled: true
+  config:
+    pcrf:
+      enabled: false
+    dnsList:
+    - 8.8.8.8
+    - 8.8.4.4
+    - 2001:4860:4860::8888
+    - 2001:4860:4860::8844
+    subnetList:
+      - subnet: 10.45.0.0/24
+        gateway: 10.45.0.1
+        dnn: embb
+      - subnet: 10.45.1.0/24
+        gateway: 10.45.1.1
+        dnn: urllc
+      - subnet: 10.45.2.0/24
+        gateway: 10.45.2.1
+        dnn: miot
+      - subnet: 10.45.3.0/24
+        gateway: 10.45.3.1
+        dnn: default
+  mtu: 1500
+  nodeSelector:
+    kubernetes.io/hostname: core5g
+
+upf:
+  enabled: true
+  config:
+    subnetList:
+    - subnet: 10.45.0.0/24
+      gateway: 10.45.0.1
+      dnn: embb
+      dev: embbtun
+      mask: 24
+      createDev: true
+      enableNAT: true
+    - subnet: 10.45.1.0/24
+      gateway: 10.45.1.1
+      dnn: urllc
+      dev: urllctun
+      mask: 24
+      createDev: true
+      enableNAT: true
+    - subnet: 10.45.2.0/24
+      gateway: 10.45.2.1
+      dnn: miot
+      dev: miottun
+      mask: 24
+      createDev: true
+      enableNAT: true
+    - subnet: 10.45.3.0/24
+      gateway: 10.45.3.1
+      dnn: default
+      dev: defaulttun
+      mask: 24
+      createDev: true
+      enableNAT: true
+  nodeSelector:
+    kubernetes.io/hostname: core5g
+
+webui:
+  enabled: true
+  services:
+    http:
+      type: NodePort
+      nodePorts:
+        http: "30999"
+  nodeSelector:
+    kubernetes.io/hostname: core5g
+
+# 4G (disabled)
+hss:
+  enabled: false
+mme:
+  enabled: false
+pcrf:
+  enabled: false
+sgwc:
+  enabled: false
+sgwu:
+  enabled: false
+
+# 5G
+amf:
+  enabled: true
+  config:
+    logLevel: info
+    guamiList:
+      - plmn_id:
+          mcc: "724"
+          mnc: "70"
+        amf_id:
+          region: 1
+          set: 1
+    taiList:
+      - plmn_id:
+          mcc: "724"
+          mnc: "70"
+        tac: [1]
+    plmnList:
+      - plmn_id:
+          mcc: "724"
+          mnc: "70"
+        s_nssai:
+          - sst: 1
+            sd: "0x000000"
+          - sst: 2
+            sd: "0x000000"
+          - sst: 3
+            sd: "0x000000"
+          - sst: 128
+            sd: "0x000000"
+    networkName: usapNet
+  nodeSelector:
+    kubernetes.io/hostname: core5g
+
+ausf:
+  enabled: true
+  nodeSelector:
+    kubernetes.io/hostname: core5g
+
+bsf:
+  enabled: true
+  nodeSelector:
+    kubernetes.io/hostname: core5g
+
+nrf:
+  enabled: true
+  config:
+    logLevel: info
+    servingList:
+      - plmn_id:
+          mcc: "724"
+          mnc: "70"
+  nodeSelector:
+    kubernetes.io/hostname: core5g
+
+nssf:
+  enabled: true
+  config:
+    nsiList:
+      - uri: ""
+        sst: 1
+        sd: "0x000000"
+      - uri: ""
+        sst: 2
+        sd: "0x000000"
+      - uri: ""
+        sst: 3
+        sd: "0x000000"
+      - uri: ""
+        sst: 128
+        sd: "0x000000"
+  nodeSelector:
+    kubernetes.io/hostname: core5g
+
+pcf:
+  enabled: true
+  mongodb:
+    enabled: false
+  nodeSelector:
+    kubernetes.io/hostname: core5g
+
+scp:
+  enabled: true
+  mongodb:
+    enabled: false
+  nodeSelector:
+    kubernetes.io/hostname: core5g
+
+udm:
+  enabled: true
+  nodeSelector:
+    kubernetes.io/hostname: core5g
+    
+udr:
+  enabled: true
+  nodeSelector:
+    kubernetes.io/hostname: core5g
