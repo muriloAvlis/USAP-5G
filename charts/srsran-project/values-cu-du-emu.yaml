@@ -10,9 +10,9 @@ replicaCount: 1
 
 image:
   # Check https://hub.docker.com/u/softwareradiosystems for available images
-  repository: softwareradiosystems/srsran-project
+  repository: muriloavlis/srsran-5g
   pullPolicy: IfNotPresent
-  tag: split72_release_avx512-latest
+  tag: zmq_dev
 
 imagePullSecrets:
   - name: regcred
