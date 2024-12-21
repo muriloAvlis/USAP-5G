@@ -57,8 +57,8 @@ global:
 # ricip should be the ingress controller listening IP for the platform cluster
 # auxip should be the ingress controller listening IP for the AUX cluster
 extsvcplt:
-  ricip: "10.126.1.120"
-  auxip: "10.126.1.120"
+  ricip: "10.126.1.142"
+  auxip: "10.126.1.142"
 
 
 # Specify the docker registry credential using the following
@@ -140,7 +140,7 @@ e2term:
         print: "1"
         messagecollectorfile: "/data/outgoing/"
       dataVolSize: 100Mi
-      storageClassName: local-path
+      storageClassName: openebs-hostpath
       pizpub:
         enabled: false
 
@@ -169,14 +169,14 @@ vespamgr:
   image:
     registry: "nexus3.o-ran-sc.org:10002/o-ran-sc"
     name: ric-plt-vespamgr
-    tag: 0.7.4
+    tag: 0.7.5
   prometheusurl: "http://r4-infrastructure-prometheus-server.ricplt"
 
-o1mediator:
-  image:
-    registry: "nexus3.o-ran-sc.org:10002/o-ran-sc"
-    name: ric-plt-o1
-    tag: 0.6.3
+# o1mediator:
+#   image:
+#     registry: "nexus3.o-ran-sc.org:10002/o-ran-sc"
+#     name: ric-plt-o1
+#     tag: 0.6.3
 
 
 alarmmanager:
@@ -189,12 +189,12 @@ influxdb2:
   image:
     registry: "influxdb"
     name: influxdb
-    tag: "2.7.6-alpine"
+    tag: "2.7-alpine"
   fullnameOverride: "ricplt-influxdb"
   service:
     port: 8086
   persistence:
-    storageClass: local-path
+    storageClass: openebs-hostpath
   nodeSelector: 
     kubernetes.io/hostname: nrtric
 
