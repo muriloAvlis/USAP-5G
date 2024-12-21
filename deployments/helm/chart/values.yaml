@@ -47,30 +47,40 @@ image_pull_policy: Always
 appenv: {}
 
 # Liveness probe definition. If empty, liveness probe will be disabled
-livenessProbe: {}
+livenessProbe:
+  httpGet:
+    path: ric/v1/health/alive
+    port: 8080
+  initialDelaySeconds: 5
+  periodSeconds: 15
 
 # Readiness probe definition. If empty, readiness probe will be disabled
-readinessProbe: {}
+readinessProbe:
+  httpGet:
+    path: ric/v1/health/ready
+    port: 8080
+  initialDelaySeconds: 5
+  periodSeconds: 15
 
 # Instance name. If empty, chart name will be used
-name: {}
+name: usap-xapp
 
 # Full instance name. If empty, full name will be constructed from name
 fullname: {}
 
 ###############    The following are from the xApp descriptor     ###############
-appVersion: v1.0.0-alpha
+appVersion: 0.0.1
 containers:
 - image:
-    name: muriloavlis/usap
+    name: muriloavlis/usap-xapp
     registry: docker.io
-    tag: latest
-  name: usap
+    tag: 0.0.1
+  name: usap-xapp
 controls:
   active: true
   interfaceId:
     globalGNBId:
-      plmnId: 72470
+      plmnId: 00101
   localAddress:
     host: :8080
   logger:
@@ -89,14 +99,8 @@ db:
   maxIdle: 50
   waitForSdl: false
 faults: {}
-livenessProbe:
-  httpGet:
-    path: ric/v1/health/alive
-    port: 8080
-  initialDelaySeconds: 5
-  periodSeconds: 15
 measurements:
-- description: 'UE Downlink Throughput '
+- description: UE Downlink Throughput
   name: ricxapp_usap_xapp_DRBUEThpDl
   objectInstance: DRB.UEThpDl
   objectName: DRB.UEThpDl
@@ -108,15 +112,15 @@ measurements:
   type: int
 messaging:
   ports:
-  - container: usap
+  - container: usap-xapp
     description: http service
     name: http
     port: 8080
-  - container: usap
+  - container: usap-xapp
     description: rmr route port for usap
     name: rmr-route
     port: 4561
-  - container: usap
+  - container: usap-xapp
     description: rmr data port for usap
     maxSize: 65536
     name: rmr-data
@@ -135,13 +139,6 @@ messaging:
 metrics:
   namespace: ricxapp
   url: /ric/v1/metrics
-name: usap
-readinessProbe:
-  httpGet:
-    path: ric/v1/health/ready
-    port: 8080
-  initialDelaySeconds: 5
-  periodSeconds: 15
 rmr:
   maxSize: 2072
   numWorkers: 1
