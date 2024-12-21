@@ -9,50 +9,56 @@ populate:
     pullPolicy: IfNotPresent
   initCommands:
   # example of initCommands:
-  #  - open5gs-dbctl add 724700000000001 465B5CE8B199B49FAA5F0A2EE238A6BC E8ED289DEBA952E4283B54E88E6183CA
-  #  - open5gs-dbctl add_ue_with_apn 724700000000002 465B5CE8B199B49FAA5F0A2EE238A6BC E8ED289DEBA952E4283B54E88E6183CA internet
-   - open5gs-dbctl add_ue_with_slice 724700000000001 465B5CE8B199B49FAA5F0A2EE238A6BC E8ED289DEBA952E4283B54E88E6183CA internet 1 000001
+  #  - open5gs-dbctl add 999700000000001 465B5CE8B199B49FAA5F0A2EE238A6BC E8ED289DEBA952E4283B54E88E6183CA
+  #  - open5gs-dbctl add_ue_with_apn 999700000000002 465B5CE8B199B49FAA5F0A2EE238A6BC E8ED289DEBA952E4283B54E88E6183CA internet
+  #  - open5gs-dbctl add_ue_with_slice 999700000000003 465B5CE8B199B49FAA5F0A2EE238A6BC E8ED289DEBA952E4283B54E88E6183CA internet 1 111111
+    - open5gs-dbctl add_ue_with_slice 001010000000001 E8ED289DEBA952E4283B54E88E6183CA 465B5CE8B199B49FAA5F0A2EE238A6BC internet 128 FFFFFF
 
 # Common
 mongodb:
   enabled: true
   image:
-    tag: 7.0.11
+    tag: 8.0.4
   auth:
     enabled: false
   global:
     storageClass: openebs-hostpath
   nodeSelector:
-      kubernetes.io/hostname: open5gslocal
+    kubernetes.io/hostname: core5g
+
+
 smf:
   enabled: true
   config:
-    sbi:
-      client:
-        scp:
-          enabled: true
     pcrf:
       enabled: false
     dnsList:
-      - "8.8.8.8"
-      - "1.1.1.1"
+    - 8.8.8.8
+    - 1.1.1.1
+    - 2001:4860:4860::8888
+    - 2001:4860:4860::8844
     subnetList:
-      - subnet: 10.45.0.1/16
+      - subnet: 10.46.0.0/16
+        gateway: 10.46.0.1
         dnn: internet
-    mtu: 1500
+  mtu: 1500
   nodeSelector:
-    kubernetes.io/hostname: open5gslocal
+    kubernetes.io/hostname: core5g
+
 upf:
   enabled: true
   config:
     subnetList:
-      - subnet: 10.45.0.1/16
-        dnn: internet
-        dev: ogstun
-        createDev: true
-        enableNAT: true
+    - subnet: 10.46.0.0/16
+      gateway: 10.46.0.1
+      dnn: internet
+      dev: ogstun
+      mask: 16
+      createDev: true
+      enableNAT: true
   nodeSelector:
-    kubernetes.io/hostname: open5gslocal
+    kubernetes.io/hostname: core5g
+
 webui:
   enabled: true
   services:
@@ -61,19 +67,15 @@ webui:
       nodePorts:
         http: "30999"
   nodeSelector:
-    kubernetes.io/hostname: open5gslocal
+    kubernetes.io/hostname: core5g
 
-# 4G
+# 4G (disabled)
 hss:
   enabled: false
-  mongodb:
-    enabled: false
 mme:
   enabled: false
 pcrf:
   enabled: false
-  mongodb:
-    enabled: false
 sgwc:
   enabled: false
 sgwu:
@@ -83,116 +85,96 @@ sgwu:
 amf:
   enabled: true
   config:
-    networkName: openranzada
-    sbi:
-      client:
-        scp:
-          enabled: true
-    guamiList: ## Global Unique AMF ID
+    logLevel: info
+    guamiList:
       - plmn_id:
-          mcc: "724"  ## Mobile Country Code
-          mnc: "70"   ## Mobile Network Code
+          mcc: "001"
+          mnc: "01"
         amf_id:
           region: 1
           set: 1
-    taiList: ## Tracking Area Identify
+    taiList:
       - plmn_id:
-          mcc: "724"
-          mnc: "70"
-        tac: [1]  ## Tracking Area Code
-    plmnList:  ## Public Land Mobile Network
+          mcc: "001"
+          mnc: "01"
+        tac: [1]
+    plmnList:
       - plmn_id:
-          mcc: "724"
-          mnc: "70"
-        s_nssai: ## Single – Network Slice Selection Assistance Information
-          - sst: 1  ## eMBB
+          mcc: "001"
+          mnc: "01"
+        s_nssai:
+          - sst: 1 # eMBB
             sd: "0x000001"
-          - sst: 2  ## URLLC
+          - sst: 2 # URLLC
             sd: "0x000001"
-          - sst: 3  ## MIoT
+          - sst: 3 # mIoT
             sd: "0x000001"
+          - sst: 128 # default
+            sd: "0x000001"
+    networkName: usap5g
   nodeSelector:
-    kubernetes.io/hostname: open5gslocal
+    kubernetes.io/hostname: core5g
+
 ausf:
   enabled: true
-  config:
-    sbi:
-      client:
-        scp:
-          enabled: true
   nodeSelector:
-    kubernetes.io/hostname: open5gslocal
+    kubernetes.io/hostname: core5g
+
 bsf:
   enabled: true
-  config:
-    sbi:
-      client:
-        scp:
-          enabled: true
   nodeSelector:
-    kubernetes.io/hostname: open5gslocal
+    kubernetes.io/hostname: core5g
+
 nrf:
   enabled: true
   config:
+    logLevel: info
     servingList:
       - plmn_id:
-          mcc: 724
-          mnc: 70
+          mcc: "001"
+          mnc: "01"
   nodeSelector:
-    kubernetes.io/hostname: open5gslocal
+    kubernetes.io/hostname: core5g
+
 nssf:
   enabled: true
   config:
-    sbi:
-      client:
-        scp:
-          enabled: true
     nsiList:
-      - nrf:
-        sst: 1 ## eMBB
+      - uri: ""
+        sst: 1
         sd: "0x000001"
-      - nrf:
-        sst: 2 ## URLLC
+      - uri: ""
+        sst: 2
         sd: "0x000001"
-      - nrf:
-        sst: 3 ## MIoT
+      - uri: ""
+        sst: 3
+        sd: "0x000001"
+      - uri: ""
+        sst: 128
         sd: "0x000001"
   nodeSelector:
-    kubernetes.io/hostname: open5gslocal
+    kubernetes.io/hostname: core5g
+
 pcf:
   enabled: true
-  config:
-    sbi:
-      client:
-        scp:
-          enabled: true
   mongodb:
     enabled: false
   nodeSelector:
-    kubernetes.io/hostname: open5gslocal
-udm:
-  enabled: true
-  config:
-    sbi:
-      client:
-        scp:
-          enabled: true
-  nodeSelector:
-    kubernetes.io/hostname: open5gslocal
-udr:
-  enabled: true
-  config:
-    sbi:
-      client:
-        scp:
-          enabled: true
-  mongodb:
-    enabled: false
-  nodeSelector:
-    kubernetes.io/hostname: open5gslocal
+    kubernetes.io/hostname: core5g
+
 scp:
   enabled: true
   mongodb:
     enabled: false
   nodeSelector:
-    kubernetes.io/hostname: open5gslocal
+    kubernetes.io/hostname: core5g
+
+udm:
+  enabled: true
+  nodeSelector:
+    kubernetes.io/hostname: core5g
+    
+udr:
+  enabled: true
+  nodeSelector:
+    kubernetes.io/hostname: core5g
