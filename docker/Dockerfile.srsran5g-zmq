@@ -106,10 +106,10 @@ COPY --from=builder /usr/local/include /usr/local/include
 COPY --from=builder /opt/srsran /usr/local/srsran
 
 ## Copy config
-COPY docker/srs_configs/gnb_zmq.yml ${CONFIG_PATH}
+COPY configs/gnb_zmq.yml ${CONFIG_PATH}
 
 ## Copy entrypoint
-COPY docker/scripts/srsran_entrypoint.sh /entrypoint.sh
+COPY scripts/srsran_entrypoint.sh /entrypoint.sh
 RUN chmod +x /entrypoint.sh
 
 RUN ldconfig
