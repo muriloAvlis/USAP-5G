@@ -1,0 +1,19 @@
+[tool.poetry]
+name = "usap-xapp"
+version = "0.0.1"
+description = "usap-xapp source code"
+authors = ["Murilo Silva <murilosilva@itec.ufpa.br>"]
+readme = "README.md"
+packages = [{include = "app"}]
+
+[tool.poetry.dependencies]
+python = "^3.12"
+hiredis = "^3.1.0"
+ricxappframe = "^3.2.2"
+
+[build-system]
+requires = ["poetry-core"]
+build-backend = "poetry.core.masonry.api"
+
+[tool.poetry.scripts]
+app = "app.app:run"

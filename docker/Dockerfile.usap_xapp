@@ -2,10 +2,24 @@
 #--------------- Builder Stage ---------------#
 #---------------------------------------------#
 
-FROM alpine
+FROM ubuntu:noble
+
+ENV DEBIAN_FRONTEND=noninteractive
+
+RUN apt-get update && apt-get upgrade -y && \
+    apt-get install -y \
+    curl \
+    python3 \
+    python3-pip
+
+ 
+# Install RMR
+RUN curl -Lo rmr-dev_4.9.4_amd64.deb https://packagecloud.io/o-ran-sc/release/packages/debian/stretch/rmr-dev_4.9.4_amd64.deb/download.deb && \
+    curl -Lo rmr_4.9.4_amd64.deb https://packagecloud.io/o-ran-sc/release/packages/debian/stretch/rmr_4.9.4_amd64.deb/download.deb && \
+    dpkg -i rmr_4.9.4_amd64.deb && \
+    dpkg -i rmr-dev_4.9.4_amd64.deb
 
 
 #---------------------------------------------#
 #---------------- Final Stage ----------------#
 #---------------------------------------------#
-
