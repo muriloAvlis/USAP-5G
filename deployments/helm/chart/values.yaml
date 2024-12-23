@@ -117,11 +117,11 @@ messaging:
     name: http
     port: 8080
   - container: usap-xapp
-    description: rmr route port for usap
+    description: rmr route port for usap-xapp
     name: rmr-route
     port: 4561
   - container: usap-xapp
-    description: rmr data port for usap
+    description: rmr data port for usap-xapp
     maxSize: 65536
     name: rmr-data
     numWorkers: 1
