@@ -1,0 +1,139 @@
+ARG UBUNTU_VERSION=22.04
+ARG SRSUE_VERSION=${SRSUE_VERSION}
+ARG ZMQ_VERSION=v4.3.5
+ARG CZMQ_VERSION=v4.2.1
+
+#----------------------------------------------------------------------#
+#------------------------- BUILDER STAGE ------------------------------#
+#----------------------------------------------------------------------#
+
+FROM ubuntu:${UBUNTU_VERSION} AS builder
+
+ARG SRSUE_VERSION=${SRSUE_VERSION}
+ARG ZMQ_VERSION=v4.3.5
+ARG CZMQ_VERSION=v4.2.1
+
+ENV DEBIAN_FRONTEND=noninteractive
+ENV TZ=America/Belem
+
+## Dependencies Installation
+RUN apt-get update && apt-get install -y \
+    build-essential \
+    cmake \ 
+    libfftw3-dev \
+    libmbedtls-dev \
+    libboost-program-options-dev \
+    libconfig++-dev \
+    libsctp-dev \
+    git \
+    libtool \
+    libdw-dev \
+    binutils-dev \
+    libdwarf-dev \
+    ccache
+
+## ZMQ Installation
+RUN git clone https://github.com/zeromq/libzmq.git -b ${ZMQ_VERSION} && \
+    cd libzmq && \
+    ./autogen.sh && \
+    ./configure && \
+    make && \
+    make install && \
+    ldconfig
+
+
+## CZMQ Installation
+RUN git clone https://github.com/zeromq/czmq.git -b ${CZMQ_VERSION} && \
+    cd czmq && \
+    ./autogen.sh && \
+    ./configure && \
+    make && \
+    make install && \
+    ldconfig
+
+CMD [ "bash" ]
+
+## build SRSUE, applying patch to slicing
+RUN	git clone https://github.com/srsran/srsRAN_4G.git -b ${SRSUE_VERSION} && \
+	cd srsRAN_4G && \
+    sed -i '281,286d' srsue/src/stack/upper/nas_5g.cc && \
+    mkdir build && \
+    cd build && \
+    cmake -DCMAKE_INSTALL_PREFIX=/opt/srsRAN_4G/target ../ && \
+    make -j `nproc` && \
+    make install
+
+# Move configuration
+RUN mkdir -p /opt/srsRAN_4G/target/etc/srsran && \
+    cd /opt/srsRAN_4G/target/share/srsran/ && find  -name '*.example' | while read f; do mv "$f" "/opt/srsRAN_4G/target/etc/srsran/${f%.example}"; done
+
+## Embed env variables in ue.conf files
+RUN cd /opt/srsRAN_4G/target/etc/srsran && \
+    sed -E -i 's/^algo +=.*/algo = ${ALGO}/' ue.conf && \
+    sed -E -i 's/^#?opc +=.*/opc = ${OPC}/' ue.conf && \
+    sed -E -i 's/^k +=.*/k = ${KEY}/' ue.conf && \
+    sed -i 's/^imsi =.*/imsi = ${MCC}${MNC}${MSISDN}/' ue.conf
+
+#----------------------------------------------------------------------#
+#------------------------- FINAL STAGE --------------------------------#
+#----------------------------------------------------------------------#
+
+FROM ubuntu:${UBUNTU_VERSION}
+
+ARG SRSUE_VERSION=${SRSUE_VERSION}
+
+ENV DEBIAN_FRONTEND=noninteractive
+ENV TZ=America/Belem
+
+LABEL org.opencontainers.image.authors="Murilo Silva <murilo.silva@itec.ufpa.br>" \
+    org.opencontainers.image.vendor="Federal University of Pará - UFPA" \
+    org.opencontainers.image.licenses="" \
+    org.opencontainers.image.version=${SRSUE_VERSION}
+
+## Libraries and tools
+RUN apt-get update && apt-get install -y \
+        libfftw3-dev \
+        libmbedtls-dev \
+        libboost-program-options-dev \
+        libconfig++-dev \
+        libsctp-dev \
+        libdw-dev \
+        binutils-dev \
+        libdwarf-dev \
+        gettext-base \
+        dnsutils \
+        curl \
+        iputils-ping \
+        iperf3 \
+        net-tools
+
+## Copy ZMQ libs
+COPY --from=builder /usr/local/lib /usr/local/lib
+COPY --from=builder /usr/local/include /usr/local/include
+
+## Copy SRSUE binaries
+COPY --from=builder /opt/srsRAN_4G/target/bin/srsue /usr/bin/srsue
+COPY --from=builder /opt/srsRAN_4G/target/etc/srsran/ue.conf /etc/srsran/
+COPY --from=builder /opt/srsRAN_4G/target/include/ /usr/include/
+COPY --from=builder /opt/srsRAN_4G/target/lib/ /usr/lib/
+
+RUN ldconfig
+
+## UE envs configs
+ENV TX_GAIN=75 \
+    RX_GAIN=75 \
+    LOG_LEVEL=info \
+    UE_HOSTNAME=localhost \
+    MCC=001 \
+    MNC=01 \
+    MSISDN=0000000001 \
+    ALGO=mil \
+    KEY=465B5CE8B199B49FAA5F0A2EE238A6BC \
+    OPC=E8ED289DEBA952E4283B54E88E6183CA \
+    GNB_HOSTNAME=localhost
+
+COPY scripts/srsue_entrypoint.sh /entrypoint.sh
+
+RUN chmod +x /entrypoint.sh
+
+ENTRYPOINT ["/entrypoint.sh"]

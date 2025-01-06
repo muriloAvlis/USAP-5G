@@ -55,7 +55,7 @@ RUN chmod -R 755 /usr/local/lib/libriclibe2ap.so
 RUN ldconfig
 
 ## Install poetry
-RUN curl -sSL https://install.python-poetry.org | python3 -
+RUN curl -sSL https://install.python-poetry.org | POETRY_VERSION=2.0.0 python3 -
 
 ## Copy xApp
 COPY xapp /usr/src/usap-xapp
@@ -66,9 +66,7 @@ ENV RMR_SEED_RT=/usr/src/usap-xapp/config/routes.rt
 
 ## Install xApp
 WORKDIR /usr/src/usap-xapp
-RUN poetry install
+RUN poetry install --no-root
 
-CMD [ "run", "usap-xapp" ]
+CMD [ "run", "usap" ]
 ENTRYPOINT [ "poetry" ]
-
-# ENTRYPOINT [ "bash" ]

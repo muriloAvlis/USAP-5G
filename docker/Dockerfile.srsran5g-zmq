@@ -1,5 +1,5 @@
 ARG UBUNTU_VERSION=24.04
-ARG SRSRAN_VERSION=main
+ARG SRSRAN_VERSION=${SRSRAN_VERSION}
 ARG ZMQ_VERSION=v4.3.5
 ARG CZMQ_VERSION=v4.2.1
 
@@ -79,12 +79,12 @@ ENV RUN_AS=gnb
 ENV CONFIG_PATH=/usr/local/srsran/configs/gnb_zmq.yml
 ENV PATH=${PATH}:/usr/local/srsran/bin
 
-LABEL org.opencontainers.image.authors="Murilo Silva <murilo.silva@rnp.br>" \
-    org.opencontainers.image.vendor="National Education and Research Network (RNP)" \
+LABEL org.opencontainers.image.authors="Murilo Silva <murilo.silva@itec.ufpa.br>" \
+    org.opencontainers.image.vendor="Federal University of Pará - UFPA" \
     org.opencontainers.image.licenses="" \
     org.opencontainers.image.version=${SRSRAN_VERSION}
 
-## Dependencies Installation
+## Packages Installation
 RUN apt-get update && apt-get install -y \
     pkg-config \
     libfftw3-dev \
@@ -99,13 +99,15 @@ RUN apt-get update && apt-get install -y \
     net-tools \
     iputils-ping \
     dnsutils \
-    gettext-base
+    gettext-base \
+    iproute2
 
 COPY --from=builder /usr/local/lib /usr/local/lib
 COPY --from=builder /usr/local/include /usr/local/include
 COPY --from=builder /opt/srsran /usr/local/srsran
 
 ## Copy config
+RUN mkdir -p /etc/config
 COPY configs/gnb_zmq.yml ${CONFIG_PATH}
 
 ## Copy entrypoint

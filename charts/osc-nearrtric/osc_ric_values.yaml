@@ -28,7 +28,7 @@ nearrtric:
   installInfluxDB: true
   installJaegerAdapter: true
   installO1Mediator: true
-  installVespamgr: false
+  installVespamgr: true
   installXappOnboarder: true
 #-------------------------------------------------------------------------
 # Global common setting
@@ -120,8 +120,8 @@ e2mgr:
     privilegedmode: false
     globalRicId:
       ricId: "AACCE"
-      mcc: "724"
-      mnc: "070"
+      mcc: "001"
+      mnc: "01"
     rnibWriter:
       stateChangeMessageChannel: RAN_CONNECTION_STATUS_CHANGE
       ranManipulationMessageChannel: RAN_MANIPULATION
@@ -172,12 +172,12 @@ vespamgr:
     tag: 0.7.5
   prometheusurl: "http://r4-infrastructure-prometheus-server.ricplt"
 
-# o1mediator:
-#   image:
-#     registry: "nexus3.o-ran-sc.org:10002/o-ran-sc"
-#     name: ric-plt-o1
-#     tag: 0.6.3
-
+o1mediator:
+  o1mediator:
+    image:
+      name: ric-plt-o1
+      tag: 0.6.3
+      registry: "nexus3.o-ran-sc.org:10002/o-ran-sc"
 
 alarmmanager:
   image:
@@ -209,10 +209,3 @@ xapp-onboarder:
         registry: "ghcr.io"
         name: ghcr.io/helm/chartmuseum
         tag: v0.16.2
-
-o1mediator:
-  o1mediator:
-    image:
-      name: ric-plt-o1
-      tag: 0.6.3
-      registry: "nexus3.o-ran-sc.org:10002/o-ran-sc"
