@@ -29,6 +29,6 @@ if [[ -z "${RIC_BIND_ADDR}" ]] ; then
     export RIC_BIND_ADDR="$(ip addr show $RIC_BIND_INTERFACE | grep -Po 'inet \K[\d.]+')"
 fi
 
-envsubst < /usr/local/srsran/configs/gnb_zmq.yml > /etc/config/gnb-config.yml
+envsubst < /gnb-template.yml > /etc/config/gnb-config.yml
 
 stdbuf -o0 $RUN_AS -c /etc/config/gnb-config.yml
