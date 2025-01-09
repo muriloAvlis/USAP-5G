@@ -10,8 +10,14 @@
 
 ## Getting Starting
 
+### Install xApp
+
+```sh
+poetry install
+```
+
 ### Running xApp
 
 ```sh
-poetry run usap --no-root
+poetry run usap
 ```

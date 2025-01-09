@@ -5,7 +5,7 @@ ARG E2AP_VERSION=1.1.0
 #--------------- Builder Stage ---------------#
 #---------------------------------------------#
 
-FROM python:3.12-slim AS build
+FROM python:3.11-slim AS build
 
 ENV DEBIAN_FRONTEND=noninteractive
 
@@ -33,18 +33,26 @@ RUN curl -Lo riclibe2ap-dev_${E2AP_VERSION}_amd64.deb https://packagecloud.io/o-
 #---------------- Final Stage ----------------#
 #---------------------------------------------#
 
-FROM python:3.12-slim AS usap_xapp
+FROM python:3.11-slim AS usap_xapp
 
 RUN apt-get update && apt-get upgrade -y && \
     apt-get install -y \
     net-tools \
-    curl
+    curl \
+    nano \
+    git \
+    gcc
 
 ARG RMR_VERSION
 ARG E2AP_VERSION
 
 ENV PATH=$PATH:/root/.local/bin
 ENV LD_LIBRARY_PATH=/lib:/usr/lib:/usr/local/lib
+
+LABEL org.opencontainers.image.authors="Murilo Silva <murilo.silva@itec.ufpa.br>" \
+    org.opencontainers.image.vendor="Federal University of Pará - UFPA" \
+    org.opencontainers.image.licenses="" \
+    org.opencontainers.image.version="0.0.1"
 
 ## COPY RMR and E2AP libs
 COPY --from=build /usr/local/lib/librmr_si.so.${RMR_VERSION} /usr/local/lib/librmr_si.so
@@ -57,6 +65,14 @@ RUN ldconfig
 ## Install poetry
 RUN curl -sSL https://install.python-poetry.org | POETRY_VERSION=2.0.0 python3 -
 
+## Install xApp Python Framework
+ARG SC_RIC_VERSION=j-release
+RUN cd /opt && git clone --depth 1 --branch ${SC_RIC_VERSION} https://github.com/o-ran-sc/ric-plt-xapp-frame-py.git
+
+# Apply patch on xApp Python Framework
+COPY xapp/ric-plt-xapp-frame-py.patch /opt/ric-plt-xapp-frame-py/ric-plt-xapp-frame-py.patch
+RUN cd /opt/ric-plt-xapp-frame-py && git apply ./ric-plt-xapp-frame-py.patch
+
 ## Copy xApp
 COPY xapp /usr/src/usap-xapp
 
@@ -66,7 +82,7 @@ ENV RMR_SEED_RT=/usr/src/usap-xapp/config/routes.rt
 
 ## Install xApp
 WORKDIR /usr/src/usap-xapp
-RUN poetry install --no-root
+RUN poetry install
 
 CMD [ "run", "usap" ]
 ENTRYPOINT [ "poetry" ]

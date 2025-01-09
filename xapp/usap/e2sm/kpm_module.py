@@ -36,10 +36,11 @@ def ntp_ts_to_unix_ms(ntp_timestamp) -> int:
 
 class e2sm_kpm_module(e2sm_kpm_packer):
     def __init__(self, parent):
+        super().__init__()
         self.parent = parent
         self.ran_func_id = 2  # KPM RAN FUNCTION ID
 
-    # TODO: is necessary???
+    # TODO: is it necessary???
     def set_ran_func_id(self, ran_func_id) -> int:
         self.ran_func_id = ran_func_id
 

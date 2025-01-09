@@ -86,7 +86,7 @@ helm search repo local/nearrtric
 ### Deploy Near-RT RIC
 
 ```sh
-helm upgrade --install nearrtric -n ricplt local/nearrtric -f ~/git/usap-5g/configs/osc-ric/osc_ric_values.yaml --create-namespace
+helm upgrade --install nearrtric -n ricplt local/nearrtric -f ~/git/usap-5g/charts/osc-nearrtric/osc_ric_values.yaml --create-namespace
 ```
 
 ## Clean up

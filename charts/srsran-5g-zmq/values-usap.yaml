@@ -166,7 +166,7 @@ config:
     
     log:
       filename: /tmp/gnb.log            # Path of the log file.
-      all_level: info                   # Logging level applied to all layers.
+      all_level: info                # Logging level applied to all layers.
 
     e2:
       enable_cu_cp_e2: true                
@@ -185,7 +185,13 @@ config:
       rlc_report_period: 1000            # RLC metrics report period (in milliseconds)   
       enable_json_metrics: false        
       autostart_stdout_metrics: true   
-      sched_report_period: 1000         
+      sched_report_period: 1000       
+
+    pcap:
+      e2ap_cu_cp_filename: /tmp/cu_cp_e2ap.pcap 
+      e2ap_cu_up_filename: /tmp/cu_up_e2ap.pcap 
+      e2ap_du_filename: /tmp/du_e2ap.pcap   
+      e2ap_enable: true                   
 
 ue:
   image:
@@ -211,6 +217,8 @@ ue:
     imei: '353490069873319'
     resources: {}
     apn: default
+    log:
+      all_level: warning
     slicing:
       enabled: true
       sst: 128  # default slice

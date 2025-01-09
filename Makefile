@@ -13,7 +13,7 @@ build_usap: ## Build xApp docker image
 run_usap: ## Run xApp docker container
 	@docker container run --rm -it --name usap-xapp muriloavlis/usap-xapp:${USAP_XAPP_VERSION}
 
-push_usap: build_xapp ## Push xApp docker image to DockerHub
+push_usap: build_usap ## Push xApp docker image to DockerHub
 	@docker image push muriloavlis/usap-xapp:${USAP_XAPP_VERSION}
 
 build_srs_cu_du: ## Build SRSRAN ZMQ docker image

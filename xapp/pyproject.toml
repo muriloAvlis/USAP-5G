@@ -1,5 +1,5 @@
 [project]
-name = "usap-xapp"
+name = "usap"
 version = "0.0.1"
 description = "USAP xApp source code"
 authors = [
@@ -9,12 +9,12 @@ maintainers = [
     { name = "Murilo Silva", email = "murilosilva@itec.ufpa.br" },
 ]
 readme = "README.md"
-requires-python = ">=3.12"
+requires-python = ">=3.9, <3.12"
 dependencies = [
-    "ricxappframe (>=3.2.2,<4.0.0)",
     "asn1tools (>=0.167.0,<0.168.0)",
-    "hiredis (>=3.1.0,<4.0.0)",
-    "six (>=1.17.0,<2.0.0)"
+    "six (>=1.17.0,<2.0.0)",
+    "mdclogpy (>=1.1.4,<2.0.0)",
+    "ricxappframe @ file:///opt/ric-plt-xapp-frame-py",
 ]
 license = { text = "Apache-2.0" }
 
@@ -30,7 +30,8 @@ classifiers = [
     "Topic :: Software Development :: Open RAN :: Monitoring",
     "Topic :: Software Development :: Open RAN :: Artificial Intelligence (AI)",
 ]
-include = [{ path = "app", format = "sdist" }]
 
+[tool.poetry.dependencies]
+ricxappframe = {develop = true}
 [project.scripts]
-usap = "app.main:run"
+usap = "usap.main:run"
