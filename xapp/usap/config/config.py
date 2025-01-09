@@ -5,15 +5,25 @@ from .logger import Log
 
 
 class Config(object):
-    def __init__(self, xapp_name='usap-xapp', config_file=None):
-        self.config_file = config_file
+    # Static vars
+    _logger_instance = None
+    _config_path = None
+
+    def __init__(self, xapp_name='usap-xapp', config_file='/usr/src/usap-xapp/config/config-file.json'):
         self.xapp_name = xapp_name
         self.cfg = None
-        self.config()
-        self.set_logger()
 
-    def config(self):
-        with open(self.config_file, 'r') as file:
+        if Config._config_path is None:
+            Config._config_path = config_file
+
+        self.load_config()
+
+        if Config._logger_instance is None:
+            self.set_logger()
+            Config._logger_instance = self.get_logger()
+
+    def load_config(self):
+        with open(Config._config_path, 'r') as file:
             cfg = file.read()
             if cfg != None:
                 self.cfg = json.loads(cfg)
@@ -28,7 +38,7 @@ class Config(object):
 
     def get_config(self):
         data = None
-        with open(self.config_file, 'r') as file:
+        with open(Config._config_path, 'r') as file:
             cfg = file.read()
             if cfg != None:
                 self.cfg = json.loads(cfg)
@@ -38,8 +48,8 @@ class Config(object):
                     '", "metadata":{"configType":"json","xappName":"' + \
                     self.xapp_name + '"}}]'
         if data == None:
-            self.logger.error("Config file %s empty or does not exists" %
-                              (self.config_file))
+            Config._logger_instance.error("Config file %s empty or does not exists" %
+                                          (Config._config_path))
         return data
 
     def set_logger(self):
@@ -47,16 +57,21 @@ class Config(object):
         if self.controls['active'] == True and self.controls.get('logger'):
             logLevel = self.controls['logger'].get('level')
             if logLevel.upper() == "ERROR":
-                self.logger = Log('usap-xapp', Level.ERROR)
+                Config._logger_instance = Log('usap-xapp', Level.ERROR)
             elif logLevel.upper() == "WARNING":
-                self.logger = Log('usap-xapp', Level.WARNING)
+                Config._logger_instance = Log('usap-xapp', Level.WARNING)
             elif logLevel.upper() == "INFO":
-                self.logger = Log('usap-xapp', Level.INFO)
+                Config._logger_instance = Log('usap-xapp', Level.INFO)
             elif logLevel.upper() >= "DEBUG":
-                self.logger = Log('usap-xapp', Level.DEBUG)
+                Config._logger_instance = Log('usap-xapp', Level.DEBUG)
 
         # App version
-        self.logger.add_mdc('version', self.get_item_by_key('appVersion'))
+        Config._logger_instance.add_mdc(
+            'version', self.get_item_by_key('appVersion'))
 
-    def get_logger(self):
-        return self.logger
+    @staticmethod
+    def get_logger():
+        if Config._logger_instance is None:
+            raise Exception(
+                'Logger not initialized. Ensure Config is initialized.')
+        return Config._logger_instance

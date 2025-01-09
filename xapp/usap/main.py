@@ -3,15 +3,15 @@ import signal
 import threading
 import sys
 
-from .config.config import Config
-from .usap_xapp.usap_xapp import UsapXapp
+from usap.config.config import Config
+from usap.usap_xapp.usap_xapp import UsapXapp
 
 
 class App(object):
     def __init__(self, configPath):
-        self.config = Config('usap-xapp', configPath)
-        self.logger = self.config.get_logger()
-        self.usap_xapp = UsapXapp(self.logger)
+        self.config = Config('usap-xapp', configPath)  # Get config class
+        self.logger = self.config.get_logger()  # Get Logger
+        self.usap_xapp = UsapXapp()  # Get xApp Class
 
     def signal_handler(self, signum, frame):
         self.logger.warning(f"""Received signal: {

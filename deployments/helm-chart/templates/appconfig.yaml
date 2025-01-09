@@ -84,6 +84,7 @@ data:
             },
             "subscription": {
                 "subscriptionActive": {{ index .Values "controls" "subscription" "subscriptionActive" | toJson }}
+                "e2sm": {{ index .Values "controls" "subscription" "e2sm" | toJson }}
             },
             "localAddress": {
                 "host": {{ index .Values "controls" "localAddress" "host" | toJson }}

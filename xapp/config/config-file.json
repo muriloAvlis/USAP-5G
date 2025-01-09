@@ -92,7 +92,24 @@
             "level": "INFO"
         },
         "subscription": {
-            "subscriptionActive": true
+            "subscriptionActive": true,
+            "e2sm": [
+                {
+                    "name": "KPM",
+                    "ran_function_id": 2,
+                    "reporting_period": 1000,
+                    "granularity_period": 1000,
+                    "report_style_type": 4,
+                    "ue_list": [
+                        {
+                            "id": 0
+                        }
+                    ]
+                },
+                {
+                    "name": "RC"
+                }
+            ]
         },
         "localAddress": {
             "host": ":8080"

@@ -98,3 +98,25 @@ def plmn_to_bytes(plmn):
         ((mnc & 0xf) << 4) + ((mnc & 0xf0) >> 4)
     ]
     return bytes(bytes_array)
+
+
+def reverse(string):
+    return string[::-1]
+
+
+def decode_plmn(plmn):
+    if "F" in plmn:
+        # ABFCDE
+        # BACF -> BAC (MCC)
+        mcc = reverse(plmn[0:2]) + reverse(plmn[2:4]).replace('F', '')
+
+        # Invert 2 last digits (MNC)
+        mnc = reverse(plmn[4:6])
+    else:
+        # ABCDEF
+        # ABCD -> BAD (MCC)
+        mcc = reverse(plmn[0:2]) + reverse(plmn[2:4][1])
+
+        # FE + D (MNC)
+        mnc = reverse(plmn[4:6]) + str(reverse(plmn[2:4][0]))
+    return mcc, mnc

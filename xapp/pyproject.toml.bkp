@@ -13,6 +13,7 @@ ricxappframe = "^3.2.2"
 six = "^1.17.0"
 asn1tools = "^0.167.0"
 redis-py-cluster = "^2.1.3"
+ric-plt-xapp-frame-py = { path = "/opt/ric-plt-xapp-frame-py" }
 
 [build-system]
 requires = ["poetry-core"]

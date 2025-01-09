@@ -162,3 +162,9 @@ class e2sm_kpm_packer(object):
         indication_msg = self.asn1_compiler.decode(
             'E2SM-KPM-IndicationMessage', msg_bytes)
         return indication_msg
+
+    def decode_ran_function_definition(self, ran_func_def_bytes: bytes):
+        ran_func_def_decoded = self.asn1_compiler.decode(
+            'E2SM-KPM-RANfunction-Description', ran_func_def_bytes
+        )
+        return ran_func_def_decoded
