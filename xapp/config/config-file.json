@@ -89,7 +89,7 @@
             }
         },
         "logger": {
-            "level": "INFO"
+            "level": 4
         },
         "subscription": {
             "subscriptionActive": true,

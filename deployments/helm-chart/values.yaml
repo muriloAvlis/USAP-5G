@@ -63,7 +63,7 @@ readinessProbe:
   periodSeconds: 15
 
 # Instance name. If empty, chart name will be used
-name: usap-xapp
+name: usap
 
 # Full instance name. If empty, full name will be constructed from name
 fullname: {}
@@ -74,8 +74,8 @@ containers:
 - image:
     name: muriloavlis/usap-xapp
     registry: docker.io
-    tag: 0.0.1
-  name: usap-xapp
+    tag: dev-go
+  name: usap
   # command: ['sleep', 'infinity']
 controls:
   active: true
@@ -85,7 +85,7 @@ controls:
   localAddress:
     host: :8080
   logger:
-    level: "INFO"
+    level: 4
   measurement_interval: 1000
   subscription:
     subscriptionActive: true
@@ -110,28 +110,94 @@ db:
   waitForSdl: false
 faults: {}
 measurements:
-- description: UE Downlink Throughput
-  name: ricxapp_usap_xapp_DRBUEThpDl
-  objectInstance: DRB.UEThpDl
-  objectName: DRB.UEThpDl
-  type: int
-- description: UE Uplink Throughput
-  name: ricxapp_usap_xapp_DRBUEThpUl
-  objectInstance: DRB.UEThpUl
-  objectName: DRB.UEThpUl
-  type: int
+  - moId: "usap"
+    measType: "E2SM_KPM"
+    measId: "00101"
+    measInterval: "1"
+    metrics:
+      - objectName: "DRB_AirIfDelayUl"
+        objectInstance: "DRB_AirIfDelayUl"
+        name: "ricxapp_usap_DRB_AirIfDelayUl"
+        type: "counter"
+        description: ""
+      - objectName: "DRB.PacketSuccessRateUlgNBUu"
+        objectInstance: "DRB.PacketSuccessRateUlgNBUu"
+        name: "ricxapp_usap_DRB.PacketSuccessRateUlgNBUu"
+        type: "counter"
+        description: ""
+      - objectName: "DRB.RlcDelayUl"
+        objectInstance: "DRB.RlcDelayUl"
+        name: "ricxapp_usap_DRB.RlcDelayUl"
+        type: "counter"
+        description: ""
+      - objectName: "DRB.RlcPacketDropRateDl"
+        objectInstance: "DRB.RlcPacketDropRateDl"
+        name: "ricxapp_usap_DRB.RlcPacketDropRateDl"
+        type: "counter"
+        description: ""
+      - objectName: "DRB.RlcSduDelayDl"
+        objectInstance: "DRB.RlcSduDelayDl"
+        name: "ricxapp_usap_DRB.RlcSduDelayDl"
+        type: "counter"
+        description: ""
+      - objectName: "DRB.RlcSduTransmittedVolumeDL"
+        objectInstance: "DRB.RlcSduTransmittedVolumeDL"
+        name: "ricxapp_usap_DRB.RlcSduTransmittedVolumeDL"
+        type: "counter"
+        description: ""
+      - objectName: "DRB.RlcSduTransmittedVolumeUL"
+        objectInstance: "DRB.RlcSduTransmittedVolumeUL"
+        name: "ricxapp_usap_DRB.RlcSduTransmittedVolumeUL"
+        type: "counter"
+        description: ""
+      - objectName: "DRB.UEThpDl"
+        objectInstance: "DRB.UEThpDl"
+        name: "ricxapp_usap_DRB.UEThpDl"
+        type: "counter"
+        description: ""
+      - objectName: "DRB.UEThpUl"
+        objectInstance: "DRB.UEThpUl"
+        name: "ricxapp_usap_DRB.UEThpUl"
+        type: "counter"
+        description: ""
+      - objectName: "RRU.PrbAvailDl"
+        objectInstance: "RRU.PrbAvailDl"
+        name: "ricxapp_usap_RRU.PrbAvailDl"
+        type: "counter"
+        description: ""
+      - objectName: "RRU.PrbAvailUl"
+        objectInstance: "RRU.PrbAvailUl"
+        name: "ricxapp_usap_RRU.PrbAvailUl"
+        type: "counter"
+        description: ""
+      - objectName: "RRU.PrbTotDl"
+        objectInstance: "RRU.PrbTotDl"
+        name: "ricxapp_usap_RRU.PrbTotDl"
+        type: "counter"
+        description: ""
+      - objectName: "RRU.PrbTotUl"
+        objectInstance: "RRU.PrbTotUl"
+        name: "ricxapp_usap_RRU.PrbTotUl"
+        type: "counter"
+        description: ""
+      - objectName: "RRU.PrbUsedDl"
+        objectInstance: "RRU.PrbUsedDl"
+        name: "ricxapp_usap_RRU.PrbUsedDl"
+        type: "counter"
+        description: ""
+      - objectName: "RRU.PrbUsedUl"
+        objectInstance: "RRU.PrbUsedUl"
+        name: "ricxapp_usap_RRU.PrbUsedUl"
+        type: "counter"
+        description: ""
 messaging:
   ports:
-  - container: usap-xapp
+  - container: usap
     description: http service
     name: http
     port: 8080
-  - container: usap-xapp
-    description: rmr route port for usap-xapp
-    name: rmr-route
-    port: 4561
-  - container: usap-xapp
-    description: rmr data port for usap-xapp
+  - container: usap
+    description: rmr data port for usap
     maxSize: 65536
     name: rmr-data
     numWorkers: 1
@@ -146,6 +212,10 @@ messaging:
     txMessages:
     - RIC_SUB_REQ
     - RIC_SUB_DEL_REQ
+  - container: usap
+    description: rmr route port for usap
+    name: rmr-route
+    port: 4561
 metrics:
   namespace: ricxapp
   url: /ric/v1/metrics
