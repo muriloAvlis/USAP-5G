@@ -21,6 +21,7 @@ data:
   {{- if .Values.appenv }}
     {{- toYaml .Values.appenv | nindent 2 }}
   {{- end }}
+  # SERVICE_RICXAPP_USAP_RMR_PORT
   RMR_RTG_SVC: "4561"
   RMR_SRC_ID: {{ include "ricxapp.servicename.rmr" . }}.{{ include "ricxapp.namespace" . }}
   XAPP_DESCRIPTOR_PATH: {{ .Values.appconfig.path }}
@@ -32,6 +33,6 @@ data:
   SERVICE_METRICSDB_PORT: "8086"
   E2MGR_HTTP_SERVICE_HOST: "{{ .Values.ricplt.e2mgrHttpService }}"
   E2MGR_HTTP_SERVICE_PORT: "3800"
-  CONTAINER_NAME: "usap-xapp"
-  SYSTEM_NAME: "python"
+  CONTAINER_NAME: "usap"
+  SYSTEM_NAME: "ubuntu"
   HOST_NAME: "usap"

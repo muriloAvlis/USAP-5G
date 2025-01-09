@@ -8,7 +8,7 @@ help: ## Show this help.
 
 build_usap: ## Build xApp docker image
 	@echo "Building usap-xapp docker image"
-	@docker image build -t muriloavlis/usap-xapp:${USAP_XAPP_VERSION} -f docker/Dockerfile.usap_xapp .
+	@docker image build -t muriloavlis/usap-xapp:${USAP_XAPP_VERSION} -f docker/Dockerfile.usap .
 
 run_usap: ## Run xApp docker container
 	@docker container run --rm -it --name usap-xapp muriloavlis/usap-xapp:${USAP_XAPP_VERSION}

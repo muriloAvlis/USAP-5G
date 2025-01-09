@@ -1,0 +1,210 @@
+dbURI: "mongodb://{{ .Release.Name }}-mongodb/open5gs"
+
+populate:
+  enabled: true
+  image:
+    registry: docker.io
+    repository: gradiant/open5gs-dbctl
+    tag: 0.10.3
+    pullPolicy: IfNotPresent
+  initCommands:
+  # example of initCommands:
+  #  - open5gs-dbctl add 999700000000001 465B5CE8B199B49FAA5F0A2EE238A6BC E8ED289DEBA952E4283B54E88E6183CA
+  #  - open5gs-dbctl add_ue_with_apn 999700000000002 465B5CE8B199B49FAA5F0A2EE238A6BC E8ED289DEBA952E4283B54E88E6183CA internet
+  #  - open5gs-dbctl add_ue_with_slice 999700000000003 465B5CE8B199B49FAA5F0A2EE238A6BC E8ED289DEBA952E4283B54E88E6183CA internet 1 111111
+    - open5gs-dbctl add_ue_with_slice 001010000000001 465B5CE8B199B49FAA5F0A2EE238A6BC E8ED289DEBA952E4283B54E88E6183CA default 128 FFFFFF
+
+# Common
+mongodb:
+  enabled: true
+  image:
+    tag: 8.0.4
+  auth:
+    enabled: false
+  global:
+    storageClass: openebs-hostpath
+  nodeSelector:
+    kubernetes.io/hostname: ms-ubuntu
+
+
+smf:
+  enabled: true
+  config:
+    pcrf:
+      enabled: false
+    dnsList:
+    - 8.8.8.8
+    - 1.1.1.1
+    - 2001:4860:4860::8888
+    - 2001:4860:4860::8844
+    subnetList:
+      - subnet: 10.45.1.0/24
+        gateway: 10.45.1.1
+        dnn: embb
+      - subnet: 10.45.2.0/24
+        gateway: 10.45.2.1
+        dnn: urllc
+      - subnet: 10.45.3.0/24
+        gateway: 10.45.3.1
+        dnn: miot
+      - subnet: 10.45.128.0/24
+        gateway: 10.45.128.1
+        dnn: default
+  mtu: 1500
+  nodeSelector:
+    kubernetes.io/hostname: ms-ubuntu
+
+upf:
+  enabled: true
+  config:
+    subnetList:
+    - subnet: 10.45.1.0/24
+      gateway: 10.45.1.1
+      dnn: embb
+      dev: embb_tun
+      mask: 24
+      createDev: true
+      enableNAT: true
+    - subnet: 10.45.2.0/24
+      gateway: 10.45.2.1
+      dnn: urllc
+      dev: urllc_tun
+      mask: 24
+      createDev: true
+      enableNAT: true
+    - subnet: 10.45.3.0/24
+      gateway: 10.45.3.1
+      dnn: miot
+      dev: miot_tun
+      mask: 24
+      createDev: true
+      enableNAT: true
+    - subnet: 10.45.128.0/24
+      gateway: 10.45.128.1
+      dnn: default
+      dev: default_tun
+      mask: 24
+      createDev: true
+      enableNAT: true
+  nodeSelector:
+    kubernetes.io/hostname: ms-ubuntu
+
+webui:
+  enabled: true
+  services:
+    http:
+      type: NodePort
+      nodePorts:
+        http: "30999"
+  nodeSelector:
+    kubernetes.io/hostname: ms-ubuntu
+
+# 4G (disabled)
+hss:
+  enabled: false
+mme:
+  enabled: false
+pcrf:
+  enabled: false
+sgwc:
+  enabled: false
+sgwu:
+  enabled: false
+
+# 5G
+amf:
+  enabled: true
+  config:
+    logLevel: info
+    guamiList:
+      - plmn_id:
+          mcc: "001"
+          mnc: "01"
+        amf_id:
+          region: 1
+          set: 1
+    taiList:
+      - plmn_id:
+          mcc: "001"
+          mnc: "01"
+        tac: [1]
+    plmnList:
+      - plmn_id:
+          mcc: "001"
+          mnc: "01"
+        s_nssai:
+          - sst: 1
+            sd: "0xFFFFFF"
+          - sst: 2
+            sd: "0xFFFFFF"
+          - sst: 3
+            sd: "0xFFFFFF"
+          - sst: 128
+            sd: "0xFFFFFF"
+    networkName: usapNetwork
+  nodeSelector:
+    kubernetes.io/hostname: ms-ubuntu
+
+ausf:
+  enabled: true
+  nodeSelector:
+    kubernetes.io/hostname: ms-ubuntu
+
+bsf:
+  enabled: true
+  nodeSelector:
+    kubernetes.io/hostname: ms-ubuntu
+
+nrf:
+  enabled: true
+  config:
+    logLevel: info
+    servingList:
+      - plmn_id:
+          mcc: "001"
+          mnc: "01"
+  nodeSelector:
+    kubernetes.io/hostname: ms-ubuntu
+
+nssf:
+  enabled: true
+  config:
+    nsiList:
+      - uri: ""
+        sst: 1
+        sd: "0xFFFFFF"
+      - uri: ""
+        sst: 2
+        sd: "0xFFFFFF"
+      - uri: ""
+        sst: 3
+        sd: "0xFFFFFF"
+      - uri: ""
+        sst: 128
+        sd: "0xFFFFFF"
+  nodeSelector:
+    kubernetes.io/hostname: ms-ubuntu
+
+pcf:
+  enabled: true
+  mongodb:
+    enabled: false
+  nodeSelector:
+    kubernetes.io/hostname: ms-ubuntu
+
+scp:
+  enabled: true
+  mongodb:
+    enabled: false
+  nodeSelector:
+    kubernetes.io/hostname: ms-ubuntu
+
+udm:
+  enabled: true
+  nodeSelector:
+    kubernetes.io/hostname: ms-ubuntu
+    
+udr:
+  enabled: true
+  nodeSelector:
+    kubernetes.io/hostname: ms-ubuntu
