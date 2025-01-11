@@ -96,7 +96,6 @@
             "e2sm": [
                 {
                     "name": "KPM",
-                    "ran_function_id": 2,
                     "reporting_period": 1000,
                     "granularity_period": 1000,
                     "report_style_type": 4,

@@ -1,0 +1,36 @@
+[project]
+name = "usap-e2sm"
+version = "0.0.1"
+description = "USAP E2SM ASN1 encoder and decoder"
+authors = [
+    {name = "Murilo Silva",email = "murilosilva@itec.ufpa.br"}
+]
+maintainers = [
+    { name = "Murilo Silva", email = "murilosilva@itec.ufpa.br" },
+]
+readme = "README.md"
+requires-python = ">=3.11"
+dependencies = [
+    "asn1tools (>=0.167.0,<0.168.0)",
+    "grpcio (>=1.69.0,<2.0.0)",
+    "grpcio-tools (>=1.69.0,<2.0.0)",
+    "structlog (>=24.4.0,<25.0.0)",
+    "grpcio-reflection (>=1.69.0,<2.0.0)"
+]
+
+
+[build-system]
+requires = ["poetry-core>=2.0.0,<3.0.0"]
+build-backend = "poetry.core.masonry.api"
+
+[project.scripts]
+usap_e2sm = "usap_e2sm.main:run"
+
+[tool.poetry]
+requires-poetry = ">=2.0"
+classifiers = [
+    "Topic :: Software Development :: Open RAN :: xApp",
+    "Topic :: Software Development :: Open RAN :: Network Slicing",
+    "Topic :: Software Development :: Open RAN :: Monitoring",
+    "Topic :: Software Development :: Open RAN :: Artificial Intelligence (AI)",
+]

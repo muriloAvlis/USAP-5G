@@ -1,17 +1,53 @@
 package config
 
-// Default vars
-var (
-	Host                 = "service-ricxapp-usap-http.ricxapp"
-	HttpPort             = int64(8080)
-	RMRPort              = int64(4560)
-	KpmRanFuncId         = int64(2)
-	XappEventInstanceID  = int64(1234)               // XappEventInstanceID
-	RanUeKpis            = make(map[string][]string) // map to [E2NodeID]:[RF_Def_Fmt]
-	ReportingPeriod      = uint64(1000)              // in ms
-	GranularityPeriod    = uint64(1000)
-	ActionId             = int64(1) // What is this??
-	ActionType           = "report"
-	SubsequentActionType = "continue"
-	TimeToWait           = "w10ms"
+import (
+	"strings"
+
+	"gerrit.o-ran-sc.org/r/ric-plt/xapp-frame/pkg/xapp"
+	"github.com/muriloAvlis/usap-5g/pkg/utils"
 )
+
+func GetReportStyleType() int {
+	var reportStyleType int
+	serviceModels := xapp.Config.Get("controls.subscription.e2sm").([]interface{})
+
+	for _, sm := range serviceModels {
+		smStruct := sm.(map[string]interface{})
+
+		if strings.ToUpper(smStruct["name"].(string)) == "KPM" {
+			reportStyleType = utils.FloatInterfaceToInt(smStruct["report_style_type"])
+		}
+
+	}
+	return reportStyleType
+}
+
+func GetReportingPeriod() int64 {
+	var reportingPeriod int
+	serviceModels := xapp.Config.Get("controls.subscription.e2sm").([]interface{})
+
+	for _, sm := range serviceModels {
+		smStruct := sm.(map[string]interface{})
+
+		if strings.ToUpper(smStruct["name"].(string)) == "KPM" {
+			reportingPeriod = utils.FloatInterfaceToInt(smStruct["reporting_period"])
+		}
+
+	}
+	return int64(reportingPeriod)
+}
+
+func GetGranularityPeriod() int64 {
+	var granularityPeriod int
+	serviceModels := xapp.Config.Get("controls.subscription.e2sm").([]interface{})
+
+	for _, sm := range serviceModels {
+		smStruct := sm.(map[string]interface{})
+
+		if strings.ToUpper(smStruct["name"].(string)) == "KPM" {
+			granularityPeriod = utils.FloatInterfaceToInt(smStruct["granularity_period"])
+		}
+
+	}
+	return int64(granularityPeriod)
+}
