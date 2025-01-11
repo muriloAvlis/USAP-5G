@@ -1,0 +1,74 @@
+syntax = "proto3";
+
+package usap_e2sm;
+
+option go_package = "./pb";
+
+// ------------------------------------//
+// ------------- Services ------------//
+// ----------------------------------//
+
+service EventTriggerDefinition {
+  rpc EncodeEventTriggerDefFormat1 (EncodeEventTriggerRequest) returns (EncodeEventTriggerResponse);
+}
+
+service RanFunctionDefinition {
+  rpc DecodeRanFunctionDefinition (DecodeRanFunctionRequest) returns (DecodeRanFunctionResponse);
+}
+
+service ActionDefinition {
+  // TODO: implement for others formats
+  rpc EncodeActionDefinitionFormat4 (EncodeActDefFormat4Request) returns (EncActDefResponse);
+}
+
+// ------------------------------------//
+// ------------- Messages ------------//
+// ----------------------------------//
+
+message EncodeEventTriggerRequest {
+  int64 reportingPeriod = 1;
+}
+
+message EncodeEventTriggerResponse {
+  repeated int64 eventTriggerDef = 1;
+}
+
+message DecodeRanFunctionRequest {
+  string ranFuncDefinition = 1;
+}
+
+message DecodeRanFunctionResponse {
+  string decodedRanFuncDef = 1;
+}
+
+message TestCondValue {
+    oneof value {
+      int64 valueInt = 2;
+      int64 valueEnum = 3;
+      bool valueBool = 4;
+      bytes valueBitS = 5;
+      bytes valueOctS = 6;
+      string valuePrtS = 7;
+      double valueReal = 8;
+    }
+}
+
+message TestCondInfo {
+  string testType = 1;
+  string testExpr = 2;
+  TestCondValue testCondValue = 3;
+}
+
+message MatchingUEConds {
+  TestCondInfo testCondInfo = 1;
+}
+
+message EncodeActDefFormat4Request {
+  MatchingUEConds matchingUEConds = 1;
+  repeated string measNameList = 2;
+  int64 granularityPeriod = 3;
+}
+
+message EncActDefResponse {
+  repeated int64 actionDefinitionEnc = 1;
+}

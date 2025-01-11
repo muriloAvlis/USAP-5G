@@ -10,6 +10,7 @@ import (
 	"gerrit.o-ran-sc.org/r/ric-plt/xapp-frame/pkg/clientmodel"
 	"gerrit.o-ran-sc.org/r/ric-plt/xapp-frame/pkg/xapp"
 	"github.com/muriloAvlis/usap-5g/pkg/config"
+	"github.com/muriloAvlis/usap-5g/pkg/e2sm"
 	"github.com/muriloAvlis/usap-5g/pkg/rnib"
 )
 
@@ -54,32 +55,45 @@ func (m *Manager) sendSubscription(e2NodeID string) {
 	xapp.Logger.Info("Sending subscription request for E2 Node: %s", e2NodeID)
 
 	// Encode eventTriggerDefinitionFormat1
-	evTriggerDefFmt1 := []int64{8, 3, 231} // 1000 ms
+	evTriggerDefFmt1 := m.E2sm.EncodeEventTriggerDef(config.GetReportingPeriod())
 
-	// Action Definition
-	var actDefFmt4 []int64
+	//***** Action Definition Format 4 *****//
+	var actDefEncoded []int64
+	if m.E2sm.ReportStyleType == 4 {
+		// Dummy condition that is always satisfied, useful to get IDs of all connected UEs
+		// example matching UE condition: ul-rSRP < 1000
+		machingUEConds := e2sm.MatchingUEConds{
+			TestCondInfo: e2sm.TestCondInfo{
+				TestType:  "ul-rSRP",
+				TestExpr:  "lessthan",
+				TestValue: 1000,
+			},
+		}
 
-	if e2NodeID == "gnb_001_001_00019b" { // CU Node
-		actDefFmt4 = []int64{0, 1, 4, 128, 43, 0, 0, 0, 56, 0, 1, 0, 32, 2, 3, 232, 0, 0, 0, 1, 48, 68, 82, 66, 46, 80, 100, 99, 112, 82, 101, 111, 114, 100, 68, 101, 108, 97, 121, 85, 108, 1, 32, 0, 0, 64, 3, 231}
-	} else { // DU Node
-		actDefFmt4 = []int64{0, 1, 4, 128, 129, 107, 0, 0, 0, 56, 0, 1, 0, 32, 2, 3, 232, 0, 0, 14, 0, 240, 68, 82, 66, 46, 65, 105, 114, 73, 102, 68, 101, 108, 97, 121, 85, 108, 1, 32, 0, 0, 1, 176, 68, 82, 66, 46, 80, 97, 99, 107, 101, 116, 83, 117, 99, 99, 101, 115, 115, 82, 97, 116, 101, 85, 108, 103, 78, 66, 85, 117, 1, 32, 0, 0, 0, 208, 68, 82, 66, 46, 82, 108, 99, 68, 101, 108, 97, 121, 85, 108, 1, 32, 0, 0, 1, 96, 68, 82, 66, 46, 82, 108, 99, 80, 97, 99, 107, 101, 116, 68, 114, 111, 112, 82, 97, 116, 101, 68, 108, 1, 32, 0, 0, 1, 0, 68, 82, 66, 46, 82, 108, 99, 83, 100, 117, 68, 101, 108, 97, 121, 68, 108, 1, 32, 0, 0, 1, 192, 68, 82, 66, 46, 82, 108, 99, 83, 100, 117, 84, 114, 97, 110, 115, 109, 105, 116, 116, 101, 100, 86, 111, 108, 117, 109, 101, 68, 76, 1, 32, 0, 0, 1, 192, 68, 82, 66, 46, 82, 108, 99, 83, 100, 117, 84, 114, 97, 110, 115, 109, 105, 116, 116, 101, 100, 86, 111, 108, 117, 109, 101, 85, 76, 1, 32, 0, 0, 0, 160, 68, 82, 66, 46, 85, 69, 84, 104, 112, 68, 108, 1, 32, 0, 0, 0, 160, 68, 82, 66, 46, 85, 69, 84, 104, 112, 85, 108, 1, 32, 0, 0, 0, 208, 82, 82, 85, 46, 80, 114, 98, 65, 118, 97, 105, 108, 68, 108, 1, 32, 0, 0, 0, 208, 82, 82, 85, 46, 80, 114, 98, 65, 118, 97, 105, 108, 85, 108, 1, 32, 0, 0, 0, 176, 82, 82, 85, 46, 80, 114, 98, 84, 111, 116, 68, 108, 1, 32, 0, 0, 0, 176, 82, 82, 85, 46, 80, 114, 98, 84, 111, 116, 85, 108, 1, 32, 0, 0, 0, 192, 82, 82, 85, 46, 80, 114, 98, 85, 115, 101, 100, 68, 108, 1, 32, 0, 0, 0, 192, 82, 82, 85, 46, 80, 114, 98, 85, 115, 101, 100, 85, 108, 1, 32, 0, 0, 64, 3, 231}
+		granularityPeriod := config.GetGranularityPeriod()
+
+		// Only Action Definition Format 4 is available in gRPC API
+		actDefEncoded = m.E2sm.EncodeActionDefFormat4(machingUEConds, m.E2sm.RanUeKpis[e2NodeID], granularityPeriod)
+	} else {
+		xapp.Logger.Error("Unsupported Report Style Type %d", m.E2sm.ReportStyleType)
+		return
 	}
 
 	// ActionsToBeSetup
 	actionToBeSetup := &clientmodel.ActionToBeSetup{
-		ActionDefinition: actDefFmt4,
-		ActionID:         &config.ActionId,
-		ActionType:       &config.ActionType,
+		ActionDefinition: actDefEncoded,
+		ActionID:         &ActionId,
+		ActionType:       &ActionType,
 		SubsequentAction: &clientmodel.SubsequentAction{
-			SubsequentActionType: &config.SubsequentActionType,
-			TimeToWait:           &config.TimeToWait,
+			SubsequentActionType: &SubsequentActionType,
+			TimeToWait:           &TimeToWait,
 		},
 	}
 
 	// Set subscription details
 	subsDetails := &clientmodel.SubscriptionDetail{
 		EventTriggers:       evTriggerDefFmt1,
-		XappEventInstanceID: &config.XappEventInstanceID,
+		XappEventInstanceID: &XappEventInstanceID,
 		ActionToBeSetupList: clientmodel.ActionsToBeSetup{
 			actionToBeSetup,
 		},
@@ -89,7 +103,7 @@ func (m *Manager) sendSubscription(e2NodeID string) {
 	subscriptionParams := clientmodel.SubscriptionParams{
 		ClientEndpoint: &m.ClientEndpoint,
 		Meid:           &e2NodeID,
-		RANFunctionID:  &config.KpmRanFuncId,
+		RANFunctionID:  &KPM_RAN_FUNC_ID,
 		SubscriptionDetails: clientmodel.SubscriptionDetailsList{
 			subsDetails,
 		},
@@ -145,24 +159,30 @@ func (m *Manager) xAppStartCB(d interface{}) {
 
 	nbs := rnib.GetNbList()
 
+	// Stores KPIs by E2 node ID
+	m.E2sm.RanUeKpis = make(map[string][]string)
+
 	// prepare nodeBs data
 	for _, nb := range nbs {
 		if nb.ConnectionStatus == 1 { // CONNECTED NodeB
 			xapp.Logger.Info("E2 node %s is connected! Starting information extraction...", nb.GetInventoryName())
 
 			// Get RAN Function Definition coded from E2 node
-			_, err := rnib.GetRanFuncDefiniton(nb.GetInventoryName(), config.KpmRanFuncId)
+			encodedRanFuncDef, err := rnib.GetRanFuncDefiniton(nb.GetInventoryName(), KPM_RAN_FUNC_ID)
 			if err != nil {
 				xapp.Logger.Error("%s", err.Error())
 				continue
 			}
 
-			// CU Node
-			if nb.GetInventoryName() == "gnb_001_001_00019b" {
-				config.RanUeKpis[nb.InventoryName] = append(config.RanUeKpis[nb.InventoryName], metricsCU...)
-			} else {
-				config.RanUeKpis[nb.InventoryName] = append(config.RanUeKpis[nb.InventoryName], metricsDU...)
-			}
+			// Decode ranFunctionDefinition
+			decodedRanFuncDef := m.E2sm.DecodeRanFuncDefinition(encodedRanFuncDef)
+
+			// Get meas name list by report style type in config file
+			m.E2sm.ReportStyleType = config.GetReportStyleType()
+
+			measNameList := rnib.GetMeasNameList(decodedRanFuncDef, m.E2sm.ReportStyleType)
+
+			m.E2sm.RanUeKpis[nb.GetInventoryName()] = measNameList
 
 			// loop to check if xApp is registered
 			for {
@@ -181,18 +201,21 @@ func (m *Manager) xAppStartCB(d interface{}) {
 			go m.controlLoop() // TODO: Is it necessary to control this routine?
 
 		} else { // DISCONNECTED NodeB
-			xapp.Logger.Warn("E2 node %s is disconnected!", nb.GetInventoryName())
+			xapp.Logger.Warn("E2 node %s is disconnected! Ignoring...", nb.GetInventoryName())
 		}
 	}
 }
 
-// TODO
 func (m *Manager) Stop(sig os.Signal) {
+	// Delete subscriptions
 	xapp.Logger.Debug("Received signal %s, stopping application...", sig)
 	for _, sub := range m.subscriptions {
 		xapp.Logger.Debug("Removing subscription ID: %s", *sub.SubscriptionID)
 		xapp.Subscription.Unsubscribe(*sub.SubscriptionID)
 	}
+
+	// Stop E2sm client
+	m.E2sm.Stop()
 }
 
 // Manager Entrypoint

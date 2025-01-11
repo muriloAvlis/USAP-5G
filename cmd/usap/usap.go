@@ -1,9 +1,11 @@
 package main
 
 import (
+	"os"
+
 	"gerrit.o-ran-sc.org/r/ric-plt/xapp-frame/pkg/clientmodel"
 	"gerrit.o-ran-sc.org/r/ric-plt/xapp-frame/pkg/xapp"
-	"github.com/muriloAvlis/usap-5g/pkg/config"
+	"github.com/muriloAvlis/usap-5g/pkg/e2sm"
 	"github.com/muriloAvlis/usap-5g/pkg/logger"
 	"github.com/muriloAvlis/usap-5g/pkg/manager"
 )
@@ -17,12 +19,13 @@ func main() {
 		Config: manager.Config{
 			WaitForSdl: true, // dynamic ??
 			ClientEndpoint: clientmodel.SubscriptionParamsClientEndpoint{
-				Host:     config.Host,
-				HTTPPort: &config.HttpPort,
-				RMRPort:  &config.RMRPort,
+				Host:     manager.Host,
+				HTTPPort: &manager.HttpPort,
+				RMRPort:  &manager.RMRPort,
 			},
 		},
-		RMR: make(chan *xapp.RMRParams),
+		RMR:  make(chan *xapp.RMRParams),
+		E2sm: e2sm.NewClient(os.Getenv("E2SM_SERVER_SVC"), os.Getenv("E2SM_SERVER_PORT")),
 	}
 
 	// Run App Manager

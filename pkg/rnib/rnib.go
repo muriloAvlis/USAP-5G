@@ -8,7 +8,7 @@ import (
 	"strings"
 
 	"gerrit.o-ran-sc.org/r/ric-plt/xapp-frame/pkg/xapp"
-	"github.com/muriloAvlis/usap-5g/pkg/config"
+	"github.com/muriloAvlis/usap-5g/pkg/utils"
 )
 
 // Get eNBs list
@@ -81,7 +81,7 @@ func GetRanFuncDefiniton(inventoryName string, ranFuncId int64) (string, error) 
 	// check if E2 Node has KPM RAN function == 2
 	rfIdx := -1
 	for idx, rf := range e2Response.Gnb.RanFunctions {
-		if rf.RanFunctionId == config.KpmRanFuncId {
+		if rf.RanFunctionId == ranFuncId {
 			rfIdx = idx
 			xapp.Logger.Debug("E2 node %s has KPM RF index: %d", inventoryName, rfIdx)
 		}
@@ -92,4 +92,26 @@ func GetRanFuncDefiniton(inventoryName string, ranFuncId int64) (string, error) 
 	}
 
 	return e2Response.Gnb.RanFunctions[rfIdx].RanFunctionDefinition, nil
+}
+
+func GetMeasNameList(ranFuncDefinition map[string]interface{}, reportStyleType int) []string {
+	var measNameList []string
+
+	reportStyles := ranFuncDefinition["ric-ReportStyle-List"].([]interface{})
+
+	for _, reportStyle := range reportStyles {
+		reportStyleMap := reportStyle.(map[string]interface{})
+
+		styleTypeInt := utils.FloatInterfaceToInt(reportStyleMap["ric-ReportStyle-Type"])
+
+		if styleTypeInt == reportStyleType {
+			measList := reportStyleMap["measInfo-Action-List"].([]interface{})
+			for _, meas := range measList {
+				measMap := meas.(map[string]interface{})
+				measNameList = append(measNameList, measMap["measName"].(string))
+			}
+		}
+	}
+
+	return measNameList
 }

@@ -74,7 +74,7 @@ containers:
 - image:
     name: muriloavlis/usap-xapp
     registry: docker.io
-    tag: dev-go
+    tag: 0.0.1
   name: usap
   # command: ['sleep', 'infinity']
 controls:
@@ -91,7 +91,6 @@ controls:
     subscriptionActive: true
     e2sm:
       - name: "KPM"
-        ran_function_id: 2
         reporting_period: 1000
         granularity_period: 1000
         report_style_type: 4

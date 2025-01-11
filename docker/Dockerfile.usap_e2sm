@@ -1,0 +1,35 @@
+#---------------------------------------------#
+#--------------- Builder Stage ---------------#
+#---------------------------------------------#
+
+FROM python:3.13-alpine AS build
+
+ENV PATH=$PATH:/root/.local/bin
+
+RUN apk -U upgrade && apk add --no-cache \
+    curl \
+    gcc \
+    musl-dev \
+    nano
+
+LABEL org.opencontainers.image.authors="Murilo Silva <murilo.silva@itec.ufpa.br>" \
+    org.opencontainers.image.vendor="Federal University of Pará - UFPA" \
+    org.opencontainers.image.licenses="" \
+    org.opencontainers.image.version="0.0.1"
+
+## Install poetry
+RUN curl -sSL https://install.python-poetry.org | POETRY_VERSION=2.0.0 python3 -
+
+## Copy xApp
+COPY usap-e2sm /usr/src/usap-e2sm
+
+## Install xApp
+WORKDIR /usr/src/usap-e2sm
+RUN poetry install
+
+## gRPC server
+EXPOSE 5051
+
+CMD [ "run", "usap_e2sm" ]
+ENTRYPOINT [ "poetry" ]
+
