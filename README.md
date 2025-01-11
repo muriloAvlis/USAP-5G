@@ -25,9 +25,9 @@ Definitions used by the application to interact with the RIC
 
 ### E2SM standard
 
-- [E2SM-KPM-v4.00](xapp/app/ans1coder/e2sm-kpm-v4.00.asn)
-- [E2SM-RC-v5.00](xapp/app/ans1coder/e2sm-rc-v5.00.asn)
-- [E2SM-v5.00](xapp/app/ans1coder/e2sm-v5.00.asn)
+- [E2SM-v5.00](usap-e2sm/usap_e2sm/ans1/e2sm-v5.00.asn)
+- [E2SM-KPM-v4.00](usap-e2sm/usap_e2sm/ans1/e2sm-kpm-v4.00.asn)
+- [E2SM-RC-v5.00](usap-e2sm/usap_e2sm/ans1/e2sm-rc-v5.00.asn)
 
 <!-- ### 3GPP NG Application Protocol (NGAP) Release 17
 
@@ -48,19 +48,19 @@ Definitions used by the application to interact with the RIC
 
 ### Network Configurations
 
-The following 5G slice configurations were used for our experiments
+The following 5G slice configurations were used for our experiments:
 
 |                    | **sst** | **sd** | **dnn** | **Subnet**  | **MCC** | **MNC** |
 |--------------------|---------|--------|---------|-------------|---------|---------|
-| **embb_slice**     | 1       | 000000 | embb    | 10.45.0.0/24 |   724   |   70    |
-| **urllc_slice**    | 2       | 000000 | urllc   | 10.45.1.0/24 |   724   |   70    |
-| **miot_slice**     | 3       | 000000 | miot    | 10.45.2.0/24 |   724   |   70    |
-| **default_slice**  | 128     | 000000 | default | 10.45.3.0/24 |   724   |   70    |
+| **embb_slice**     | 1       | FFFFFF | embb    | 10.45.0.0/24 |   001   |   01    |
+| **urllc_slice**    | 2       | FFFFFF | urllc   | 10.45.1.0/24 |   001   |   01    |
+| **miot_slice**     | 3       | FFFFFF | miot    | 10.45.2.0/24 |   001   |   01    |
+| **default_slice**  | 128     | FFFFFF | default | 10.45.3.0/24 |   001   |   01    |
 
 ### Deployment
 
 ```sh
-# TODO
+helm upgrade --install usap -n ricxapp deployments/helm-chart -f deployments/helm-chart/values.yaml
 ```
 
 ### Proposal topology
