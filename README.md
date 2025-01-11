@@ -44,6 +44,7 @@ Definitions used by the application to interact with the RIC
 
 - [Kubernetes Cluster](https://github.com/muriloAvlis/k8s-utils/blob/main/docs/cluster_deploy/kubeadm/install.md)
 - [Open5gs 5GC](./charts/open5gs/README.md)
+- [OSC Near-RT RIC](./docs/osc-ric/osc_nrt_ric_deploy.md)
 - SRSRAN 5G RAN
 
 ### Network Configurations
