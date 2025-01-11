@@ -17,6 +17,10 @@ class EventTriggerService(e2sm_pb2_grpc.EventTriggerDefinitionServicer):
 
     def EncodeEventTriggerDefFormat1(self, request, context):
         try:
+            client_id = context.peer()
+            logger.debug(
+                f"Received request from: {client_id} to function: EncodeEventTriggerDefFormat1")
+
             response = self.e2sm_kpm.encode_event_trigger_def(
                 request.reportingPeriod)
             return e2sm_pb2.EncodeEventTriggerResponse(eventTriggerDef=response)
@@ -32,6 +36,9 @@ class RanFunctionService(e2sm_pb2_grpc.RanFunctionDefinitionServicer):
 
     def DecodeRanFunctionDefinition(self, request, context):
         try:
+            client_id = context.peer()
+            logger.debug(
+                f"Received request from: {client_id} to function: DecodeRanFunctionDefinition")
             response = self.e2sm_kpm.decode_ran_function_definition(
                 request.ranFuncDefinition)
 
