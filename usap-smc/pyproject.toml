@@ -32,3 +32,4 @@ classifiers = [
 
 [project.scripts]
 app = "usap_smc.main:run"
+core5g = "usap_smc.core5g.core5g:run"
