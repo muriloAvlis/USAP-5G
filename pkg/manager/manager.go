@@ -177,9 +177,10 @@ func (m *Manager) xAppStartCB(d interface{}) {
 			// Decode ranFunctionDefinition
 			decodedRanFuncDef := m.E2sm.DecodeRanFuncDefinition(encodedRanFuncDef)
 
-			// Get meas name list by report style type in config file
+			// Get defined report style in config file
 			m.E2sm.ReportStyleType = config.GetReportStyleType()
 
+			// Get meas name list by report style
 			measNameList := rnib.GetMeasNameList(decodedRanFuncDef, m.E2sm.ReportStyleType)
 
 			m.E2sm.RanUeKpis[nb.GetInventoryName()] = measNameList

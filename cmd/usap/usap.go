@@ -25,7 +25,7 @@ func main() {
 			},
 		},
 		RMR:  make(chan *xapp.RMRParams),
-		E2sm: e2sm.NewClient(os.Getenv("E2SM_SERVER_SVC"), os.Getenv("E2SM_SERVER_PORT")),
+		E2sm: e2sm.NewClient(os.Getenv("E2SM_SERVICE_HOST"), os.Getenv("E2SM_SERVICE_PORT")),
 	}
 
 	// Run App Manager
