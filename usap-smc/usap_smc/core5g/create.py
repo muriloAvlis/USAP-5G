@@ -48,15 +48,18 @@ def create_fixed_ue():
             "subscriber_status": 0,
             "__v": 0
         }
+        # Medir o tempo de inserção
+        start_time = time.time()
         collection.insert_one(fixed_ue)
-        print(f"UE fixa criada com IMSI: {FIXED_UE_IMSI}")
+        elapsed_time_ms = (time.time() - start_time) * 1000
+        print(f"UE fixa criada com IMSI: {FIXED_UE_IMSI} em {elapsed_time_ms:.3f} ms")
     else:
         print(f"UE fixa já existe com IMSI: {FIXED_UE_IMSI}")
 
 
 def create_ue():
     """
-    Cria uma nova UE dinamicamente.
+    Cria uma nova UE dinamicamente e mede o tempo de inserção.
     """
     collection = MongoConnection.get_collection()
 
@@ -97,8 +100,12 @@ def create_ue():
         "__v": 0
     }
 
+    # Medir o tempo de inserção
+    start_time = time.time()
     result = collection.insert_one(ue_data)
-    print(f"Nova UE criada com IMSI: {imsi}")
+    elapsed_time_ms = (time.time() - start_time) * 1000
+
+    print(f"Nova UE criada com IMSI: {imsi} em {elapsed_time_ms:.3f} ms")
     return imsi
 
 
