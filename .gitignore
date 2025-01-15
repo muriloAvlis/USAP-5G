@@ -1,8 +1,8 @@
 go.work*
-Chart.lock
 .vagrant
 cmake-build-debug
 build
 .idea
 .venv
 __pycache__
+*.lock

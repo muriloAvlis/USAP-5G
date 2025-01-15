@@ -29,6 +29,16 @@ RUN curl -Lo riclibe2ap-dev_${E2AP_VERSION}_amd64.deb https://packagecloud.io/o-
     dpkg -i riclibe2ap-dev_${E2AP_VERSION}_amd64.deb && \
     dpkg -i riclibe2ap_${E2AP_VERSION}_amd64.deb
 
+## Install libe2ap local
+COPY e2ap e2ap
+RUN cd e2ap && \
+    mkdir -p build && \
+    cd build && \
+    cmake .. && \
+    make && make install && \
+    ldconfig
+
+
 COPY go.mod go.sum ./
 RUN go mod download && go mod verify
 COPY . .
@@ -56,8 +66,12 @@ RUN install_packages tzdata dnsutils net-tools curl nano
 ## COPY RMR and E2AP libs
 COPY --from=builder /usr/local/lib/librmr_si.so.${RMR_VERSION} /usr/local/lib/librmr_si.so
 COPY --from=builder /usr/local/lib/libriclibe2ap.so.${E2AP_VERSION} /usr/local/lib/libriclibe2ap.so
+COPY --from=builder /usr/local/lib/libe2ap.so /usr/local/lib/libe2ap.so
+COPY --from=builder /usr/local/include/e2ap /usr/local/include/e2ap
+
 RUN chmod -R 755 /usr/local/lib/librmr_si.so
 RUN chmod -R 755 /usr/local/lib/libriclibe2ap.so
+RUN chmod -R 755 /usr/local/lib/libe2ap.so
 
 RUN ldconfig
 

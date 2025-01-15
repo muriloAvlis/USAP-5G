@@ -6,15 +6,22 @@ include ./MakefileVars.mk
 help: ## Show this help.
 	@awk 'BEGIN {FS = ":.*##"; printf "\nUsage:\n  make \033[36m\033[0m\n"} /^[a-zA-Z_-]+:.*?##/ { printf "  \033[36m%-15s\033[0m %s\n", $$1, $$2 } /^##@/ { printf "\n\033[1m%s\033[0m\n", substr($$0, 5) } ' $(MAKEFILE_LIST)
 
-build_usap: ## Build xApp docker image
+build_usap_xapp: ## Build xApp docker image
 	@echo "Building usap-xapp docker image"
-	@docker image build -t muriloavlis/usap-xapp:${USAP_XAPP_VERSION} -f docker/Dockerfile.usap_xapp .
+	@docker image build -t muriloavlis/usap-xapp:${USAP_VERSION} -f docker/Dockerfile.usap_xapp .
+
+build_usap_e2sm: ## Build xApp docker image
+	@echo "Building usap-e2sm docker image"
+	@docker image build -t muriloavlis/usap-e2sm:${USAP_VERSION} -f docker/Dockerfile.usap_e2sm .
 
 run_usap: ## Run xApp docker container
-	@docker container run --rm -it --name usap-xapp muriloavlis/usap-xapp:${USAP_XAPP_VERSION}
+	@docker container run --rm -it --name usap-xapp muriloavlis/usap-xapp:${USAP_VERSION}
 
-push_usap: build_usap ## Push xApp docker image to DockerHub
-	@docker image push muriloavlis/usap-xapp:${USAP_XAPP_VERSION}
+push_usap_xapp: build_usap_xapp ## Push xApp docker image to DockerHub
+	@docker image push muriloavlis/usap-xapp:${USAP_VERSION}
+
+push_usap_e2sm: build_usap_e2sm ## Push xApp docker image to DockerHub
+	@docker image push muriloavlis/usap-e2sm:${USAP_VERSION}
 
 build_srs_cu_du: ## Build SRSRAN ZMQ docker image
 	@echo "Building SRSRAN CU/DU docker image"

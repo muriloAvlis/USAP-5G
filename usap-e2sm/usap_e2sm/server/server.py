@@ -6,7 +6,7 @@ from grpc_reflection.v1alpha import reflection
 from usap_e2sm.logger.logger import Log
 from usap_e2sm.pb import e2sm_pb2
 from usap_e2sm.pb import e2sm_pb2_grpc
-from usap_e2sm.ans1.e2sm_kpm_packer import e2sm_kpm_packer
+from usap_e2sm.asn1.e2sm.e2sm_kpm_packer import e2sm_kpm_packer
 
 logger = Log().get_logger()
 
@@ -110,6 +110,62 @@ class ActionDefinitionService(e2sm_pb2_grpc.ActionDefinitionServicer):
             return e2sm_pb2.EncActDefResponse()
 
 
+class IndicationMessage(e2sm_pb2_grpc.IndicationMessageServicer):
+    def __init__(self, e2sm_kpm):
+        self.e2sm_kpm = e2sm_kpm
+
+    def decodeIndicationMessage(self, request, context):
+        try:
+            client_id = context.peer()
+            logger.debug(
+                f"Received request from: {client_id} to function: decodeIndicationMessage")
+
+            response = e2sm_pb2.DecodeIndMessageResponse()
+
+            # Ind Header
+            decodedIndHeader = self.e2sm_kpm.decode_indication_header(
+                request.indicationHeader)
+
+            collectStartTime = self.e2sm_kpm.extract_hdr_info(decodedIndHeader)[
+                'colletStartTime']
+
+            # Calcule latency
+            response.latency_ms = request.timestamp - \
+                collectStartTime
+
+            # Ind Message
+            decodedIndMessage = self.e2sm_kpm.decode_indication_message(
+                request.indicationMessage)
+            ueMeasList = self.e2sm_kpm.extract_meas_data(decodedIndMessage)
+
+            for ueID, ueMeas in ueMeasList['ueMeasData'].items():
+                ueMeasResponse = e2sm_pb2.UeMeasData()
+                ueMeasResponse.UEID = ueID
+                ueMeasResponse.granularityPeriod = ueMeas['granulPeriod']
+
+                # fill meas data to UEID
+                measData = e2sm_pb2.MeasData()
+                for measName, measValue in ueMeas['measData'].items():
+                    measData.measName = measName
+                    # Check value type
+                    if isinstance(measValue[0], int):
+                        measData.valueInt = measValue[0]
+                    elif isinstance(measValue[0], float):
+                        measData.valueFloat = measValue[0]
+                    else:
+                        measData.noValue = True
+                    ueMeasResponse.measData.append(measData)
+
+                response.ueMeasData.add().CopyFrom(ueMeasResponse)
+
+            return response
+
+        except Exception as e:
+            context.set_details(str(e))
+            context.set_code(grpc.StatusCode.FAILED_PRECONDITION)
+            return e2sm_pb2.EncActDefResponse()
+
+
 class Server():
     def __init__(self):
         # E2SM packer
@@ -119,6 +175,7 @@ class Server():
         self.eventTriggerSvc = EventTriggerService(self.e2sm_kpm)
         self.ranFuncDefSvc = RanFunctionService(self.e2sm_kpm)
         self.actDefinitionSvc = ActionDefinitionService(self.e2sm_kpm)
+        self.indMessageSvc = IndicationMessage(self.e2sm_kpm)
 
         # Server
         self.server = grpc.server(futures.ThreadPoolExecutor(max_workers=10))
@@ -132,11 +189,15 @@ class Server():
         e2sm_pb2_grpc.add_ActionDefinitionServicer_to_server(
             self.actDefinitionSvc, self.server
         )
+        e2sm_pb2_grpc.add_IndicationMessageServicer_to_server(
+            self.indMessageSvc, self.server
+        )
         # Enable reflection
         SERVICE_NAMES = (
             e2sm_pb2.DESCRIPTOR.services_by_name['EventTriggerDefinition'].full_name,
             e2sm_pb2.DESCRIPTOR.services_by_name['RanFunctionDefinition'].full_name,
             e2sm_pb2.DESCRIPTOR.services_by_name['ActionDefinition'].full_name,
+            e2sm_pb2.DESCRIPTOR.services_by_name['IndicationMessage'].full_name,
             reflection.SERVICE_NAME,  # Reflection service itself
         )
         reflection.enable_server_reflection(SERVICE_NAMES, self.server)

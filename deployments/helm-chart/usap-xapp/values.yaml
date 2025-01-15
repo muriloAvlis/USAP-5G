@@ -29,8 +29,8 @@ ricplt:
   rtmgrRMRService: "service-ricplt-rtmgr-rmr.ricplt.svc.cluster.local"
   a1mediatorRMRService: "service-ricplt-a1mediator-rmr.ricplt.svc.cluster.local"
 
-usap:
-  e2smServiceHost: "service-usap-e2sm.ricxapp.svc.cluster.local"
+e2sm_service:
+  e2smServiceHost: "127.0.0.1"
   e2smServicePort: 5051
 
 # Location of the xApp config files injected from the xApp descriptor
@@ -75,6 +75,11 @@ fullname: {}
 ###############    The following are from the xApp descriptor     ###############
 appVersion: 0.0.1
 containers:
+- name: usap-e2sm
+  image:
+    name: muriloavlis/usap-e2sm
+    registry: docker.io
+    tag: 0.0.1
 - image:
     name: muriloavlis/usap-xapp
     registry: docker.io
@@ -113,7 +118,7 @@ db:
   waitForSdl: false
 faults: {}
 measurements:
-  - moId: "usap"
+  - moId: "usap-xapp"
     measType: "E2SM_KPM"
     measId: "00101"
     measInterval: "1"

@@ -15,7 +15,7 @@ dependencies = [
     "grpcio (>=1.69.0,<2.0.0)",
     "grpcio-tools (>=1.69.0,<2.0.0)",
     "structlog (>=24.4.0,<25.0.0)",
-    "grpcio-reflection (>=1.69.0,<2.0.0)"
+    "grpcio-reflection (>=1.69.0,<2.0.0)",
 ]
 
 

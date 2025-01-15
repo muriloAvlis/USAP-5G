@@ -4,11 +4,12 @@ import (
 	"gerrit.o-ran-sc.org/r/ric-plt/xapp-frame/pkg/clientmodel"
 	"gerrit.o-ran-sc.org/r/ric-plt/xapp-frame/pkg/xapp"
 	"github.com/muriloAvlis/usap-5g/pkg/e2sm"
+	"github.com/muriloAvlis/usap-5g/pkg/server"
 )
 
 var (
 	// Default vars
-	Host                 = "service-ricxapp-usap-http.ricxapp"
+	Host                 = "service-ricxapp-usap-xapp-http.ricxapp"
 	HttpPort             = int64(8080)
 	RMRPort              = int64(4560)
 	XappEventInstanceID  = int64(1234)  // XappEventInstanceID
@@ -26,6 +27,7 @@ type Manager struct {
 	RMR           chan *xapp.RMRParams
 	subscriptions []*clientmodel.SubscriptionResponse
 	E2sm          *e2sm.E2sm
+	server.UeMetricsServer
 }
 
 type Config struct {

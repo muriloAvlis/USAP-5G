@@ -2,6 +2,8 @@ package manager
 
 import (
 	"encoding/json"
+	"errors"
+	"log"
 	"os"
 	"os/signal"
 	"syscall"
@@ -10,6 +12,7 @@ import (
 	"gerrit.o-ran-sc.org/r/ric-plt/xapp-frame/pkg/clientmodel"
 	"gerrit.o-ran-sc.org/r/ric-plt/xapp-frame/pkg/xapp"
 	"github.com/muriloAvlis/usap-5g/pkg/config"
+	"github.com/muriloAvlis/usap-5g/pkg/e2ap"
 	"github.com/muriloAvlis/usap-5g/pkg/e2sm"
 	"github.com/muriloAvlis/usap-5g/pkg/rnib"
 )
@@ -133,6 +136,36 @@ func (m *Manager) sendSubscription(e2NodeID string) {
 	xapp.Logger.Info("Subscription completed successfully for E2 Node %s, subscription ID: %s", e2NodeID, *response.SubscriptionID)
 }
 
+func (m *Manager) handleRicIndication(msg *xapp.RMRParams) error {
+	var e2ap *e2ap.E2ap
+
+	// Decode Indication Message
+	indMsg, err := e2ap.DecodeRicIndMsg(msg.Payload)
+	if err != nil {
+		xapp.Logger.Error("Failed to decode RIC Indication message: %s", err.Error())
+		return nil
+	}
+
+	// Check if Indication Message is empty
+	if indMsg == nil || indMsg.IndHeader == nil || len(indMsg.IndHeader) == 0 ||
+		indMsg.IndMessage == nil || len(indMsg.IndMessage) == 0 {
+		return errors.New("unable to get IndicationHeader or IndicationMessage due to invalid size")
+	}
+
+	// decode Header and Message
+	uesData := m.E2sm.DecodeIndicationMessage(indMsg.IndHeader, indMsg.IndMessage)
+
+	log.Printf("Indication latency: %f\n", uesData.Latency)
+
+	// Update latency
+	uesData.Latency = float64(time.Now().UnixMilli()) - uesData.Latency
+
+	// send UE meas to go channel
+	m.UEMetrics <- uesData
+
+	return nil
+}
+
 func (m *Manager) controlLoop() {
 	// Handle receiving message based on message type
 	for {
@@ -141,8 +174,7 @@ func (m *Manager) controlLoop() {
 		xapp.Logger.Debug("Received message type: %d", msg.Mtype)
 		switch msg.Mtype {
 		case xapp.RIC_INDICATION:
-			xapp.Logger.Debug("Received RIC Indication!")
-			// go m.handleRicIndication(msg) // TODO: Is it necessary to control this routine?
+			go m.handleRicIndication(msg)
 		case xapp.RIC_HEALTH_CHECK_REQ:
 			xapp.Logger.Info("Received health check request")
 		case xapp.A1_POLICY_REQ:
@@ -215,6 +247,9 @@ func (m *Manager) Stop(sig os.Signal) {
 		xapp.Subscription.Unsubscribe(*sub.SubscriptionID)
 	}
 
+	// Stop gRPC Server
+	m.Server.Stop()
+
 	// Stop E2sm client
 	m.E2sm.Stop()
 }
@@ -237,6 +272,9 @@ func (m *Manager) Run() {
 
 	// set subscription callback
 	xapp.Subscription.SetResponseCB(m.subscriptionCB)
+
+	// start gRPC server in Go routine
+	go m.UeMetricsServer.StartServer()
 
 	// start xapp
 	xapp.RunWithParams(m, m.Config.WaitForSdl)

@@ -24,7 +24,7 @@ _sym_db = _symbol_database.Default()
 
 
 
-DESCRIPTOR = _descriptor_pool.Default().AddSerializedFile(b'\n\ne2sm.proto\x12\tusap_e2sm\"4\n\x19\x45ncodeEventTriggerRequest\x12\x17\n\x0freportingPeriod\x18\x01 \x01(\x03\"5\n\x1a\x45ncodeEventTriggerResponse\x12\x17\n\x0f\x65ventTriggerDef\x18\x01 \x03(\x03\"5\n\x18\x44\x65\x63odeRanFunctionRequest\x12\x19\n\x11ranFuncDefinition\x18\x01 \x01(\t\"6\n\x19\x44\x65\x63odeRanFunctionResponse\x12\x19\n\x11\x64\x65\x63odedRanFuncDef\x18\x01 \x01(\t\"\xaa\x01\n\rTestCondValue\x12\x12\n\x08valueInt\x18\x02 \x01(\x03H\x00\x12\x13\n\tvalueEnum\x18\x03 \x01(\x03H\x00\x12\x13\n\tvalueBool\x18\x04 \x01(\x08H\x00\x12\x13\n\tvalueBitS\x18\x05 \x01(\x0cH\x00\x12\x13\n\tvalueOctS\x18\x06 \x01(\x0cH\x00\x12\x13\n\tvaluePrtS\x18\x07 \x01(\tH\x00\x12\x13\n\tvalueReal\x18\x08 \x01(\x01H\x00\x42\x07\n\x05value\"c\n\x0cTestCondInfo\x12\x10\n\x08testType\x18\x01 \x01(\t\x12\x10\n\x08testExpr\x18\x02 \x01(\t\x12/\n\rtestCondValue\x18\x03 \x01(\x0b\x32\x18.usap_e2sm.TestCondValue\"@\n\x0fMatchingUEConds\x12-\n\x0ctestCondInfo\x18\x01 \x01(\x0b\x32\x17.usap_e2sm.TestCondInfo\"\x82\x01\n\x1a\x45ncodeActDefFormat4Request\x12\x33\n\x0fmatchingUEConds\x18\x01 \x01(\x0b\x32\x1a.usap_e2sm.MatchingUEConds\x12\x14\n\x0cmeasNameList\x18\x02 \x03(\t\x12\x19\n\x11granularityPeriod\x18\x03 \x01(\x03\"0\n\x11\x45ncActDefResponse\x12\x1b\n\x13\x61\x63tionDefinitionEnc\x18\x01 \x03(\x03\x32\x85\x01\n\x16\x45ventTriggerDefinition\x12k\n\x1c\x45ncodeEventTriggerDefFormat1\x12$.usap_e2sm.EncodeEventTriggerRequest\x1a%.usap_e2sm.EncodeEventTriggerResponse2\x81\x01\n\x15RanFunctionDefinition\x12h\n\x1b\x44\x65\x63odeRanFunctionDefinition\x12#.usap_e2sm.DecodeRanFunctionRequest\x1a$.usap_e2sm.DecodeRanFunctionResponse2x\n\x10\x41\x63tionDefinition\x12\x64\n\x1d\x45ncodeActionDefinitionFormat4\x12%.usap_e2sm.EncodeActDefFormat4Request\x1a\x1c.usap_e2sm.EncActDefResponseB\x06Z\x04./pbb\x06proto3')
+DESCRIPTOR = _descriptor_pool.Default().AddSerializedFile(b'\n\ne2sm.proto\x12\tusap_e2sm\"4\n\x19\x45ncodeEventTriggerRequest\x12\x17\n\x0freportingPeriod\x18\x01 \x01(\x03\"5\n\x1a\x45ncodeEventTriggerResponse\x12\x17\n\x0f\x65ventTriggerDef\x18\x01 \x03(\x03\"5\n\x18\x44\x65\x63odeRanFunctionRequest\x12\x19\n\x11ranFuncDefinition\x18\x01 \x01(\t\"6\n\x19\x44\x65\x63odeRanFunctionResponse\x12\x19\n\x11\x64\x65\x63odedRanFuncDef\x18\x01 \x01(\t\"\xaa\x01\n\rTestCondValue\x12\x12\n\x08valueInt\x18\x02 \x01(\x03H\x00\x12\x13\n\tvalueEnum\x18\x03 \x01(\x03H\x00\x12\x13\n\tvalueBool\x18\x04 \x01(\x08H\x00\x12\x13\n\tvalueBitS\x18\x05 \x01(\x0cH\x00\x12\x13\n\tvalueOctS\x18\x06 \x01(\x0cH\x00\x12\x13\n\tvaluePrtS\x18\x07 \x01(\tH\x00\x12\x13\n\tvalueReal\x18\x08 \x01(\x01H\x00\x42\x07\n\x05value\"c\n\x0cTestCondInfo\x12\x10\n\x08testType\x18\x01 \x01(\t\x12\x10\n\x08testExpr\x18\x02 \x01(\t\x12/\n\rtestCondValue\x18\x03 \x01(\x0b\x32\x18.usap_e2sm.TestCondValue\"@\n\x0fMatchingUEConds\x12-\n\x0ctestCondInfo\x18\x01 \x01(\x0b\x32\x17.usap_e2sm.TestCondInfo\"\x82\x01\n\x1a\x45ncodeActDefFormat4Request\x12\x33\n\x0fmatchingUEConds\x18\x01 \x01(\x0b\x32\x1a.usap_e2sm.MatchingUEConds\x12\x14\n\x0cmeasNameList\x18\x02 \x03(\t\x12\x19\n\x11granularityPeriod\x18\x03 \x01(\x03\"0\n\x11\x45ncActDefResponse\x12\x1b\n\x13\x61\x63tionDefinitionEnc\x18\x01 \x03(\x03\"a\n\x17\x44\x65\x63odeIndMessageRequest\x12\x11\n\ttimestamp\x18\x01 \x01(\x03\x12\x18\n\x10indicationHeader\x18\x02 \x01(\x0c\x12\x19\n\x11indicationMessage\x18\x03 \x01(\x0c\"f\n\x08MeasData\x12\x10\n\x08measName\x18\x01 \x01(\t\x12\x12\n\x08valueInt\x18\x02 \x01(\x03H\x00\x12\x14\n\nvalueFloat\x18\x03 \x01(\x02H\x00\x12\x11\n\x07noValue\x18\x04 \x01(\x08H\x00\x42\x0b\n\tmeasValue\"\\\n\nUeMeasData\x12\x0c\n\x04UEID\x18\x01 \x01(\x03\x12%\n\x08measData\x18\x02 \x03(\x0b\x32\x13.usap_e2sm.MeasData\x12\x19\n\x11granularityPeriod\x18\x03 \x01(\x03\"Y\n\x18\x44\x65\x63odeIndMessageResponse\x12\x12\n\nlatency_ms\x18\x01 \x01(\x02\x12)\n\nueMeasData\x18\x02 \x03(\x0b\x32\x15.usap_e2sm.UeMeasData2\x85\x01\n\x16\x45ventTriggerDefinition\x12k\n\x1c\x45ncodeEventTriggerDefFormat1\x12$.usap_e2sm.EncodeEventTriggerRequest\x1a%.usap_e2sm.EncodeEventTriggerResponse2\x81\x01\n\x15RanFunctionDefinition\x12h\n\x1b\x44\x65\x63odeRanFunctionDefinition\x12#.usap_e2sm.DecodeRanFunctionRequest\x1a$.usap_e2sm.DecodeRanFunctionResponse2x\n\x10\x41\x63tionDefinition\x12\x64\n\x1d\x45ncodeActionDefinitionFormat4\x12%.usap_e2sm.EncodeActDefFormat4Request\x1a\x1c.usap_e2sm.EncActDefResponse2w\n\x11IndicationMessage\x12\x62\n\x17\x64\x65\x63odeIndicationMessage\x12\".usap_e2sm.DecodeIndMessageRequest\x1a#.usap_e2sm.DecodeIndMessageResponseB\x06Z\x04./pbb\x06proto3')
 
 _globals = globals()
 _builder.BuildMessageAndEnumDescriptors(DESCRIPTOR, _globals)
@@ -50,10 +50,20 @@ if not _descriptor._USE_C_DESCRIPTORS:
   _globals['_ENCODEACTDEFFORMAT4REQUEST']._serialized_end=716
   _globals['_ENCACTDEFRESPONSE']._serialized_start=718
   _globals['_ENCACTDEFRESPONSE']._serialized_end=766
-  _globals['_EVENTTRIGGERDEFINITION']._serialized_start=769
-  _globals['_EVENTTRIGGERDEFINITION']._serialized_end=902
-  _globals['_RANFUNCTIONDEFINITION']._serialized_start=905
-  _globals['_RANFUNCTIONDEFINITION']._serialized_end=1034
-  _globals['_ACTIONDEFINITION']._serialized_start=1036
-  _globals['_ACTIONDEFINITION']._serialized_end=1156
+  _globals['_DECODEINDMESSAGEREQUEST']._serialized_start=768
+  _globals['_DECODEINDMESSAGEREQUEST']._serialized_end=865
+  _globals['_MEASDATA']._serialized_start=867
+  _globals['_MEASDATA']._serialized_end=969
+  _globals['_UEMEASDATA']._serialized_start=971
+  _globals['_UEMEASDATA']._serialized_end=1063
+  _globals['_DECODEINDMESSAGERESPONSE']._serialized_start=1065
+  _globals['_DECODEINDMESSAGERESPONSE']._serialized_end=1154
+  _globals['_EVENTTRIGGERDEFINITION']._serialized_start=1157
+  _globals['_EVENTTRIGGERDEFINITION']._serialized_end=1290
+  _globals['_RANFUNCTIONDEFINITION']._serialized_start=1293
+  _globals['_RANFUNCTIONDEFINITION']._serialized_end=1422
+  _globals['_ACTIONDEFINITION']._serialized_start=1424
+  _globals['_ACTIONDEFINITION']._serialized_end=1544
+  _globals['_INDICATIONMESSAGE']._serialized_start=1546
+  _globals['_INDICATIONMESSAGE']._serialized_end=1665
 # @@protoc_insertion_point(module_scope)
