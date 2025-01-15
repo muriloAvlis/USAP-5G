@@ -4,10 +4,20 @@ import time
 
 def get_all_ues():
     """
-    Retorna todas as UEs armazenadas no banco de dados.
+    Retorna todas as UEs armazenadas no banco de dados, com tempo de execução em milissegundos.
     """
     collection = MongoConnection.get_collection()
+
+    # Início da medição de tempo
+    start_time = time.time()
     ues = list(collection.find())
+    # Fim da medição de tempo
+    end_time = time.time()
+
+    # Calcula o tempo total da requisição em milissegundos
+    elapsed_time_ms = (end_time - start_time) * 1000
+    print(f"Tempo para obter UEs: {elapsed_time_ms:.3f} ms")
+
     return ues
 
 def start_read():
