@@ -1,9 +1,8 @@
-from usap_smc.core5g.config.db_manager import initialize_database, close_database, setup_signal_handlers
-from usap_smc.core5g.create import start_create
-from usap_smc.core5g.update import start_update
-from usap_smc.core5g.delete import start_delete
+from config.db_manager import initialize_database, close_database, setup_signal_handlers
+from core5g.create import start_create
+from core5g.update import start_update
+from core5g.delete import start_delete
 import time
-
 
 def main():
     # Inicializar o banco de dados
