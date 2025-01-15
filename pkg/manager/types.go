@@ -27,7 +27,7 @@ type Manager struct {
 	RMR           chan *xapp.RMRParams
 	subscriptions []*clientmodel.SubscriptionResponse
 	E2sm          *e2sm.E2sm
-	server.UeMetricsServer
+	Server        *server.UeMetricsServer
 }
 
 type Config struct {

@@ -16,9 +16,7 @@
 ################################################################################
 {{- $topCtx :=  . }}
 {{- range .Values.messaging.ports  }}
-{{- if contains "rmr" .name }}
-{{ else }}
----
+{{- if contains "http" .name }}
 apiVersion: v1
 kind: Service
 metadata:

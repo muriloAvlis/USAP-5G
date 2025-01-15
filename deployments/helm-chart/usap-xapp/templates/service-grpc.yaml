@@ -1,0 +1,25 @@
+{{- $topCtx :=  . }}
+{{- range .Values.messaging.ports  }}
+{{- if contains "grpc" .name }}
+apiVersion: v1
+kind: Service
+metadata:
+  name: {{ include "ricxapp.servicename" $topCtx }}-{{ .name }}
+  namespace: {{ include "ricxapp.namespace" $topCtx }}
+  labels:
+    app: {{ include "ricxapp.namespace" $topCtx }}-{{ include "ricxapp.name" $topCtx }}
+    chart: {{ $topCtx.Chart.Name }}-{{ $topCtx.Chart.Version | replace "+" "_" }}
+    release: {{ $topCtx.Release.Name }}
+    heritage: {{ $topCtx.Release.Service }}
+spec:
+  type: ClusterIP
+  ports:
+    - port: {{ .port }}
+      targetPort: {{ .port }}
+      protocol: TCP
+      name: {{ .name }}
+  selector:
+    app: {{ include "ricxapp.namespace" $topCtx }}-{{ include "ricxapp.name" $topCtx }}
+    release: {{ $topCtx.Release.Name }}
+{{- end }}
+{{- end }}

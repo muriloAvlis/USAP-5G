@@ -29,7 +29,7 @@ spec:
   type: ClusterIP
   ports:
   {{- range .Values.messaging.ports  }}
-  {{- if eq .name "rmrdata" }}
+  {{- if eq .name "rmr-data" }}
     - port: {{ .port }}
       targetPort: {{ .port }}
       protocol: TCP
@@ -37,7 +37,7 @@ spec:
   {{- end }}
   {{- end }}
   {{- range .Values.messaging.ports  }}
-  {{- if contains "rmr" .name }} {{- if ne .name "rmrdata" }}
+  {{- if contains "rmr-route" .name }} {{- if ne .name "rmr-data" }}
     - port: {{ .port }}
       targetPort: {{ .port }}
       protocol: TCP

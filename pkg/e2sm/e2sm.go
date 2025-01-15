@@ -141,7 +141,7 @@ func (e *E2sm) DecodeIndicationMessage(indicationHeader []byte, indicationMessag
 
 	ueList := make([]UeData, 0, len(response.GetUeMeasData()))
 
-	for _, v := range response.UeMeasData {
+	for _, v := range response.GetUeMeasData() {
 		measDataList := make([]MeasData, 0, len(v.GetMeasData()))
 
 		for _, measurement := range v.GetMeasData() {

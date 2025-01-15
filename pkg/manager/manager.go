@@ -3,7 +3,6 @@ package manager
 import (
 	"encoding/json"
 	"errors"
-	"log"
 	"os"
 	"os/signal"
 	"syscall"
@@ -155,13 +154,20 @@ func (m *Manager) handleRicIndication(msg *xapp.RMRParams) error {
 	// decode Header and Message
 	uesData := m.E2sm.DecodeIndicationMessage(indMsg.IndHeader, indMsg.IndMessage)
 
-	log.Printf("Indication latency: %f\n", uesData.Latency)
+	xapp.Logger.Info("Indication latency (ms): %f\n", uesData.Latency)
 
 	// Update latency
 	uesData.Latency = float64(time.Now().UnixMilli()) - uesData.Latency
 
-	// send UE meas to go channel
-	m.UEMetrics <- uesData
+	m.Server.Mtx.Lock()
+	defer m.Server.Mtx.Unlock()
+
+	select {
+	case m.Server.UEMetrics <- uesData:
+		xapp.Logger.Debug("Sending UE metrics to gRPC channel...")
+	default:
+		xapp.Logger.Warn("Channel buffer full. Dropping UE metrics.")
+	}
 
 	return nil
 }
@@ -248,9 +254,11 @@ func (m *Manager) Stop(sig os.Signal) {
 	}
 
 	// Stop gRPC Server
-	m.Server.Stop()
+	xapp.Logger.Debug("Stopping gRPC server...")
+	m.Server.StopServer()
 
 	// Stop E2sm client
+	xapp.Logger.Debug("Stopping gRPC E2SM client...")
 	m.E2sm.Stop()
 }
 
@@ -274,7 +282,7 @@ func (m *Manager) Run() {
 	xapp.Subscription.SetResponseCB(m.subscriptionCB)
 
 	// start gRPC server in Go routine
-	go m.UeMetricsServer.StartServer()
+	go m.Server.StartServer()
 
 	// start xapp
 	xapp.RunWithParams(m, m.Config.WaitForSdl)

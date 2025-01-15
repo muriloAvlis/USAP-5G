@@ -15,6 +15,9 @@ func main() {
 	// Set logger
 	logger.SetLogger()
 
+	// gRPC server
+	server := server.NewServer("0.0.0.0:5052")
+
 	// USAP Manager
 	mgr := &manager.Manager{
 		Config: manager.Config{
@@ -25,11 +28,9 @@ func main() {
 				RMRPort:  &manager.RMRPort,
 			},
 		},
-		RMR:  make(chan *xapp.RMRParams),
-		E2sm: e2sm.NewClient(os.Getenv("E2SM_SERVICE_HOST"), os.Getenv("E2SM_SERVICE_PORT")),
-		UeMetricsServer: server.UeMetricsServer{
-			UEMetrics: make(chan *e2sm.IndicationResponse),
-		},
+		RMR:    make(chan *xapp.RMRParams),
+		E2sm:   e2sm.NewClient(os.Getenv("E2SM_SERVICE_HOST"), os.Getenv("E2SM_SERVICE_PORT")),
+		Server: server,
 	}
 
 	// Run App Manager
