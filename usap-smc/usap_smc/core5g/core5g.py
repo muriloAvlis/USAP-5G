@@ -1,7 +1,7 @@
 from usap_smc.core5g.config.db_manager import initialize_database, close_database, setup_signal_handlers
 from usap_smc.core5g.create import start_create
 from usap_smc.core5g.update import start_update
-from usap_smc.core5g.delete import start_delete
+from usap_smc.core5g.read import start_read
 import time
 
 def run():
@@ -16,10 +16,10 @@ def run():
     # Configurar signal handlers
     setup_signal_handlers()
 
-    # Iniciar as tarefas de criação, atualização e exclusão
+    # Iniciar as tarefas
     start_create()
     start_update()
-    start_delete()
+    start_read()
 
     # Manter o programa principal ativo
     try:
