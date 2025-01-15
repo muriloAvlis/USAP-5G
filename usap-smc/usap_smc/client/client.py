@@ -1,4 +1,5 @@
 import grpc
+import asyncio
 
 from usap_smc.logger.logger import Log
 from usap_smc.pb import xapp_pb2
@@ -7,24 +8,26 @@ from usap_smc.pb import xapp_pb2_grpc
 logger = Log().get_logger()
 
 
-def run_client():
+async def run_client() -> None:
     # Endereço do servidor
-    server_address = "0.0.0.0:5051"
+    server_address = "service-ricxapp-usap-xapp-grpc.ricxapp.svc.cluster.local:5052"
 
    # Cria o canal gRPC
-    with grpc.insecure_channel(server_address) as channel:
+    async with grpc.aio.insecure_channel(server_address) as channel:
         # Cria o stub do serviço
         stub = xapp_pb2_grpc.UeMeasIndicationStub(channel)
-        # Configura o request
-        request = xapp_pb2.StreamUeMetricsRequest(client_id="usap-smc")
 
         # Faz a chamada de stream
         try:
+            # Configura o request
+            request = xapp_pb2.StreamUeMetricsRequest(client_id="usap-smc")
+
             response_stream = stub.StreamUeMetrics(request)
+
             logger.info("Conectado ao servidor. Recebendo métricas...")
 
             # Processa o stream de respostas
-            for response in response_stream:
+            async for response in response_stream:
                 logger.info(f"Timestamp: {response.timestamp_ms} ms")
                 for ue in response.ueList:
                     logger.debug(
@@ -46,4 +49,4 @@ def run_client():
 
 
 if __name__ == "__main__":
-    run_client()
+    asyncio.run(run_client())

@@ -205,6 +205,10 @@ messaging:
     name: http
     port: 8080
   - container: usap-xapp
+    description: gRPC service
+    name: grpc
+    port: 5052
+  - container: usap-xapp
     description: rmr data port for usap-xapp
     maxSize: 65536
     name: rmr-data
