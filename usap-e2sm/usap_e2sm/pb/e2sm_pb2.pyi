@@ -78,3 +78,43 @@ class EncActDefResponse(_message.Message):
     ACTIONDEFINITIONENC_FIELD_NUMBER: _ClassVar[int]
     actionDefinitionEnc: _containers.RepeatedScalarFieldContainer[int]
     def __init__(self, actionDefinitionEnc: _Optional[_Iterable[int]] = ...) -> None: ...
+
+class DecodeIndMessageRequest(_message.Message):
+    __slots__ = ("timestamp", "indicationHeader", "indicationMessage")
+    TIMESTAMP_FIELD_NUMBER: _ClassVar[int]
+    INDICATIONHEADER_FIELD_NUMBER: _ClassVar[int]
+    INDICATIONMESSAGE_FIELD_NUMBER: _ClassVar[int]
+    timestamp: int
+    indicationHeader: bytes
+    indicationMessage: bytes
+    def __init__(self, timestamp: _Optional[int] = ..., indicationHeader: _Optional[bytes] = ..., indicationMessage: _Optional[bytes] = ...) -> None: ...
+
+class MeasData(_message.Message):
+    __slots__ = ("measName", "valueInt", "valueFloat", "noValue")
+    MEASNAME_FIELD_NUMBER: _ClassVar[int]
+    VALUEINT_FIELD_NUMBER: _ClassVar[int]
+    VALUEFLOAT_FIELD_NUMBER: _ClassVar[int]
+    NOVALUE_FIELD_NUMBER: _ClassVar[int]
+    measName: str
+    valueInt: int
+    valueFloat: float
+    noValue: bool
+    def __init__(self, measName: _Optional[str] = ..., valueInt: _Optional[int] = ..., valueFloat: _Optional[float] = ..., noValue: bool = ...) -> None: ...
+
+class UeMeasData(_message.Message):
+    __slots__ = ("UEID", "measData", "granularityPeriod")
+    UEID_FIELD_NUMBER: _ClassVar[int]
+    MEASDATA_FIELD_NUMBER: _ClassVar[int]
+    GRANULARITYPERIOD_FIELD_NUMBER: _ClassVar[int]
+    UEID: int
+    measData: _containers.RepeatedCompositeFieldContainer[MeasData]
+    granularityPeriod: int
+    def __init__(self, UEID: _Optional[int] = ..., measData: _Optional[_Iterable[_Union[MeasData, _Mapping]]] = ..., granularityPeriod: _Optional[int] = ...) -> None: ...
+
+class DecodeIndMessageResponse(_message.Message):
+    __slots__ = ("latency_ms", "ueMeasData")
+    LATENCY_MS_FIELD_NUMBER: _ClassVar[int]
+    UEMEASDATA_FIELD_NUMBER: _ClassVar[int]
+    latency_ms: float
+    ueMeasData: _containers.RepeatedCompositeFieldContainer[UeMeasData]
+    def __init__(self, latency_ms: _Optional[float] = ..., ueMeasData: _Optional[_Iterable[_Union[UeMeasData, _Mapping]]] = ...) -> None: ...

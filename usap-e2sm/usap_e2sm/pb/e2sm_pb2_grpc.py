@@ -259,3 +259,77 @@ class ActionDefinition(object):
             timeout,
             metadata,
             _registered_method=True)
+
+
+class IndicationMessageStub(object):
+    """Missing associated documentation comment in .proto file."""
+
+    def __init__(self, channel):
+        """Constructor.
+
+        Args:
+            channel: A grpc.Channel.
+        """
+        self.decodeIndicationMessage = channel.unary_unary(
+            '/usap_e2sm.IndicationMessage/decodeIndicationMessage',
+            request_serializer=e2sm__pb2.DecodeIndMessageRequest.SerializeToString,
+            response_deserializer=e2sm__pb2.DecodeIndMessageResponse.FromString,
+            _registered_method=True)
+
+
+class IndicationMessageServicer(object):
+    """Missing associated documentation comment in .proto file."""
+
+    def decodeIndicationMessage(self, request, context):
+        """Missing associated documentation comment in .proto file."""
+        context.set_code(grpc.StatusCode.UNIMPLEMENTED)
+        context.set_details('Method not implemented!')
+        raise NotImplementedError('Method not implemented!')
+
+
+def add_IndicationMessageServicer_to_server(servicer, server):
+    rpc_method_handlers = {
+        'decodeIndicationMessage': grpc.unary_unary_rpc_method_handler(
+            servicer.decodeIndicationMessage,
+            request_deserializer=e2sm__pb2.DecodeIndMessageRequest.FromString,
+            response_serializer=e2sm__pb2.DecodeIndMessageResponse.SerializeToString,
+        ),
+    }
+    generic_handler = grpc.method_handlers_generic_handler(
+        'usap_e2sm.IndicationMessage', rpc_method_handlers)
+    server.add_generic_rpc_handlers((generic_handler,))
+    server.add_registered_method_handlers(
+        'usap_e2sm.IndicationMessage', rpc_method_handlers)
+
+ # This class is part of an EXPERIMENTAL API.
+
+
+class IndicationMessage(object):
+    """Missing associated documentation comment in .proto file."""
+
+    @staticmethod
+    def decodeIndicationMessage(request,
+                                target,
+                                options=(),
+                                channel_credentials=None,
+                                call_credentials=None,
+                                insecure=False,
+                                compression=None,
+                                wait_for_ready=None,
+                                timeout=None,
+                                metadata=None):
+        return grpc.experimental.unary_unary(
+            request,
+            target,
+            '/usap_e2sm.IndicationMessage/decodeIndicationMessage',
+            e2sm__pb2.DecodeIndMessageRequest.SerializeToString,
+            e2sm__pb2.DecodeIndMessageResponse.FromString,
+            options,
+            channel_credentials,
+            insecure,
+            call_credentials,
+            compression,
+            wait_for_ready,
+            timeout,
+            metadata,
+            _registered_method=True)

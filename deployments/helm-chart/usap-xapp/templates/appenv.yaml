@@ -33,8 +33,8 @@ data:
   SERVICE_METRICSDB_PORT: "8086"
   E2MGR_HTTP_SERVICE_HOST: "{{ .Values.ricplt.e2mgrHttpService }}"
   E2MGR_HTTP_SERVICE_PORT: "3800"
-  CONTAINER_NAME: "usap"
+  CONTAINER_NAME: "usap-xapp"
   SYSTEM_NAME: "ubuntu"
-  HOST_NAME: "usap"
-  E2SM_SERVICE_HOST: {{ .Values.usap.e2smServiceHost | quote }}
-  E2SM_SERVICE_PORT: {{ .Values.usap.e2smServicePort | quote }}
+  HOST_NAME: "usap-xapp"
+  E2SM_SERVICE_HOST: {{ .Values.e2sm_service.e2smServiceHost | quote }}
+  E2SM_SERVICE_PORT: {{ .Values.e2sm_service.e2smServicePort | quote }}

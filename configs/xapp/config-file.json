@@ -1,14 +1,14 @@
 {
-    "name": "usap",
+    "name": "usap-xapp",
     "version": "0.0.1",
     "appVersion": "0.0.1",
     "vendor": "Murilo Silva <murilosilva@itec.ufpa.br>",
     "containers": [
         {
-            "name": "usap",
+            "name": "usap-xapp",
             "image": {
                 "registry": "docker.io",
-                "name": "muriloavlis/usap",
+                "name": "muriloavlis/usap-xapp",
                 "tag": "0.0.1"
             }
         }
@@ -33,19 +33,19 @@
         "ports": [
             {
                 "name": "http",
-                "container": "usap",
+                "container": "usap-xapp",
                 "port": 8080,
                 "description": "http service"
             },
             {
                 "name": "rmr-route",
-                "container": "usap",
+                "container": "usap-xapp",
                 "port": 4561,
-                "description": "rmr route port for usap"
+                "description": "rmr route port for usap-xapp"
             },
             {
                 "name": "rmr-data",
-                "container": "usap",
+                "container": "usap-xapp",
                 "port": 4560,
                 "protocol": "tcp",
                 "maxSize": 65536,
@@ -61,7 +61,7 @@
                     "RIC_SUB_DEL_REQ"
                 ],
                 "policies": [],
-                "description": "rmr data port for usap"
+                "description": "rmr data port for usap-xapp"
             }
         ]
     },
@@ -133,7 +133,7 @@
     "faults": {},
     "measurements": [
         {
-            "moId": "usap",
+            "moId": "usap-xapp",
             "measType": "E2SM_KPM",
             "measId": "00101",
             "measInterval": "1",
@@ -141,105 +141,105 @@
                 {
                     "objectName": "DRB_AirIfDelayUl",
                     "objectInstance": "DRB_AirIfDelayUl",
-                    "name": "ricxapp_usap_DRB_AirIfDelayUl",
+                    "name": "ricxapp_usap-xapp_DRB_AirIfDelayUl",
                     "type": "counter",
                     "description": ""
                 },
                 {
                     "objectName": "DRB.PacketSuccessRateUlgNBUu",
                     "objectInstance": "DRB.PacketSuccessRateUlgNBUu",
-                    "name": "ricxapp_usap_DRB.PacketSuccessRateUlgNBUu",
+                    "name": "ricxapp_usap-xapp_DRB.PacketSuccessRateUlgNBUu",
                     "type": "counter",
                     "description": ""
                 },
                 {
                     "objectName": "DRB.RlcDelayUl",
                     "objectInstance": "DRB.RlcDelayUl",
-                    "name": "ricxapp_usap_DRB.RlcDelayUl",
+                    "name": "ricxapp_usap-xapp_DRB.RlcDelayUl",
                     "type": "counter",
                     "description": ""
                 },
                 {
                     "objectName": "DRB.RlcPacketDropRateDl",
                     "objectInstance": "DRB.RlcPacketDropRateDl",
-                    "name": "ricxapp_usap_DRB.RlcPacketDropRateDl",
+                    "name": "ricxapp_usap-xapp_DRB.RlcPacketDropRateDl",
                     "type": "counter",
                     "description": ""
                 },
                 {
                     "objectName": "DRB.RlcSduDelayDl",
                     "objectInstance": "DRB.RlcSduDelayDl",
-                    "name": "ricxapp_usap_DRB.RlcSduDelayDl",
+                    "name": "ricxapp_usap-xapp_DRB.RlcSduDelayDl",
                     "type": "counter",
                     "description": ""
                 },
                 {
                     "objectName": "DRB.RlcSduTransmittedVolumeDL",
                     "objectInstance": "DRB.RlcSduTransmittedVolumeDL",
-                    "name": "ricxapp_usap_DRB.RlcSduTransmittedVolumeDL",
+                    "name": "ricxapp_usap-xapp_DRB.RlcSduTransmittedVolumeDL",
                     "type": "counter",
                     "description": ""
                 },
                 {
                     "objectName": "DRB.RlcSduTransmittedVolumeUL",
                     "objectInstance": "DRB.RlcSduTransmittedVolumeUL",
-                    "name": "ricxapp_usap_DRB.RlcSduTransmittedVolumeUL",
+                    "name": "ricxapp_usap-xapp_DRB.RlcSduTransmittedVolumeUL",
                     "type": "counter",
                     "description": ""
                 },
                 {
                     "objectName": "DRB.UEThpDl",
                     "objectInstance": "DRB.UEThpDl",
-                    "name": "ricxapp_usap_DRB.UEThpDl",
+                    "name": "ricxapp_usap-xapp_DRB.UEThpDl",
                     "type": "counter",
                     "description": ""
                 },
                 {
                     "objectName": "DRB.UEThpUl",
                     "objectInstance": "DRB.UEThpUl",
-                    "name": "ricxapp_usap_DRB.UEThpUl",
+                    "name": "ricxapp_usap-xapp_DRB.UEThpUl",
                     "type": "counter",
                     "description": ""
                 },
                 {
                     "objectName": "RRU.PrbAvailDl",
                     "objectInstance": "RRU.PrbAvailDl",
-                    "name": "ricxapp_usap_RRU.PrbAvailDl",
+                    "name": "ricxapp_usap-xapp_RRU.PrbAvailDl",
                     "type": "counter",
                     "description": ""
                 },
                 {
                     "objectName": "RRU.PrbAvailUl",
                     "objectInstance": "RRU.PrbAvailUl",
-                    "name": "ricxapp_usap_RRU.PrbAvailUl",
+                    "name": "ricxapp_usap-xapp_RRU.PrbAvailUl",
                     "type": "counter",
                     "description": ""
                 },
                 {
                     "objectName": "RRU.PrbTotDl",
                     "objectInstance": "RRU.PrbTotDl",
-                    "name": "ricxapp_usap_RRU.PrbTotDl",
+                    "name": "ricxapp_usap-xapp_RRU.PrbTotDl",
                     "type": "counter",
                     "description": ""
                 },
                 {
                     "objectName": "RRU.PrbTotUl",
                     "objectInstance": "RRU.PrbTotUl",
-                    "name": "ricxapp_usap_RRU.PrbTotUl",
+                    "name": "ricxapp_usap-xapp_RRU.PrbTotUl",
                     "type": "counter",
                     "description": ""
                 },
                 {
                     "objectName": "RRU.PrbUsedDl",
                     "objectInstance": "RRU.PrbUsedDl",
-                    "name": "ricxapp_usap_RRU.PrbUsedDl",
+                    "name": "ricxapp_usap-xapp_RRU.PrbUsedDl",
                     "type": "counter",
                     "description": ""
                 },
                 {
                     "objectName": "RRU.PrbUsedUl",
                     "objectInstance": "RRU.PrbUsedUl",
-                    "name": "ricxapp_usap_RRU.PrbUsedUl",
+                    "name": "ricxapp_usap-xapp_RRU.PrbUsedUl",
                     "type": "counter",
                     "description": ""
                 }

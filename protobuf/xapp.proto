@@ -1,0 +1,37 @@
+syntax = "proto3";
+
+package usap_smc;
+
+option go_package = "./pb";
+
+// ------------------------------------//
+// ------------- Services ------------//
+// ----------------------------------//
+
+service UeMeasIndication {
+    rpc StreamUeMetrics (StreamUeMetricsRequest) returns (stream StreamUeMetricsResponse);
+}
+
+message StreamUeMetricsRequest {
+    string client_id = 1; // ID opcional para identificar o cliente
+}
+
+message UeMeas {
+    string measName = 1;
+    oneof measValue {
+      int64 valueInt = 2;
+      float valueFloat = 3;
+      bool noValue = 4;
+    }
+}
+
+message UeList {
+    int64 ueID = 1;
+    repeated UeMeas ueMeas = 2;
+    int64 granulPeriod = 3;
+}
+
+message StreamUeMetricsResponse {
+    float timestamp_ms = 1;
+    repeated UeList ueList = 2;
+}

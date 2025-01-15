@@ -326,3 +326,105 @@ var ActionDefinition_ServiceDesc = grpc.ServiceDesc{
 	Streams:  []grpc.StreamDesc{},
 	Metadata: "e2sm.proto",
 }
+
+const (
+	IndicationMessage_DecodeIndicationMessage_FullMethodName = "/usap_e2sm.IndicationMessage/decodeIndicationMessage"
+)
+
+// IndicationMessageClient is the client API for IndicationMessage service.
+//
+// For semantics around ctx use and closing/ending streaming RPCs, please refer to https://pkg.go.dev/google.golang.org/grpc/?tab=doc#ClientConn.NewStream.
+type IndicationMessageClient interface {
+	DecodeIndicationMessage(ctx context.Context, in *DecodeIndMessageRequest, opts ...grpc.CallOption) (*DecodeIndMessageResponse, error)
+}
+
+type indicationMessageClient struct {
+	cc grpc.ClientConnInterface
+}
+
+func NewIndicationMessageClient(cc grpc.ClientConnInterface) IndicationMessageClient {
+	return &indicationMessageClient{cc}
+}
+
+func (c *indicationMessageClient) DecodeIndicationMessage(ctx context.Context, in *DecodeIndMessageRequest, opts ...grpc.CallOption) (*DecodeIndMessageResponse, error) {
+	cOpts := append([]grpc.CallOption{grpc.StaticMethod()}, opts...)
+	out := new(DecodeIndMessageResponse)
+	err := c.cc.Invoke(ctx, IndicationMessage_DecodeIndicationMessage_FullMethodName, in, out, cOpts...)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
+}
+
+// IndicationMessageServer is the server API for IndicationMessage service.
+// All implementations must embed UnimplementedIndicationMessageServer
+// for forward compatibility.
+type IndicationMessageServer interface {
+	DecodeIndicationMessage(context.Context, *DecodeIndMessageRequest) (*DecodeIndMessageResponse, error)
+	mustEmbedUnimplementedIndicationMessageServer()
+}
+
+// UnimplementedIndicationMessageServer must be embedded to have
+// forward compatible implementations.
+//
+// NOTE: this should be embedded by value instead of pointer to avoid a nil
+// pointer dereference when methods are called.
+type UnimplementedIndicationMessageServer struct{}
+
+func (UnimplementedIndicationMessageServer) DecodeIndicationMessage(context.Context, *DecodeIndMessageRequest) (*DecodeIndMessageResponse, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method DecodeIndicationMessage not implemented")
+}
+func (UnimplementedIndicationMessageServer) mustEmbedUnimplementedIndicationMessageServer() {}
+func (UnimplementedIndicationMessageServer) testEmbeddedByValue()                           {}
+
+// UnsafeIndicationMessageServer may be embedded to opt out of forward compatibility for this service.
+// Use of this interface is not recommended, as added methods to IndicationMessageServer will
+// result in compilation errors.
+type UnsafeIndicationMessageServer interface {
+	mustEmbedUnimplementedIndicationMessageServer()
+}
+
+func RegisterIndicationMessageServer(s grpc.ServiceRegistrar, srv IndicationMessageServer) {
+	// If the following call pancis, it indicates UnimplementedIndicationMessageServer was
+	// embedded by pointer and is nil.  This will cause panics if an
+	// unimplemented method is ever invoked, so we test this at initialization
+	// time to prevent it from happening at runtime later due to I/O.
+	if t, ok := srv.(interface{ testEmbeddedByValue() }); ok {
+		t.testEmbeddedByValue()
+	}
+	s.RegisterService(&IndicationMessage_ServiceDesc, srv)
+}
+
+func _IndicationMessage_DecodeIndicationMessage_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(DecodeIndMessageRequest)
+	if err := dec(in); err != nil {
+		return nil, err
+	}
+	if interceptor == nil {
+		return srv.(IndicationMessageServer).DecodeIndicationMessage(ctx, in)
+	}
+	info := &grpc.UnaryServerInfo{
+		Server:     srv,
+		FullMethod: IndicationMessage_DecodeIndicationMessage_FullMethodName,
+	}
+	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
+		return srv.(IndicationMessageServer).DecodeIndicationMessage(ctx, req.(*DecodeIndMessageRequest))
+	}
+	return interceptor(ctx, in, info, handler)
+}
+
+// IndicationMessage_ServiceDesc is the grpc.ServiceDesc for IndicationMessage service.
+// It's only intended for direct use with grpc.RegisterService,
+// and not to be introspected or modified (even as a copy)
+var IndicationMessage_ServiceDesc = grpc.ServiceDesc{
+	ServiceName: "usap_e2sm.IndicationMessage",
+	HandlerType: (*IndicationMessageServer)(nil),
+	Methods: []grpc.MethodDesc{
+		{
+			MethodName: "decodeIndicationMessage",
+			Handler:    _IndicationMessage_DecodeIndicationMessage_Handler,
+		},
+	},
+	Streams:  []grpc.StreamDesc{},
+	Metadata: "e2sm.proto",
+}
