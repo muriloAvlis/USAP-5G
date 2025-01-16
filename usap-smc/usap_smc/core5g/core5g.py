@@ -25,13 +25,14 @@ def run():
     initialize_ia()
     start_read()
     asyncio.run(run_client())
+    run_ia_task()
     # Manter o programa principal ativo
     try:
         while True:
             time.sleep(1)
     except KeyboardInterrupt:
         close_database()
-        close_ia
+        close_ia()
         print("Sistema encerrado com sucesso.")
         exit(0)
 
