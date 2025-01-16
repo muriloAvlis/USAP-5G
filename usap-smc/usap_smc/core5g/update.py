@@ -4,13 +4,20 @@ import time
 from usap_smc.core5g.config.database import MongoConnection
 
 def check_inference_slice(sst_inference):
-    print(sst_inference)
+    print(f"o slice de inferencia é {sst_inference}")
+    if not sst_inference == hold:
+        print(f"Mudar o slice da UE {id} de {hold} para {sst_inference}")
 
 
-def check_slice_ue(sst_ue):
-    print(sst_ue)
 
-    
+def check_slice_ue(imsi,sst_ue):
+    print(f"o slice da ue {imsi} é {sst_ue}")
+    global hold
+    global id
+    id = imsi
+    hold = sst_ue
+
+
 
 def update_all_slices_sst():
     """
@@ -39,8 +46,7 @@ def start_update():
             #print("Atualizando todos os SSTs na rede...")
             #update_all_slices_sst()
             print("Vamos printar o slice de inferencia")
-            check_slice_ue()
             #check_inference_slice()
-            time.sleep(10)  # Atualiza a cada 10 segundos
+            #time.sleep(10)  # Atualiza a cada 10 segundos
 
     threading.Thread(target=task, daemon=True).start()
