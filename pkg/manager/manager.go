@@ -156,8 +156,8 @@ func (m *Manager) handleRicIndication(msg *xapp.RMRParams) error {
 
 	xapp.Logger.Info("Indication latency (ms): %f\n", uesData.Latency)
 
-	// Update latency
-	uesData.Latency = float64(time.Now().UnixMilli()) - uesData.Latency
+	// TODO: Update latency
+	// uesData.Latency = uesData.Latency
 
 	m.Server.Mtx.Lock()
 	defer m.Server.Mtx.Unlock()

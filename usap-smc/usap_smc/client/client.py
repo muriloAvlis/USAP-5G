@@ -28,7 +28,7 @@ async def run_client() -> None:
 
             # Processa o stream de respostas
             async for response in response_stream:
-                logger.info(f"Timestamp: {response.timestamp_ms} ms")
+                logger.info(f"Timestamp: {response.latency_ms} ms")
                 for ue in response.ueList:
                     logger.debug(
                         f"UE ID: {ue.ueID}, Granul. Period: {ue.granulPeriod}")
@@ -36,8 +36,8 @@ async def run_client() -> None:
                         meas_value = None
                         if meas.HasField("valueInt"):
                             meas_value = meas.valueInt
-                        elif meas.HasField("valueFloat"):
-                            meas_value = meas.valueFloat
+                        elif meas.HasField("valueReal"):
+                            meas_value = meas.valueReal
                         elif meas.HasField("noValue"):
                             meas_value = "No Value"
                         logger.debug(
@@ -45,7 +45,7 @@ async def run_client() -> None:
 
         except grpc.RpcError as e:
             logger.error(
-                f"Erro ao receber stream: {e.details()} (Status: {e.code()})")
+                f"Fail to receive stream: {e.details()} (Status: {e.code()})")
 
 
 if __name__ == "__main__":

@@ -78,7 +78,7 @@ message EncActDefResponse {
 }
 
 message DecodeIndMessageRequest {
-  int64 timestamp = 1;
+  double timestamp = 1;
   bytes indicationHeader = 2;
   bytes indicationMessage = 3;
 }
@@ -87,7 +87,7 @@ message MeasData {
   string measName = 1;
   oneof measValue {
     int64 valueInt = 2;
-    float valueFloat = 3;
+    double valueReal = 3;
     bool noValue = 4;
   }
 }
@@ -99,6 +99,6 @@ message UeMeasData {
 }
 
 message DecodeIndMessageResponse {
-  float latency_ms = 1;
+  double latency_ms = 1;
   repeated UeMeasData ueMeasData = 2;
 }

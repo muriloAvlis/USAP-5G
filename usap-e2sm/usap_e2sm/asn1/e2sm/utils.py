@@ -118,12 +118,8 @@ def ntp_ts_to_ms(ntp_timestamp):
     # Offset entre as épocas NTP e Unix (1900-1970 em segundos)
     ntp_epoch_offset = 2208988800
 
-    # Extraia a parte inteira (segundos) e fracionária (fração de segundo)
-    ntp_seconds = ntp_timestamp >> 32
-    ntp_fraction = ntp_timestamp & 0xFFFFFFFF
-
-    # Calcule o timestamp Unix em segundos e inclua a parte fracionária
-    unix_timestamp = ntp_seconds - ntp_epoch_offset + (ntp_fraction / 2**32)
+    # Subtract the NTP epoch offset to get Unix timestamp
+    unix_timestamp = (ntp_timestamp >> 32) - ntp_epoch_offset
 
     # Converta para milissegundos
     unix_timestamp_ms = unix_timestamp * 1000
