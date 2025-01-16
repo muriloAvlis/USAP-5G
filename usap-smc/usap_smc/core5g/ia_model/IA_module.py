@@ -1,7 +1,11 @@
 import os
 import numpy as np
 import tensorflow as tf
-# from usap_smc.client.client import 
+from usap_smc.logger.logger import Log
+from tensorflow.keras.models import load_model
+#from usap_smc.client.client import buffer
+
+logger = Log().get_logger()
 
 # Caminho para o modelo LSTM
 MODEL_PATH = "/home/victor/usap-5g/usap-smc/usap_smc/core5g/ia_model/lstm-oran.keras"
@@ -19,7 +23,7 @@ def initialize_ia():
     except Exception as e:
         print(f"Erro ao carregar o modelo: {e}")
 
-def run_ia_task():
+def run_ia_task(buffer):
     """
     Executa a tarefa de IA usando as métricas recebidas do cliente gRPC.
     """
@@ -28,19 +32,37 @@ def run_ia_task():
         return
 
     # Passo 1: Obter as métricas do gRPC
-    metrics = get_metrics_from_grpc()
-    if metrics is None:
-        print("Erro ao obter as métricas do gRPC.")
-        return
+    # X = np.array(hold)
+    # entrada = np.expand_dims(X, axis=0)
+    # if entrada is None:
+    #     print("Erro ao obter as métricas do gRPC.")
+    #     return
 
-    # Passo 2: Realizar a previsão com o modelo LSTM
+    # # Passo 2: Realizar a previsão com o modelo LSTM
+    # try:
+    #     # Convertendo as métricas para o formato esperado pelo modelo (reshape, normalização, etc)
+    #     saida = np.argmax(MODEL.predict(entrada), axis=1)
+    #     logger.info(f"Entrada modelo:\n{X}")
+    #     logger.info(f"Entrada modelo convertida:\n{entrada}")
+    #     logger.info(f"Entrada modelo convertida:\n{entrada}")
+    #     logger.info(f"Predição modelo: {saida}")
+    # except Exception as e:
+    #     print(f"Erro ao fazer a previsão com o modelo: {e}")
     try:
-        # Convertendo as métricas para o formato esperado pelo modelo (reshape, normalização, etc)
-        input_data = np.array([metrics])  # Supondo que as métricas já estejam no formato correto
-        prediction = MODEL.predict(input_data)
-        print(f"Predição do modelo: {prediction}")
+        # Converte o buffer em um array NumPy
+        X = np.array(buffer)
+        #logger.info(f"Dados recebidos para inferência: {X}")
+
+        # Adiciona a dimensão esperada pelo modelo
+        entrada = np.expand_dims(X, axis=0)
+        logger.debug(f"Entrada processada: {entrada}")
+
+        # Faz a previsão com o modelo
+        saida = np.argmax(MODEL.predict(entrada), axis=1)
+        logger.info(f"Resultado da inferência: {saida}")
+
     except Exception as e:
-        print(f"Erro ao fazer a previsão com o modelo: {e}")
+        logger.error(f"Erro durante a inferência: {e}")
 
 def close_ia():
     """

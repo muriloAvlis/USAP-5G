@@ -42,7 +42,7 @@ global:
     submgr:
       http: 8088
   nodeSelector: 
-    kubernetes.io/hostname: ms-ubuntu
+    kubernetes.io/hostname: nrtric
 
 # Change the overall image pull policy using the following option
 #  pullpolicy: IfNotPresent
@@ -57,8 +57,8 @@ global:
 # ricip should be the ingress controller listening IP for the platform cluster
 # auxip should be the ingress controller listening IP for the AUX cluster
 extsvcplt:
-  ricip: "192.168.100.44"
-  auxip: "192.168.100.44"
+  ricip: "10.126.1.142"
+  auxip: "10.126.1.142"
 
 
 # Specify the docker registry credential using the following
@@ -199,7 +199,7 @@ influxdb2:
   persistence:
     storageClass: openebs-hostpath
   nodeSelector: 
-    kubernetes.io/hostname: ms-ubuntu
+    kubernetes.io/hostname: nrtric
 
 xapp-onboarder:
   xapponboarder:

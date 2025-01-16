@@ -6,10 +6,11 @@ from tensorflow.keras.models import load_model
 from usap_smc.logger.logger import Log
 from usap_smc.pb import xapp_pb2
 from usap_smc.pb import xapp_pb2_grpc
-from usap_smc.core5g.ia_model.IA_module import MODEL
+from usap_smc.core5g.ia_model.IA_module import run_ia_task
+#from usap_smc.core5g.ia_model.IA_module import MODEL
 
 logger = Log().get_logger()
-model = load_model("/home/victor/usap-5g/usap-smc/usap_smc/core5g/ia_model/lstm-oran.keras")
+#model = load_model("/home/victor/usap-5g/usap-smc/usap_smc/core5g/ia_model/lstm-oran.keras")
 
 async def run_client() -> None:
     # Endereço do servidor
@@ -80,14 +81,20 @@ async def run_client() -> None:
                     ])
 
 
-                    if len(buffer) == 2:
-                        X = np.array(buffer)
-                        entrada = np.expand_dims(X, axis=0)
-                        saida = np.argmax(model.predict(entrada), axis=1)
-                        logger.info(f"Entrada modelo:\n{X}")
-                        logger.info(f"Entrada modelo convertida:\n{entrada}")
-                        logger.info(f"Predição modelo: {saida}")
-                        buffer = []
+                    # if len(buffer) == 2:
+                    #     #X = np.array(buffer)
+                    #     #entrada = np.expand_dims(X, axis=0)
+                    #     #saida = np.argmax(model.predict(entrada), axis=1)
+                    #     #logger.info(f"Entrada modelo:\n{X}")
+                    #     #logger.info(f"Entrada modelo convertida:\n{entrada}")
+                    #     #logger.info(f"Predição modelo: {saida}")
+                    #     buffer = []
+                    #     hold = buffer
+                    if len(buffer) == 2:  # Quando o buffer está cheio
+                        #logger.info(f"Buffer preenchido: {buffer}")
+                        run_ia_task(buffer)  # Chama a função de inferência
+                        buffer.clear()  # Limpa o buffer após o uso
+
 
         except grpc.RpcError as e:
             logger.error(
