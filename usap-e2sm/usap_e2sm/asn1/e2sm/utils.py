@@ -111,17 +111,32 @@ def ntp_ts_to_datetime(ntp_timestamp):
     unix_timestamp = (ntp_timestamp >> 32) - ntp_epoch_offset
 
     # Convert Unix timestamp to datetime
-    return datetime.datetime.utcfromtimestamp(unix_timestamp)
+    return datetime.utcfromtimestamp(unix_timestamp)
 
 
 def ntp_ts_to_ms(ntp_timestamp):
     # Offset entre as épocas NTP e Unix (1900-1970 em segundos)
     ntp_epoch_offset = 2208988800
 
+    # Parte inteira (segundos)
+    ntp_seconds = ntp_timestamp >> 32
+    # Parte fracionária (frações de segundo)
+    ntp_fraction = ntp_timestamp & 0xFFFFFFFF
+
+    # Converta o timestamp NTP para Unix timestamp em segundos
+    unix_timestamp = ntp_seconds - ntp_epoch_offset + (ntp_fraction / 2**32)
+
+    # Converta para milissegundos
+    unix_timestamp_ms = int(unix_timestamp * 1000)
+
+    return unix_timestamp_ms
+
+
+def ntp_ts_to_unix(ntp_timestamp):
+    # Offset entre as épocas NTP e Unix (1900-1970 em segundos)
+    ntp_epoch_offset = 2208988800
+
     # Subtract the NTP epoch offset to get Unix timestamp
     unix_timestamp = (ntp_timestamp >> 32) - ntp_epoch_offset
 
-    # Converta para milissegundos
-    unix_timestamp_ms = unix_timestamp * 1000
-
-    return unix_timestamp_ms
+    return unix_timestamp
