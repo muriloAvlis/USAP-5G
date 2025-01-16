@@ -3,10 +3,10 @@ import numpy as np
 import tensorflow as tf
 from usap_smc.logger.logger import Log
 from tensorflow.keras.models import load_model
+from usap_smc.core5g.update import check_inference_slice
 #from usap_smc.client.client import buffer
 
 logger = Log().get_logger()
-
 # Caminho para o modelo LSTM
 MODEL_PATH = "/home/victor/usap-5g/usap-smc/usap_smc/core5g/ia_model/lstm-oran.keras"
 MODEL = None
@@ -58,8 +58,9 @@ def run_ia_task(buffer):
         logger.debug(f"Entrada processada: {entrada}")
 
         # Faz a previsão com o modelo
-        saida = np.argmax(MODEL.predict(entrada), axis=1)
-        logger.info(f"Resultado da inferência: {saida}")
+        sst_inference = np.argmax(MODEL.predict(entrada), axis=1)
+        check_inference_slice(sst_inference)
+        logger.info(f"Resultado da inferência: {sst_inference}")
 
     except Exception as e:
         logger.error(f"Erro durante a inferência: {e}")
