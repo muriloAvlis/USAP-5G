@@ -58,7 +58,7 @@ def run_ia_task(buffer):
         logger.debug(f"Entrada processada: {entrada}")
 
         # Faz a previsão com o modelo
-        sst_inference = np.argmax(MODEL.predict(entrada), axis=1)
+        sst_inference = np.argmax(MODEL.predict(entrada), axis=1)[0]
         check_inference_slice(sst_inference)
         logger.info(f"Resultado da inferência: {sst_inference}")
 

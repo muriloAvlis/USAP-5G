@@ -36,7 +36,7 @@ def start_read():
                 # Tenta acessar o valor de 'sst' se existir
                 if 'slice' in ue and ue['slice']:
                     sst_ue = ue['slice'][0].get('sst', 'Desconhecido')
-                    check_slice_ue(int(sst_ue))
+                    check_slice_ue(imsi ,sst_ue)
                 print(f"UE encontrada: IMSI={imsi}, SST={sst_ue}")
         
             print(f"Encontradas {len(ues)} UEs.")
