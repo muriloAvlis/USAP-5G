@@ -1,7 +1,7 @@
 import os
 import numpy as np
 import tensorflow as tf
-#from grpc_client import get_metrics_from_grpc  # Importa a função para pegar métricas
+# from usap_smc.client.client import 
 
 # Caminho para o modelo LSTM
 MODEL_PATH = "/home/victor/usap-5g/usap-smc/usap_smc/core5g/ia_model/lstm-oran.keras"

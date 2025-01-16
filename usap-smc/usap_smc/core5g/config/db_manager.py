@@ -5,7 +5,7 @@ def initialize_database():
     """
     Inicializa a conexão com o MongoDB.
     """
-    MongoConnection.initialize("mongodb://192.168.100.32:32017/?directConnection=true&serverSelectionTimeoutMS=2000&appName=mongosh+2.3.3")
+    MongoConnection.initialize("mongodb://10.126.1.140:32017/?directConnection=true&serverSelectionTimeoutMS=2000&appName=mongosh+2.3.3")
     print("Conexão com MongoDB inicializada.")
 
 def close_database():
