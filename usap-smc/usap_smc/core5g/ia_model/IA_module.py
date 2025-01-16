@@ -9,7 +9,7 @@ from usap_smc.core5g.update import check_inference_slice
 logger = Log().get_logger()
 # Caminho para o modelo LSTM
 my_dir = os.path.dirname(os.path.abspath(__file__))
-MODEL_PATH = my_dir + "lstm-oran.keras"
+MODEL_PATH = my_dir + "/lstm-oran.keras"
 MODEL = None
 
 def initialize_ia():
