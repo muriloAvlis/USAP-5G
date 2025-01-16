@@ -3,6 +3,14 @@ import threading
 import time
 from usap_smc.core5g.config.database import MongoConnection
 
+def check_inference_slice(sst_inference):
+    print(sst_inference)
+
+
+def check_slice_ue(sst_ue):
+    print(sst_ue)
+
+    
 
 def update_all_slices_sst():
     """
@@ -28,8 +36,11 @@ def start_update():
     """
     def task():
         while True:
-            print("Atualizando todos os SSTs na rede...")
-            update_all_slices_sst()
+            #print("Atualizando todos os SSTs na rede...")
+            #update_all_slices_sst()
+            print("Vamos printar o slice de inferencia")
+            check_slice_ue()
+            #check_inference_slice()
             time.sleep(10)  # Atualiza a cada 10 segundos
 
     threading.Thread(target=task, daemon=True).start()

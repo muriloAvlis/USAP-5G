@@ -26,6 +26,7 @@ def run():
     start_read()
     asyncio.run(run_client())
     run_ia_task()
+    #start_update()
     # Manter o programa principal ativo
     try:
         while True:

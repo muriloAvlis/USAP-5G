@@ -1,4 +1,5 @@
 from usap_smc.core5g.config.database import MongoConnection
+from usap_smc.core5g.update import check_slice_ue
 import threading
 import time
 
@@ -28,9 +29,17 @@ def start_read():
         while True:
             print("Buscando todas as UEs...")
             ues = get_all_ues()
-            print(f"Encontradas {len(ues)} UEs.")
             for ue in ues:
-                print(f"UE encontrada: IMSI={ue.get('imsi', 'Desconhecido')}")
+                imsi = ue.get('imsi', 'Desconhecido')  # Obtém o IMSI ou 'Desconhecido'
+                sst_ue = None  # Valor padrão caso não exista o slice ou o sst
+            
+                # Tenta acessar o valor de 'sst' se existir
+                if 'slice' in ue and ue['slice']:
+                    sst_ue = ue['slice'][0].get('sst', 'Desconhecido')
+                    check_slice_ue(int(sst_ue))
+                print(f"UE encontrada: IMSI={imsi}, SST={sst_ue}")
+        
+            print(f"Encontradas {len(ues)} UEs.")
             time.sleep(30)  # Intervalo de leitura (ajustável)
 
     threading.Thread(target=task, daemon=True).start()
