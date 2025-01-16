@@ -8,7 +8,8 @@ from usap_smc.core5g.update import check_inference_slice
 
 logger = Log().get_logger()
 # Caminho para o modelo LSTM
-MODEL_PATH = "/home/victor/usap-5g/usap-smc/usap_smc/core5g/ia_model/lstm-oran.keras"
+my_dir = os.path.dirname(os.path.abspath(__file__))
+MODEL_PATH = my_dir + "lstm-oran.keras"
 MODEL = None
 
 def initialize_ia():
@@ -58,7 +59,7 @@ def run_ia_task(buffer):
         logger.debug(f"Entrada processada: {entrada}")
 
         # Faz a previsão com o modelo
-        sst_inference = np.argmax(MODEL.predict(entrada), axis=1)
+        sst_inference = np.argmax(MODEL.predict(entrada), axis=1)[0]
         check_inference_slice(sst_inference)
         logger.info(f"Resultado da inferência: {sst_inference}")
 
