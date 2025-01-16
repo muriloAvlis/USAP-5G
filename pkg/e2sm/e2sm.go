@@ -118,14 +118,12 @@ func (e *E2sm) EncodeActionDefFormat4(machingUEConds MatchingUEConds, measNameLi
 	return response.GetActionDefinitionEnc()
 }
 
-func (e *E2sm) DecodeIndicationMessage(indicationHeader []byte, indicationMessage []byte) *IndicationResponse {
+func (e *E2sm) DecodeIndicationMessage(timestamp float64, indicationHeader []byte, indicationMessage []byte) *IndicationResponse {
 	// Prepare request
 	client := pb.NewIndicationMessageClient(e.conn)
 
 	ctx, cancel := context.WithTimeout(context.Background(), time.Second)
 	defer cancel()
-
-	timestamp := float64(time.Now().UnixMilli())
 
 	req := &pb.DecodeIndMessageRequest{
 		Timestamp:         timestamp,
