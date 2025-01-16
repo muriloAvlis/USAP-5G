@@ -20,7 +20,7 @@ message UeMeas {
     string measName = 1;
     oneof measValue {
       int64 valueInt = 2;
-      float valueFloat = 3;
+      double valueReal = 3;
       bool noValue = 4;
     }
 }
@@ -32,6 +32,6 @@ message UeList {
 }
 
 message StreamUeMetricsResponse {
-    float timestamp_ms = 1;
+    double latency_ms = 1;
     repeated UeList ueList = 2;
 }

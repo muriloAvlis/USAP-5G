@@ -58,9 +58,9 @@ func (s *UeMetricsServer) StreamUeMetrics(req *pb.StreamUeMetricsRequest, stream
 						ueMeasData.MeasValue = &pb.UeMeas_ValueInt{
 							ValueInt: measVal.ValueInt,
 						}
-					case *pb.MeasData_ValueFloat:
-						ueMeasData.MeasValue = &pb.UeMeas_ValueFloat{
-							ValueFloat: measVal.ValueFloat,
+					case *pb.MeasData_ValueReal:
+						ueMeasData.MeasValue = &pb.UeMeas_ValueReal{
+							ValueReal: measVal.ValueReal,
 						}
 					case *pb.MeasData_NoValue:
 						ueMeasData.MeasValue = &pb.UeMeas_NoValue{
@@ -83,8 +83,8 @@ func (s *UeMetricsServer) StreamUeMetrics(req *pb.StreamUeMetricsRequest, stream
 			}
 
 			response := &pb.StreamUeMetricsResponse{
-				TimestampMs: float32(ind.Latency),
-				UeList:      ueListResponse,
+				LatencyMs: ind.Latency,
+				UeList:    ueListResponse,
 			}
 
 			// send response
@@ -92,7 +92,7 @@ func (s *UeMetricsServer) StreamUeMetrics(req *pb.StreamUeMetricsRequest, stream
 				xapp.Logger.Error("Error sending metric: %s", err.Error())
 				return err
 			}
-		case <-time.After(5 * time.Second): // Timeout if not have metrics in 5 seconds
+		case <-time.After(2 * time.Second): // Timeout if not have metrics in 2 seconds
 			xapp.Logger.Warn("No UE metrics available at the moment.")
 
 		case <-stream.Context().Done(): // Connection closed by client

@@ -125,7 +125,7 @@ func (e *E2sm) DecodeIndicationMessage(indicationHeader []byte, indicationMessag
 	ctx, cancel := context.WithTimeout(context.Background(), time.Second)
 	defer cancel()
 
-	timestamp := time.Now().UnixMilli()
+	timestamp := float64(time.Now().UnixMilli())
 
 	req := &pb.DecodeIndMessageRequest{
 		Timestamp:         timestamp,
@@ -161,7 +161,7 @@ func (e *E2sm) DecodeIndicationMessage(indicationHeader []byte, indicationMessag
 	}
 
 	res := &IndicationResponse{
-		Latency: float64(response.LatencyMs),
+		Latency: response.LatencyMs,
 		UeList:  ueList,
 	}
 

@@ -151,7 +151,7 @@ class IndicationMessage(e2sm_pb2_grpc.IndicationMessageServicer):
                     if isinstance(measValue[0], int):
                         measData.valueInt = measValue[0]
                     elif isinstance(measValue[0], float):
-                        measData.valueFloat = measValue[0]
+                        measData.valueReal = measValue[0]
                     else:
                         measData.noValue = True
                     ueMeasResponse.measData.append(measData)

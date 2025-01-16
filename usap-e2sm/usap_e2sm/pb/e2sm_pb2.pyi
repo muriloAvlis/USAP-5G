@@ -84,22 +84,22 @@ class DecodeIndMessageRequest(_message.Message):
     TIMESTAMP_FIELD_NUMBER: _ClassVar[int]
     INDICATIONHEADER_FIELD_NUMBER: _ClassVar[int]
     INDICATIONMESSAGE_FIELD_NUMBER: _ClassVar[int]
-    timestamp: int
+    timestamp: float
     indicationHeader: bytes
     indicationMessage: bytes
-    def __init__(self, timestamp: _Optional[int] = ..., indicationHeader: _Optional[bytes] = ..., indicationMessage: _Optional[bytes] = ...) -> None: ...
+    def __init__(self, timestamp: _Optional[float] = ..., indicationHeader: _Optional[bytes] = ..., indicationMessage: _Optional[bytes] = ...) -> None: ...
 
 class MeasData(_message.Message):
-    __slots__ = ("measName", "valueInt", "valueFloat", "noValue")
+    __slots__ = ("measName", "valueInt", "valueReal", "noValue")
     MEASNAME_FIELD_NUMBER: _ClassVar[int]
     VALUEINT_FIELD_NUMBER: _ClassVar[int]
-    VALUEFLOAT_FIELD_NUMBER: _ClassVar[int]
+    VALUEREAL_FIELD_NUMBER: _ClassVar[int]
     NOVALUE_FIELD_NUMBER: _ClassVar[int]
     measName: str
     valueInt: int
-    valueFloat: float
+    valueReal: float
     noValue: bool
-    def __init__(self, measName: _Optional[str] = ..., valueInt: _Optional[int] = ..., valueFloat: _Optional[float] = ..., noValue: bool = ...) -> None: ...
+    def __init__(self, measName: _Optional[str] = ..., valueInt: _Optional[int] = ..., valueReal: _Optional[float] = ..., noValue: bool = ...) -> None: ...
 
 class UeMeasData(_message.Message):
     __slots__ = ("UEID", "measData", "granularityPeriod")

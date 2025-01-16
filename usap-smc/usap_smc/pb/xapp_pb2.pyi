@@ -12,16 +12,16 @@ class StreamUeMetricsRequest(_message.Message):
     def __init__(self, client_id: _Optional[str] = ...) -> None: ...
 
 class UeMeas(_message.Message):
-    __slots__ = ("measName", "valueInt", "valueFloat", "noValue")
+    __slots__ = ("measName", "valueInt", "valueReal", "noValue")
     MEASNAME_FIELD_NUMBER: _ClassVar[int]
     VALUEINT_FIELD_NUMBER: _ClassVar[int]
-    VALUEFLOAT_FIELD_NUMBER: _ClassVar[int]
+    VALUEREAL_FIELD_NUMBER: _ClassVar[int]
     NOVALUE_FIELD_NUMBER: _ClassVar[int]
     measName: str
     valueInt: int
-    valueFloat: float
+    valueReal: float
     noValue: bool
-    def __init__(self, measName: _Optional[str] = ..., valueInt: _Optional[int] = ..., valueFloat: _Optional[float] = ..., noValue: bool = ...) -> None: ...
+    def __init__(self, measName: _Optional[str] = ..., valueInt: _Optional[int] = ..., valueReal: _Optional[float] = ..., noValue: bool = ...) -> None: ...
 
 class UeList(_message.Message):
     __slots__ = ("ueID", "ueMeas", "granulPeriod")
@@ -34,9 +34,9 @@ class UeList(_message.Message):
     def __init__(self, ueID: _Optional[int] = ..., ueMeas: _Optional[_Iterable[_Union[UeMeas, _Mapping]]] = ..., granulPeriod: _Optional[int] = ...) -> None: ...
 
 class StreamUeMetricsResponse(_message.Message):
-    __slots__ = ("timestamp_ms", "ueList")
-    TIMESTAMP_MS_FIELD_NUMBER: _ClassVar[int]
+    __slots__ = ("latency_ms", "ueList")
+    LATENCY_MS_FIELD_NUMBER: _ClassVar[int]
     UELIST_FIELD_NUMBER: _ClassVar[int]
-    timestamp_ms: float
+    latency_ms: float
     ueList: _containers.RepeatedCompositeFieldContainer[UeList]
-    def __init__(self, timestamp_ms: _Optional[float] = ..., ueList: _Optional[_Iterable[_Union[UeList, _Mapping]]] = ...) -> None: ...
+    def __init__(self, latency_ms: _Optional[float] = ..., ueList: _Optional[_Iterable[_Union[UeList, _Mapping]]] = ...) -> None: ...
