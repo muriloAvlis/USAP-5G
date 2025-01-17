@@ -24,7 +24,7 @@ def initialize_ia():
     except Exception as e:
         print(f"Erro ao carregar o modelo: {e}")
 
-def run_ia_task(buffer):
+def run_ia_task(buffer,convert_ueid):
     """
     Executa a tarefa de IA usando as métricas recebidas do cliente gRPC.
     """
@@ -52,16 +52,18 @@ def run_ia_task(buffer):
     try:
         # Converte o buffer em um array NumPy
         X = np.array(buffer)
-        #logger.info(f"Dados recebidos para inferência: {X}")
+        convert_ueid
+        #logger.info(f"Dados recebidos para inferência: {X} para UE: {convert_ueid}")
 
         # Adiciona a dimensão esperada pelo modelo
         entrada = np.expand_dims(X, axis=0)
-        logger.debug(f"Entrada processada: {entrada}")
+        logger.debug(f"Entrada processada: {entrada} para a UE: {convert_ueid[-1]}")
 
         # Faz a previsão com o modelo
         sst_inference = np.argmax(MODEL.predict(entrada), axis=1)[0]
-        check_inference_slice(sst_inference)
-        logger.info(f"Resultado da inferência: {sst_inference}")
+        logger.info(f"Resultado da inferência: sst {sst_inference} para UE: {convert_ueid[-1]}")
+        check_inference_slice(sst_inference)   
+        
 
     except Exception as e:
         logger.error(f"Erro durante a inferência: {e}")

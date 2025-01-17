@@ -5,7 +5,7 @@ from usap_smc.core5g.config.database import MongoConnection
 
 def check_inference_slice(sst_inference):
     print(f"o slice de inferencia é {sst_inference}")
-    if not sst_inference == hold:
+    if not sst_inference == hold: #and imsi_inference == imsi_ue:
         print(f"Mudar o slice da UE {id} de {hold} para {sst_inference}")
 
 

@@ -55,7 +55,16 @@ async def run_client() -> None:
                 logger.info(f"Timestamp: {response.latency_ms} ms")
 
                 for ue in response.ueList:
-                    logger.debug(f"UE ID: {ue.ueID}, Granul. Period: {ue.granulPeriod}")
+                    plmn = "00101"
+                    zeros = "0000000"
+                    ueid_enumerated = ue.ueID + 1
+                    convert = str(ueid_enumerated).zfill(3)
+                    global convert_ueid
+                    convert_ueid = None
+                    convert_ueid = plmn + zeros + convert
+
+                    #logger.debug(f"UE ID: {ue.ueID}, Granul. Period: {ue.granulPeriod}, imsi: {convert_ueid}")
+                    logger.debug(f"UE ID: {convert_ueid[-1]}, Granul. Period: {ue.granulPeriod}, imsi: {convert_ueid}")
 
                     meas_dict = {feature: 0 for feature in features}
 
@@ -92,7 +101,7 @@ async def run_client() -> None:
                     #     hold = buffer
                     if len(buffer) == 2:  # Quando o buffer está cheio
                         #logger.info(f"Buffer preenchido: {buffer}")
-                        run_ia_task(buffer)  # Chama a função de inferência
+                        run_ia_task(buffer,convert_ueid)  # Chama a função de inferência
                         buffer.clear()  # Limpa o buffer após o uso
 
 
