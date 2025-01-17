@@ -52,7 +52,6 @@ def run_ia_task(buffer,convert_ueid):
     try:
         # Converte o buffer em um array NumPy
         X = np.array(buffer)
-        convert_ueid
         #logger.info(f"Dados recebidos para inferência: {X} para UE: {convert_ueid}")
 
         # Adiciona a dimensão esperada pelo modelo
