@@ -14,6 +14,9 @@ populate:
   #  - open5gs-dbctl add_ue_with_slice 999700000000003 465B5CE8B199B49FAA5F0A2EE238A6BC E8ED289DEBA952E4283B54E88E6183CA internet 1 111111
     - open5gs-dbctl add_ue_with_slice 001010000000001 465B5CE8B199B49FAA5F0A2EE238A6BC E8ED289DEBA952E4283B54E88E6183CA default 128 FFFFFF
 
+nad:
+  enabled: false
+  
 # Common
 mongodb:
   enabled: true
@@ -24,12 +27,15 @@ mongodb:
   global:
     storageClass: openebs-hostpath
   nodeSelector:
-    kubernetes.io/hostname: ms-ubuntu
+    kubernetes.io/hostname: open5gs
 
 
 smf:
   enabled: true
   config:
+    smf:  
+      pfcp:
+        dev: eth0
     pcrf:
       enabled: false
     dnsList:
@@ -52,11 +58,14 @@ smf:
         dnn: default
   mtu: 1500
   nodeSelector:
-    kubernetes.io/hostname: ms-ubuntu
+    kubernetes.io/hostname: open5gs
 
 upf:
   enabled: true
   config:
+    upf:  
+      pfcp:
+        dev: eth0
     subnetList:
     - subnet: 10.45.1.0/24
       gateway: 10.45.1.1
@@ -87,7 +96,7 @@ upf:
       createDev: true
       enableNAT: true
   nodeSelector:
-    kubernetes.io/hostname: ms-ubuntu
+    kubernetes.io/hostname: open5gs
 
 webui:
   enabled: true
@@ -97,7 +106,7 @@ webui:
       nodePorts:
         http: "30999"
   nodeSelector:
-    kubernetes.io/hostname: ms-ubuntu
+    kubernetes.io/hostname: open5gs
 
 # 4G (disabled)
 hss:
@@ -116,6 +125,9 @@ amf:
   enabled: true
   config:
     logLevel: info
+    amf:  
+      ngap:
+        dev: eth0
     guamiList:
       - plmn_id:
           mcc: "001"
@@ -143,17 +155,17 @@ amf:
             sd: "0xFFFFFF"
     networkName: usapNetwork
   nodeSelector:
-    kubernetes.io/hostname: ms-ubuntu
+    kubernetes.io/hostname: open5gs
 
 ausf:
   enabled: true
   nodeSelector:
-    kubernetes.io/hostname: ms-ubuntu
+    kubernetes.io/hostname: open5gs
 
 bsf:
   enabled: true
   nodeSelector:
-    kubernetes.io/hostname: ms-ubuntu
+    kubernetes.io/hostname: open5gs
 
 nrf:
   enabled: true
@@ -164,7 +176,7 @@ nrf:
           mcc: "001"
           mnc: "01"
   nodeSelector:
-    kubernetes.io/hostname: ms-ubuntu
+    kubernetes.io/hostname: open5gs
 
 nssf:
   enabled: true
@@ -183,28 +195,28 @@ nssf:
         sst: 128
         sd: "0xFFFFFF"
   nodeSelector:
-    kubernetes.io/hostname: ms-ubuntu
+    kubernetes.io/hostname: open5gs
 
 pcf:
   enabled: true
   mongodb:
     enabled: false
   nodeSelector:
-    kubernetes.io/hostname: ms-ubuntu
+    kubernetes.io/hostname: open5gs
 
 scp:
   enabled: true
   mongodb:
     enabled: false
   nodeSelector:
-    kubernetes.io/hostname: ms-ubuntu
+    kubernetes.io/hostname: open5gs
 
 udm:
   enabled: true
   nodeSelector:
-    kubernetes.io/hostname: ms-ubuntu
+    kubernetes.io/hostname: open5gs
     
 udr:
   enabled: true
   nodeSelector:
-    kubernetes.io/hostname: ms-ubuntu
+    kubernetes.io/hostname: open5gs
