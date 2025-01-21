@@ -3,6 +3,7 @@ package manager
 import (
 	"encoding/json"
 	"errors"
+	"log"
 	"os"
 	"os/signal"
 	"syscall"
@@ -158,8 +159,9 @@ func (m *Manager) handleRicIndication(msg *xapp.RMRParams) error {
 	uesData := m.E2sm.DecodeIndicationMessage(timestamp, indMsg.IndHeader, indMsg.IndMessage)
 	xapp.Logger.Info("Indication latency (ms): %v", uesData.Latency)
 
-	// TODO: Update latency
-	// uesData.Latency = uesData.Latency
+	for _, ue := range uesData.UeList {
+		log.Printf("UE ID: %v\n", ue.UeID)
+	}
 
 	m.Server.Mtx.Lock()
 	defer m.Server.Mtx.Unlock()
