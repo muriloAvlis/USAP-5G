@@ -25,9 +25,18 @@ Definitions used by the application to interact with the RIC
 
 ### E2SM standard
 
-- [E2SM-v5.00](usap-e2sm/usap_e2sm/ans1/e2sm-v5.00.asn)
-- [E2SM-KPM-v4.00](usap-e2sm/usap_e2sm/ans1/e2sm-kpm-v4.00.asn)
-- [E2SM-RC-v5.00](usap-e2sm/usap_e2sm/ans1/e2sm-rc-v5.00.asn)
+- [E2SM-v5.00](usap-e2sm/usap_e2sm/asn1/e2sm/e2sm-v5.00.asn)
+- [E2SM-KPM-v4.00](usap-e2sm/usap_e2sm/asn1/e2sm/e2sm-kpm-v4.00.asn)
+- [E2SM-RC-v5.00](usap-e2sm/usap_e2sm/asn1/e2sm/e2sm-rc-v5.00.asn)
+
+### E2AP standard
+
+- [E2AP-commonDefinitions](e2ap/asn1/commonDefinitions.asn)
+- [E2AP-constantDefinitions](e2ap/asn1/constantDefinitions.asn)
+- [E2AP-containerDefinitions](e2ap/asn1/containerDefinitions.asn.asn)
+- [E2AP-elementaryProcedureDefinitions](e2ap/asn1/elementaryProcedureDefinitions.asn)
+- [E2AP-informationElementDefinitions](e2ap/asn1/informationElementDefinitions.asn)
+- [E2AP-pduDefinition](e2ap/asn1/pduDefinition.asn)
 
 <!-- ### 3GPP NG Application Protocol (NGAP) Release 17
 
@@ -45,7 +54,7 @@ Definitions used by the application to interact with the RIC
 - [Kubernetes Cluster](https://github.com/muriloAvlis/k8s-utils/blob/main/docs/cluster_deploy/kubeadm/install.md)
 - [Open5gs 5GC](./charts/open5gs/README.md)
 - [OSC Near-RT RIC](./docs/osc-ric/osc_nrt_ric_deploy.md)
-- SRSRAN 5G RAN
+- [SRSRAN 5G RAN](./docs/srsran/srsran5g_zmq_deploy.md)
 
 ### Network Configurations
 
@@ -56,12 +65,12 @@ The following 5G slice configurations were used for our experiments:
 | **embb_slice**     | 1       | FFFFFF | embb    | 10.45.0.0/24 |   001   |   01    |
 | **urllc_slice**    | 2       | FFFFFF | urllc   | 10.45.1.0/24 |   001   |   01    |
 | **miot_slice**     | 3       | FFFFFF | miot    | 10.45.2.0/24 |   001   |   01    |
-| **default_slice**  | 128     | FFFFFF | default | 10.45.3.0/24 |   001   |   01    |
+| **default_slice**  | 128     | FFFFFF | default | 10.45.128.0/24 |  001   |   01    |
 
 ### Deployment
 
 ```sh
-helm upgrade --install usap -n ricxapp deployments/helm-chart -f deployments/helm-chart/values.yaml
+helm upgrade --install usap-5g -n ricxapp deployments/helm-chart/usap-5g -f deployments/helm-chart/values.yaml --create-namespace
 ```
 
 ### Proposal topology
@@ -71,3 +80,7 @@ helm upgrade --install usap -n ricxapp deployments/helm-chart -f deployments/hel
 ### How It Works
 
 TODO
+
+### Acknowledgements
+
+Thanks to GT-IQoS and RNP for their support in this project
