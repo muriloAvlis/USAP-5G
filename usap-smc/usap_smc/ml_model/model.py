@@ -1,6 +1,6 @@
 import os
 import numpy as np
-import tensorflow as tf
+
 from usap_smc.logger.logger import Log
 from tensorflow.keras.models import load_model
 
@@ -17,7 +17,8 @@ class Model(object):
         # Load model
         logger.info("Carregando modelo...")
         try:
-            self.model = tf.keras.models.load_model(model_path)
+            self.model = load_model(model_path)
+
             logger.info("Modelo carregado com sucesso.")
         except Exception as e:
             logger.error(f"Erro ao carregar o modelo: {e}")
@@ -39,7 +40,7 @@ class Model(object):
             sst_inference = np.argmax(self.model.predict(input), axis=1)[0]
 
             logger.info(
-                f"Resultado da inferência: sst {sst_inference} para UE: {imsi}")
+                f"Resultado da inferência: SST={sst_inference} para o UE={imsi}")
 
             return sst_inference
 
@@ -53,3 +54,10 @@ class Model(object):
         """
         logger.info("Encerrando o módulo de IA...")
         del self.model
+
+
+# For tests
+# if __name__ == "__main__":
+#     data = [[0, 0, 0], [0, 0, 0]]
+#     model = Model()
+#     sst = model.get_sst_inference(data, "000000000000001")

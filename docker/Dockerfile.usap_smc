@@ -4,12 +4,7 @@ ENV PATH=$PATH:/root/.local/bin
 ENV DEBIAN_FRONTEND=noninteractive
 
 RUN apt-get update && apt-get upgrade -y && apt-get install -y \
-    build-essential \
     curl \
-    gcc \
-    g++ \
-    libc-dev \
-    pkg-config \
     nano \
     python3
 
@@ -23,13 +18,11 @@ RUN curl -sSL https://install.python-poetry.org | POETRY_VERSION=2.0.0 python3 -
 
 ## Copy xApp
 COPY usap-smc /usr/src/usap-smc
+RUN find /usr/src/usap-smc -type d -name "__pycache__" -exec rm -rf {} + && rm -f /usr/src/usap-smc/poetry.lock
 
 ## Install xApp
 WORKDIR /usr/src/usap-smc
 RUN poetry install
-
-## encode/decode server
-EXPOSE 5051
 
 CMD [ "run", "usap_smc" ]
 ENTRYPOINT [ "poetry" ]
