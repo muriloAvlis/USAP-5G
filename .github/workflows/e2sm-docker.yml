@@ -1,4 +1,4 @@
-name: Docker Image CI
+name: usap-e2sm Docker image CI
 
 on:
   push:

@@ -1,4 +1,4 @@
-name: Docker Image CI
+name: usap-smc Docker image CI
 
 on:
   push:
