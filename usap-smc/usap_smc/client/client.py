@@ -1,17 +1,19 @@
 import grpc
-import asyncio
 import numpy as np
 import csv
-from tensorflow.keras.models import load_model
+from usap_smc.utils.utils import get_ip_by_hostname
 
 from usap_smc.logger.logger import Log
 from usap_smc.pb import xapp_pb2
 from usap_smc.pb import xapp_pb2_grpc
-from usap_smc.core5g.ia_model.IA_module import run_ia_task
+from usap_smc.ml_model.model import Model
+from usap_smc.core5g.database import Database
 
 logger = Log().get_logger()
 
 # Função para salvar latências de forma iterativa no CSV
+
+
 def save_latency_iteratively(latency, message_id):
     with open('latencias.csv', mode='a', newline='') as file:
         writer = csv.writer(file)
@@ -20,81 +22,101 @@ def save_latency_iteratively(latency, message_id):
         writer.writerow([message_id, latency])
     logger.info(f"Latência salva: {latency} ms, Mensagem: {message_id}")
 
-# Função principal do cliente assíncrono
-async def run_client() -> None:
-    # Endereço do servidor
-    server_address = "10.126.1.141:30052"
 
-    # Cria o canal gRPC
-    async with grpc.aio.insecure_channel(server_address) as channel:
-        # Cria o stub do serviço
-        stub = xapp_pb2_grpc.UeMeasIndicationStub(channel)
+class Client(object):
+    def __init__(self):
+        # Endereço do servidor
+        # TODO: obter a partir de configuração/values.yaml
+        server_ip = get_ip_by_hostname(
+            "service-ricxapp-usap-xapp-grpc.ricxapp.svc")
+        server_port = "5052"
+        self.server_address = server_ip + ":" + server_port
 
-        # Faz a chamada de stream
-        try:
-            # Configura o request
-            request = xapp_pb2.StreamUeMetricsRequest(client_id="usap-smc")
-            response_stream = stub.StreamUeMetrics(request)
+        # Model
+        self.model = Model()
 
-            logger.info("Conectado ao servidor. Recebendo métricas...")
+        # Core
+        self.core5g = Database()
 
-            # Processa o stream de respostas
-            features = ['DRB.UEThpDl', 'DRB.UEThpUl', 'RRU.PrbUsedDl', 'RRU.PrbUsedUl']
-            buffer = []
-            message_id = 0  # Contador de mensagens
+    async def run(self) -> None:
+        # Cria o canal gRPC
+        async with grpc.aio.insecure_channel(self.server_address) as channel:
+            # Cria o stub do serviço
+            stub = xapp_pb2_grpc.UeMeasIndicationStub(channel)
 
-            async for response in response_stream:
-                # Incrementa o id da mensagem
-                message_id += 1
+            # Faz a chamada de stream
+            try:
+                # Configura o request
+                request = xapp_pb2.StreamUeMetricsRequest(client_id="usap-smc")
+                response_stream = stub.StreamUeMetrics(request)
 
-                # Captura e armazena a latência
-                latency = response.latency_ms
+                logger.info("Conectado ao servidor. Recebendo métricas...")
 
-                # Salva a latência de forma iterativa
-                save_latency_iteratively(latency, message_id)
+                # Processa o stream de respostas
+                features = ['DRB.UEThpDl', 'DRB.UEThpUl',
+                            'RRU.PrbUsedDl', 'RRU.PrbUsedUl']
+                buffer = {}
+                message_id = 0  # Contador de mensagens
 
-                logger.info(f"Timestamp: {latency} ms")
+                async for response in response_stream:
+                    # Incrementa o id da mensagem
+                    message_id += 1
 
-                # Processa as métricas
-                for ue in response.ueList:
-                    plmn = "00101"
-                    zeros = "0000000"
-                    ueid_enumerated = ue.ueID + 1
-                    convert = str(ueid_enumerated).zfill(3)
-                    convert_ueid = plmn + zeros + convert
+                    # Captura e armazena a latência
+                    latency = response.latency_ms
 
-                    logger.debug(f"UE ID: {convert_ueid[-1]}, Granul. Period: {ue.granulPeriod}, imsi: {convert_ueid}")
+                    # Salva a latência de forma iterativa
+                    # save_latency_iteratively(latency, message_id)
 
-                    meas_dict = {feature: 0 for feature in features}
+                    logger.info(f"Timestamp: {latency} ms")
 
-                    for meas in ue.ueMeas:
-                        meas_value = None
-                        if meas.HasField("valueInt"):
-                            meas_value = meas.valueInt
-                        elif meas.HasField("valueReal"):
-                            meas_value = meas.valueReal
-                        elif meas.HasField("noValue"):
-                            meas_value = "No Value"
-                        logger.debug(f"  MeasName: {meas.measName}, MeasValue: {meas_value}")
+                    # Processa as métricas
+                    for ue in response.ueList:
+                        # Inicializar o buffer por UE IMSI
+                        if ue.imsi not in buffer:
+                            buffer[ue.imsi] = []
 
-                        if meas.measName in features:
-                            meas_dict[meas.measName] = meas_value
+                        meas_dict = {feature: 0 for feature in features}
 
-                    prb_sum = meas_dict['RRU.PrbUsedDl'] + meas_dict['RRU.PrbUsedUl']
-                    buffer.append([
-                        meas_dict['DRB.UEThpDl'],
-                        meas_dict['DRB.UEThpUl'],
-                        prb_sum
-                    ])
+                        for meas in ue.ueMeas:
+                            meas_value = None
+                            if meas.HasField("valueInt"):
+                                meas_value = meas.valueInt
+                            elif meas.HasField("valueReal"):
+                                meas_value = meas.valueReal
+                            elif meas.HasField("noValue"):
+                                meas_value = "No Value"
+                            logger.debug(
+                                f"  MeasName: {meas.measName}, MeasValue: {meas_value}")
 
-                    # Chama a função de inferência se o buffer estiver cheio
-                    if len(buffer) == 2:
-                        run_ia_task(buffer, convert_ueid)  # Chama a função de inferência
-                        buffer.clear()  # Limpa o buffer após o uso
+                            if meas.measName in features:
+                                meas_dict[meas.measName] = meas_value
 
-        except grpc.RpcError as e:
-            logger.error(f"Falha ao receber o stream: {e.details()} (Status: {e.code()})")
+                        prb_sum = meas_dict['RRU.PrbUsedDl'] + \
+                            meas_dict['RRU.PrbUsedUl']
+                        buffer[ue.imsi].append([
+                            meas_dict['DRB.UEThpDl'],
+                            meas_dict['DRB.UEThpUl'],
+                            prb_sum
+                        ])
 
-# Função principal para iniciar o cliente assíncrono
-if __name__ == "__main__":
-    asyncio.run(run_client())
+                        # Chama a função de inferência se o buffer estiver cheio
+                        if len(buffer[ue.imsi]) == 2:
+                            # Chama a função de inferência (TODO: dá pra fazer com multi thread ??)
+                            sst_inference = self.model.get_sst_inference(
+                                buffer[ue.imsi], ue.imsi)
+
+                            # Verifica se a UE já está no slice inferido
+                            if self.core5g.check_ue_in_slice(ue.imsi, sst_inference):
+                                logger.warning(
+                                    f"UE {ue.imsi} is already in slice with SST {sst_inference}, ignoring...")
+                            else:
+                                logger.info(
+                                    f"UE slice ({ue.imsi}) updated to SST {sst_inference}")
+
+                            # Limpa o buffer após o uso
+                            buffer[ue.imsi].clear()
+
+            except grpc.RpcError as e:
+                logger.error(
+                    f"Falha ao receber o stream: {e.details()} (Status: {e.code()})")

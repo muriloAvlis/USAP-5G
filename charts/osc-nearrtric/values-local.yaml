@@ -42,7 +42,7 @@ global:
     submgr:
       http: 8088
   nodeSelector: 
-    kubernetes.io/hostname: nrtric
+    kubernetes.io/hostname: open5gs
 
 # Change the overall image pull policy using the following option
 #  pullpolicy: IfNotPresent
@@ -57,8 +57,8 @@ global:
 # ricip should be the ingress controller listening IP for the platform cluster
 # auxip should be the ingress controller listening IP for the AUX cluster
 extsvcplt:
-  ricip: "10.126.1.142"
-  auxip: "10.126.1.142"
+  ricip: "192.168.122.10"
+  auxip: "192.168.122.10"
 
 
 # Specify the docker registry credential using the following
@@ -113,6 +113,7 @@ dbaas:
 
 e2mgr:
   e2mgr:
+    imagePullPolicy: Always
     image:
       registry: "nexus3.o-ran-sc.org:10002/o-ran-sc"
       name: ric-plt-e2mgr
@@ -130,6 +131,7 @@ e2term:
   loglevel: 4
   e2term:
     alpha:
+      imagePullPolicy: Always
       image:
         registry: "nexus3.o-ran-sc.org:10002/o-ran-sc"
         name: ric-plt-e2
@@ -153,7 +155,7 @@ jaegeradapter:
 
 rtmgr:
   rtmgr:
-    # imagePullPolicy: Always
+    imagePullPolicy: Always
     image:
       registry: "nexus3.o-ran-sc.org:10002/o-ran-sc"
       name: ric-plt-rtmgr
@@ -199,7 +201,7 @@ influxdb2:
   persistence:
     storageClass: openebs-hostpath
   nodeSelector: 
-    kubernetes.io/hostname: nrtric
+    kubernetes.io/hostname: open5gs
 
 xapp-onboarder:
   xapponboarder:

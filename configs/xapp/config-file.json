@@ -82,6 +82,7 @@
     },
     "controls": {
         "active": true,
+        "emulatedScenario": true,
         "measurement_interval": 1000,
         "interfaceId": {
             "globalGNBId": {
@@ -101,7 +102,10 @@
                     "report_style_type": 4,
                     "ue_list": [
                         {
-                            "id": 0
+                            "imsi": "001010000021002"
+                        },
+                        {
+                            "imsi": "901700000041589"
                         }
                     ]
                 },

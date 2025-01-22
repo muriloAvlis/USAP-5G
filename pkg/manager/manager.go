@@ -3,9 +3,10 @@ package manager
 import (
 	"encoding/json"
 	"errors"
-	"log"
+	"fmt"
 	"os"
 	"os/signal"
+	"strings"
 	"syscall"
 	"time"
 
@@ -76,7 +77,7 @@ func (m *Manager) sendSubscription(e2NodeID string) {
 		granularityPeriod := config.GetGranularityPeriod()
 
 		// Only Action Definition Format 4 is available in gRPC API
-		actDefEncoded = m.E2sm.EncodeActionDefFormat4(machingUEConds, m.E2sm.RanUeKpis[e2NodeID], granularityPeriod)
+		actDefEncoded = m.E2sm.EncodeActionDefFormat4(machingUEConds, m.E2sm.E2Node[e2NodeID].RanUeKpis, granularityPeriod)
 	} else {
 		xapp.Logger.Error("Unsupported Report Style Type %d", m.E2sm.ReportStyleType)
 		return
@@ -157,10 +158,12 @@ func (m *Manager) handleRicIndication(msg *xapp.RMRParams) error {
 
 	// decode Header and Message
 	uesData := m.E2sm.DecodeIndicationMessage(timestamp, indMsg.IndHeader, indMsg.IndMessage)
+
 	xapp.Logger.Info("Indication latency (ms): %v", uesData.Latency)
 
-	for _, ue := range uesData.UeList {
-		log.Printf("UE ID: %v\n", ue.UeID)
+	for idx := range uesData.UeList {
+		ueImsi := m.E2sm.E2Node[msg.Meid.RanName].UeImsiList[idx]
+		uesData.UeList[idx].Imsi = ueImsi
 	}
 
 	m.Server.Mtx.Lock()
@@ -201,13 +204,32 @@ func (m *Manager) xAppStartCB(d interface{}) {
 
 	nbs := rnib.GetNbList()
 
-	// Stores KPIs by E2 node ID
-	m.E2sm.RanUeKpis = make(map[string][]string)
+	// Stores E2NodeData by E2 node ID
+	m.E2sm.E2Node = make(map[string]e2sm.E2NodeData)
 
 	// prepare nodeBs data
 	for _, nb := range nbs {
 		if nb.ConnectionStatus == 1 { // CONNECTED NodeB
 			xapp.Logger.Info("E2 node %s is connected! Starting information extraction...", nb.GetInventoryName())
+
+			// get PLMN, DU ID and IMSI (EMULATED scenário)
+			duId, err := rnib.GetDuId(nb.GetInventoryName())
+			if err != nil {
+				xapp.Logger.Error("%s", err.Error())
+				continue
+			}
+			plmnId := rnib.DecodePLMN(nb.GlobalNbId.GetPlmnId())
+
+			ueImsiList := make([]string, 0, 10)
+
+			if config.IsEmulated() {
+				// PLMN (5 digits) + 8 zeros + duId (2 digits) = 15 digits
+				imsi := plmnId + strings.Repeat("0", 8) + fmt.Sprintf("%02s", duId)
+				ueImsiList = append(ueImsiList, imsi)
+			} else {
+				imsi := config.GetUEImsiList()
+				ueImsiList = append(ueImsiList, imsi...)
+			}
 
 			// Get RAN Function Definition coded from E2 node
 			encodedRanFuncDef, err := rnib.GetRanFuncDefiniton(nb.GetInventoryName(), KPM_RAN_FUNC_ID)
@@ -225,7 +247,12 @@ func (m *Manager) xAppStartCB(d interface{}) {
 			// Get meas name list by report style
 			measNameList := rnib.GetMeasNameList(decodedRanFuncDef, m.E2sm.ReportStyleType)
 
-			m.E2sm.RanUeKpis[nb.GetInventoryName()] = measNameList
+			// Stores E2 Node infos
+			m.E2sm.E2Node[nb.GetInventoryName()] = e2sm.E2NodeData{
+				PlmnId:     plmnId,
+				UeImsiList: ueImsiList,
+				RanUeKpis:  measNameList,
+			}
 
 			// loop to check if xApp is registered
 			for {

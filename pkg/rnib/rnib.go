@@ -115,3 +115,59 @@ func GetMeasNameList(ranFuncDefinition map[string]interface{}, reportStyleType i
 
 	return measNameList
 }
+
+func GetDuId(inventoryName string) (string, error) {
+	uri := "http://" + os.Getenv("E2MGR_HTTP_SERVICE_HOST") + ":" + os.Getenv("E2MGR_HTTP_SERVICE_PORT") + "/v1/nodeb/" + inventoryName
+
+	response, err := http.Get(uri)
+	if err != nil {
+		return "", fmt.Errorf("failed to get E2 node informations from E2MGR: %s", err.Error())
+	}
+	defer response.Body.Close()
+
+	// Decode E2 node response
+	var e2Response E2mgrResponse
+	err = json.NewDecoder(response.Body).Decode(&e2Response)
+	if err != nil {
+		return "", fmt.Errorf("failed to decode E2 node informations from E2MGR: %s", err.Error())
+	}
+
+	// check if E2 Node has KPM RAN function == 2
+	if e2Response.DuId == "" {
+		return "", fmt.Errorf("e2 node %s has no DU ID", inventoryName)
+	}
+
+	return e2Response.DuId, nil
+}
+
+// Função para inverter uma string
+func ReverseString(input string) string {
+	runes := []rune(input)
+	for i, j := 0, len(runes)-1; i < j; i, j = i+1, j-1 {
+		runes[i], runes[j] = runes[j], runes[i]
+	}
+	return string(runes)
+}
+
+// Decode PLMN and return MCC and MNC
+func DecodePLMN(plmn string) string {
+	var mcc, mnc string
+
+	if strings.Contains(plmn, "F") {
+		// ABFCDE
+		// BACF -> BAC (MCC)
+		mcc = ReverseString(plmn[0:2]) + strings.ReplaceAll(ReverseString(plmn[2:4]), "F", "")
+
+		// Invert 2 last digits (MNC)
+		mnc = ReverseString(plmn[4:6])
+	} else {
+		// ABCDEF
+		// ABCD -> BAD (MCC)
+		mcc = ReverseString(plmn[0:2]) + ReverseString(string(plmn[3]))
+
+		// FE + D (MNC)
+		mnc = ReverseString(plmn[4:6]) + string(ReverseString(string(plmn[2]))[0])
+	}
+
+	return mcc + mnc // plmn
+}

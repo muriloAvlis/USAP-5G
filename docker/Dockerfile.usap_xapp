@@ -90,4 +90,7 @@ LABEL br.ufpa.gercom.title="USAP" \
 ENV CFG_FILE=/opt/ric/config/config-file.json
 ENV RMR_SEED_RT=/opt/ric/config/uta_rtg.rt
 
+# metrics server
+EXPOSE 5052
+
 CMD ["usap"]

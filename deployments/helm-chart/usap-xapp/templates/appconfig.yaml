@@ -73,6 +73,7 @@ data:
         },
         "controls": {
             "active": {{ index .Values "controls" "active" | toJson }},
+            "emulatedScenario": {{ index .Values "controls" "emulatedScenario" | toJson }},
             "measurement_interval": {{ index .Values "controls" "measurement_interval" | toJson }},
             "interfaceId": {
                 "globalGNBId": {

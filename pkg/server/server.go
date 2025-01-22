@@ -75,6 +75,7 @@ func (s *UeMetricsServer) StreamUeMetrics(req *pb.StreamUeMetricsRequest, stream
 
 				ueDataResponse := &pb.UeList{
 					UeID:         ueData.UeID,
+					Imsi:         ueData.Imsi,
 					UeMeas:       ueMeasList,
 					GranulPeriod: ueData.GranularityPeriod,
 				}
