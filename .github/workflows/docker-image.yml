@@ -1,4 +1,4 @@
-name: Docker Image CI
+name: xApp Docker image CI
 
 on:
   push:
