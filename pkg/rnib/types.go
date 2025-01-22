@@ -10,6 +10,7 @@ type E2mgrResponse struct {
 	AssociatedE2tInstanceAddress string `json:"associatedE2tInstanceAddress,omitempty"`
 	SetupFromNetwork             bool
 	StatusUpdateTimeStamp        string
+	DuId                         string `json:"duId,omitempty"`
 }
 
 type GlobalNbId struct {

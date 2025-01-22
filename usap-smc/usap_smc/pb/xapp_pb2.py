@@ -24,7 +24,7 @@ _sym_db = _symbol_database.Default()
 
 
 
-DESCRIPTOR = _descriptor_pool.Default().AddSerializedFile(b'\n\nxapp.proto\x12\x08usap_smc\"+\n\x16StreamUeMetricsRequest\x12\x11\n\tclient_id\x18\x01 \x01(\t\"c\n\x06UeMeas\x12\x10\n\x08measName\x18\x01 \x01(\t\x12\x12\n\x08valueInt\x18\x02 \x01(\x03H\x00\x12\x13\n\tvalueReal\x18\x03 \x01(\x01H\x00\x12\x11\n\x07noValue\x18\x04 \x01(\x08H\x00\x42\x0b\n\tmeasValue\"N\n\x06UeList\x12\x0c\n\x04ueID\x18\x01 \x01(\x03\x12 \n\x06ueMeas\x18\x02 \x03(\x0b\x32\x10.usap_smc.UeMeas\x12\x14\n\x0cgranulPeriod\x18\x03 \x01(\x03\"O\n\x17StreamUeMetricsResponse\x12\x12\n\nlatency_ms\x18\x01 \x01(\x01\x12 \n\x06ueList\x18\x02 \x03(\x0b\x32\x10.usap_smc.UeList2l\n\x10UeMeasIndication\x12X\n\x0fStreamUeMetrics\x12 .usap_smc.StreamUeMetricsRequest\x1a!.usap_smc.StreamUeMetricsResponse0\x01\x42\x06Z\x04./pbb\x06proto3')
+DESCRIPTOR = _descriptor_pool.Default().AddSerializedFile(b'\n\nxapp.proto\x12\x08usap_smc\"+\n\x16StreamUeMetricsRequest\x12\x11\n\tclient_id\x18\x01 \x01(\t\"c\n\x06UeMeas\x12\x10\n\x08measName\x18\x01 \x01(\t\x12\x12\n\x08valueInt\x18\x02 \x01(\x03H\x00\x12\x13\n\tvalueReal\x18\x03 \x01(\x01H\x00\x12\x11\n\x07noValue\x18\x04 \x01(\x08H\x00\x42\x0b\n\tmeasValue\"\\\n\x06UeList\x12\x0c\n\x04ueID\x18\x01 \x01(\x03\x12\x0c\n\x04imsi\x18\x02 \x01(\t\x12 \n\x06ueMeas\x18\x03 \x03(\x0b\x32\x10.usap_smc.UeMeas\x12\x14\n\x0cgranulPeriod\x18\x04 \x01(\x03\"O\n\x17StreamUeMetricsResponse\x12\x12\n\nlatency_ms\x18\x01 \x01(\x01\x12 \n\x06ueList\x18\x02 \x03(\x0b\x32\x10.usap_smc.UeList2l\n\x10UeMeasIndication\x12X\n\x0fStreamUeMetrics\x12 .usap_smc.StreamUeMetricsRequest\x1a!.usap_smc.StreamUeMetricsResponse0\x01\x42\x06Z\x04./pbb\x06proto3')
 
 _globals = globals()
 _builder.BuildMessageAndEnumDescriptors(DESCRIPTOR, _globals)
@@ -37,9 +37,9 @@ if not _descriptor._USE_C_DESCRIPTORS:
   _globals['_UEMEAS']._serialized_start=69
   _globals['_UEMEAS']._serialized_end=168
   _globals['_UELIST']._serialized_start=170
-  _globals['_UELIST']._serialized_end=248
-  _globals['_STREAMUEMETRICSRESPONSE']._serialized_start=250
-  _globals['_STREAMUEMETRICSRESPONSE']._serialized_end=329
-  _globals['_UEMEASINDICATION']._serialized_start=331
-  _globals['_UEMEASINDICATION']._serialized_end=439
+  _globals['_UELIST']._serialized_end=262
+  _globals['_STREAMUEMETRICSRESPONSE']._serialized_start=264
+  _globals['_STREAMUEMETRICSRESPONSE']._serialized_end=343
+  _globals['_UEMEASINDICATION']._serialized_start=345
+  _globals['_UEMEASINDICATION']._serialized_end=453
 # @@protoc_insertion_point(module_scope)

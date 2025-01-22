@@ -27,8 +27,9 @@ message UeMeas {
 
 message UeList {
     int64 ueID = 1;
-    repeated UeMeas ueMeas = 2;
-    int64 granulPeriod = 3;
+    string imsi = 2;
+    repeated UeMeas ueMeas = 3;
+    int64 granulPeriod = 4;
 }
 
 message StreamUeMetricsResponse {

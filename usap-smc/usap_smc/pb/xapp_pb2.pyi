@@ -24,14 +24,16 @@ class UeMeas(_message.Message):
     def __init__(self, measName: _Optional[str] = ..., valueInt: _Optional[int] = ..., valueReal: _Optional[float] = ..., noValue: bool = ...) -> None: ...
 
 class UeList(_message.Message):
-    __slots__ = ("ueID", "ueMeas", "granulPeriod")
+    __slots__ = ("ueID", "imsi", "ueMeas", "granulPeriod")
     UEID_FIELD_NUMBER: _ClassVar[int]
+    IMSI_FIELD_NUMBER: _ClassVar[int]
     UEMEAS_FIELD_NUMBER: _ClassVar[int]
     GRANULPERIOD_FIELD_NUMBER: _ClassVar[int]
     ueID: int
+    imsi: str
     ueMeas: _containers.RepeatedCompositeFieldContainer[UeMeas]
     granulPeriod: int
-    def __init__(self, ueID: _Optional[int] = ..., ueMeas: _Optional[_Iterable[_Union[UeMeas, _Mapping]]] = ..., granulPeriod: _Optional[int] = ...) -> None: ...
+    def __init__(self, ueID: _Optional[int] = ..., imsi: _Optional[str] = ..., ueMeas: _Optional[_Iterable[_Union[UeMeas, _Mapping]]] = ..., granulPeriod: _Optional[int] = ...) -> None: ...
 
 class StreamUeMetricsResponse(_message.Message):
     __slots__ = ("latency_ms", "ueList")

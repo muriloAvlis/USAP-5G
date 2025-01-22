@@ -1,5 +1,5 @@
 apiVersion: v2
 appVersion: "0.0.1"
-description: usap-xapp helm chart
-name: usap-xapp
+description: USAP helm chart
+name: usap
 version: 0.0.1

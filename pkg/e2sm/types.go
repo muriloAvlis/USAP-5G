@@ -8,8 +8,14 @@ type E2sm struct {
 }
 
 type Kpm struct {
-	RanUeKpis       map[string][]string // E2Node ID : Meas
+	E2Node          map[string]E2NodeData // E2Node ID : Meas
 	ReportStyleType int
+}
+
+type E2NodeData struct {
+	PlmnId     string
+	UeImsiList []string
+	RanUeKpis  []string
 }
 
 // TestCondInfo struct
@@ -37,6 +43,7 @@ type MeasData struct {
 
 type UeData struct {
 	UeID              int64
+	Imsi              string
 	MeasData          []MeasData
 	GranularityPeriod int64
 }

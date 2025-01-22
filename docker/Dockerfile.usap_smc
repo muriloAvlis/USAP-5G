@@ -1,88 +1,35 @@
-ARG RMR_VERSION=4.9.4
-ARG E2AP_VERSION=1.1.0
-
-#---------------------------------------------#
-#--------------- Builder Stage ---------------#
-#---------------------------------------------#
-
-FROM python:3.11-slim AS build
-
-ENV DEBIAN_FRONTEND=noninteractive
-
-ARG RMR_VERSION
-ARG E2AP_VERSION
-
-RUN apt-get update && apt-get upgrade -y && \
-    apt-get install -y \
-    curl
-
- 
-## Install RMR
-RUN curl -Lo rmr-dev_${RMR_VERSION}_amd64.deb https://packagecloud.io/o-ran-sc/release/packages/debian/stretch/rmr-dev_${RMR_VERSION}_amd64.deb/download.deb && \
-    curl -Lo rmr_${RMR_VERSION}_amd64.deb https://packagecloud.io/o-ran-sc/release/packages/debian/stretch/rmr_${RMR_VERSION}_amd64.deb/download.deb && \
-    dpkg -i rmr_${RMR_VERSION}_amd64.deb && \
-    dpkg -i rmr-dev_${RMR_VERSION}_amd64.deb
-
-## Install E2AP
-RUN curl -Lo riclibe2ap-dev_${E2AP_VERSION}_amd64.deb https://packagecloud.io/o-ran-sc/release/packages/debian/stretch/riclibe2ap-dev_${E2AP_VERSION}_amd64.deb/download.deb && \
-    curl -Lo riclibe2ap_${E2AP_VERSION}_amd64.deb https://packagecloud.io/o-ran-sc/release/packages/debian/stretch/riclibe2ap_${E2AP_VERSION}_amd64.deb/download.deb && \
-    dpkg -i riclibe2ap-dev_${E2AP_VERSION}_amd64.deb && \
-    dpkg -i riclibe2ap_${E2AP_VERSION}_amd64.deb
-
-#---------------------------------------------#
-#---------------- Final Stage ----------------#
-#---------------------------------------------#
-
-FROM python:3.11-slim AS usap_xapp
-
-RUN apt-get update && apt-get upgrade -y && \
-    apt-get install -y \
-    net-tools \
-    curl \
-    nano \
-    git \
-    gcc
-
-ARG RMR_VERSION
-ARG E2AP_VERSION
+FROM ubuntu:24.04
 
 ENV PATH=$PATH:/root/.local/bin
-ENV LD_LIBRARY_PATH=/lib:/usr/lib:/usr/local/lib
+ENV DEBIAN_FRONTEND=noninteractive
+
+RUN apt-get update && apt-get upgrade -y && apt-get install -y \
+    build-essential \
+    curl \
+    gcc \
+    g++ \
+    libc-dev \
+    pkg-config \
+    nano \
+    python3
 
 LABEL org.opencontainers.image.authors="Murilo Silva <murilo.silva@itec.ufpa.br>" \
     org.opencontainers.image.vendor="Federal University of Pará - UFPA" \
     org.opencontainers.image.licenses="" \
     org.opencontainers.image.version="0.0.1"
 
-## COPY RMR and E2AP libs
-COPY --from=build /usr/local/lib/librmr_si.so.${RMR_VERSION} /usr/local/lib/librmr_si.so
-COPY --from=build /usr/local/lib/libriclibe2ap.so.${E2AP_VERSION} /usr/local/lib/libriclibe2ap.so
-RUN chmod -R 755 /usr/local/lib/librmr_si.so
-RUN chmod -R 755 /usr/local/lib/libriclibe2ap.so
-
-RUN ldconfig
-
 ## Install poetry
 RUN curl -sSL https://install.python-poetry.org | POETRY_VERSION=2.0.0 python3 -
 
-## Install xApp Python Framework
-ARG SC_RIC_VERSION=j-release
-RUN cd /opt && git clone --depth 1 --branch ${SC_RIC_VERSION} https://github.com/o-ran-sc/ric-plt-xapp-frame-py.git
-
-# Apply patch on xApp Python Framework
-COPY xapp/ric-plt-xapp-frame-py.patch /opt/ric-plt-xapp-frame-py/ric-plt-xapp-frame-py.patch
-RUN cd /opt/ric-plt-xapp-frame-py && git apply ./ric-plt-xapp-frame-py.patch
-
 ## Copy xApp
-COPY xapp /usr/src/usap-xapp
-
-## Enviroments configs
-ENV CONFIG_FILE=/usr/src/usap-xapp/config/config-file.json
-ENV RMR_SEED_RT=/usr/src/usap-xapp/config/routes.rt
+COPY usap-smc /usr/src/usap-smc
 
 ## Install xApp
-WORKDIR /usr/src/usap-xapp
+WORKDIR /usr/src/usap-smc
 RUN poetry install
 
-CMD [ "run", "usap" ]
+## encode/decode server
+EXPOSE 5051
+
+CMD [ "run", "usap_smc" ]
 ENTRYPOINT [ "poetry" ]

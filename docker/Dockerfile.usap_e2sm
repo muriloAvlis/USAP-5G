@@ -1,8 +1,4 @@
-#---------------------------------------------#
-#--------------- Builder Stage ---------------#
-#---------------------------------------------#
-
-FROM python:3.13-alpine AS build
+FROM python:3.13-alpine
 
 ENV PATH=$PATH:/root/.local/bin
 
