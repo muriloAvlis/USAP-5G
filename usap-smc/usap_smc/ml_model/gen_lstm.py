@@ -62,7 +62,7 @@ class GenModel(object):
     def preprocess_data(self, X_lstm, y_lstm):
         y_categorical = to_categorical(y_lstm, num_classes=self.num_classes)
         self.X_train, self.X_test, self.y_train, self.y_test = train_test_split(
-            X_lstm, y_categorical, test_size=0.2, random_state=42)
+            X_lstm, y_categorical, test_size=self.test_size, random_state=42)
 
     def build_params(self, hp):
         model = Sequential()
