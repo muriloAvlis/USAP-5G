@@ -1,6 +1,7 @@
 from pymongo import MongoClient
 from usap_smc.logger.logger import Log
 from usap_smc.utils.utils import get_ip_by_hostname
+import signal
 
 
 logger = Log.get_logger()
@@ -24,8 +25,12 @@ class MongoConnection(object):
         :param uri: URI de conexão com o MongoDB.
         """
         if self._client is None:
-            logger.info("Inicializando conexão com MongoDB...")
-            self._client = MongoClient(self.uri)
+            try:
+                logger.info("Inicializando conexão com MongoDB...")
+                self._client = MongoClient(self.uri)
+            except Exception as e:
+                logger.error(f"Error to initialize MongoDB connection: {e}")
+                signal.raise_signal(signal.SIGINT)
         else:
             logger.warning("Conexão com MongoDB já inicializada.")
 

@@ -1,6 +1,6 @@
 import grpc
-import numpy as np
 import csv
+import signal
 from usap_smc.utils.utils import get_ip_by_hostname
 
 from usap_smc.logger.logger import Log
