@@ -334,7 +334,7 @@ affinity: {}
 ## ref: https://kubernetes.io/docs/user-guide/node-selection/
 ##
 nodeSelector:
-    kubernetes.io/hostname: srsran
+    kubernetes.io/hostname: ran5g
 ## srsran container's resource requests and limits
 ## ref: http://kubernetes.io/docs/user-guide/compute-resources/
 ## @param resources.requests [object] The requested resources for the init container

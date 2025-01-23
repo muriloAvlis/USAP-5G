@@ -1,6 +1,5 @@
 import grpc
 import csv
-import signal
 from usap_smc.utils.utils import get_ip_by_hostname
 
 from usap_smc.logger.logger import Log
@@ -9,9 +8,7 @@ from usap_smc.pb import xapp_pb2_grpc
 from usap_smc.ml_model.model import Model
 from usap_smc.core5g.database import Database
 
-logger = Log().get_logger()
-
-# Função para salvar latências de forma iterativa no CSV
+from loguru import logger
 
 
 def save_latency_iteratively(latency, message_id):
@@ -72,6 +69,7 @@ class Client(object):
 
                     # Processa as métricas
                     for ue in response.ueList:
+                        logger.info(f"UE IMSI: {ue.imsi}")
                         # Inicializar o buffer por UE IMSI
                         if ue.imsi not in buffer:
                             buffer[ue.imsi] = []
@@ -104,7 +102,7 @@ class Client(object):
                         if len(buffer[ue.imsi]) == 2:
                             # Chama a função de inferência (TODO: dá pra fazer com multi thread ??)
                             sst_inference = self.model.get_sst_inference(
-                                buffer[ue.imsi], ue.imsi)
+                                buffer[ue.imsi], ue.imsi)  # np.int64
 
                             # Verifica se a UE já está no slice inferido
                             if self.core5g.check_ue_in_slice(ue.imsi, sst_inference):

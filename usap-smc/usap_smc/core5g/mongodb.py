@@ -4,7 +4,7 @@ from usap_smc.utils.utils import get_ip_by_hostname
 import signal
 
 
-logger = Log.get_logger()
+from loguru import logger
 
 
 class MongoConnection(object):

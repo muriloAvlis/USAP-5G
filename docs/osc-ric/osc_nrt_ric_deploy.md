@@ -7,21 +7,6 @@
 
 ## Getting Starting
 
-<!-- ### Clone ric-dep repository (DEPRECATED)
-
-```sh
-git clone "https://gerrit.o-ran-sc.org/r/ric-plt/ric-dep"
-```
-
-> **_NOTE_**: Use `~/USAP/charts/nearrtric-0.1.0.tgz` instead. -->
-
-### Creating Platform and Xapp Namespaces
-
-```sh
-kubectl create ns ricplt
-kubectl create ns ricxapp
-```
-
 ### Running Chart Museum
 
 Deploy chartmuseum to store RIC chart using `docker` or `shell`
@@ -67,6 +52,7 @@ helm repo list
 ```sh
 helm repo add influxdata https://helm.influxdata.com
 helm repo list
+helm repo update
 ```
 
 ### Prepare Near-RT RIC Helm Charts
@@ -86,11 +72,11 @@ helm search repo local/nearrtric
 ### Deploy Near-RT RIC
 
 ```sh
-helm upgrade --install nearrtric -n ricplt local/nearrtric -f ~/git/usap-5g/charts/osc-nearrtric/osc_ric_values.yaml --create-namespace
+helm upgrade --install nearrtric -n ricplt local/nearrtric -f ~/git/usap-5g/charts/osc-nearrtric/values-usap.yaml --create-namespace
 ```
 
 ## Clean up
 
 ```sh
-helm uninstall -n ricplt nearrtric && kubectl delete ns ricplt
+helm uninstall -n ricplt nearrtric && kubectl delete ns ricplt ricxapp
 ```

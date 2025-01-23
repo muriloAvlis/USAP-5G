@@ -5,7 +5,7 @@ import signal
 import sys
 
 
-logger = Log.get_logger()
+from loguru import logger
 
 
 def get_ip_by_hostname(hostname) -> str:
