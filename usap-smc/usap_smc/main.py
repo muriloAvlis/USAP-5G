@@ -32,7 +32,7 @@ class App(object):
 def run():
     Log().configure()
 
-    logger.info("Starting usap-smc application...")
+    logger.info("Iniciando módulo USAP-SMC...")
 
     # Call App class to start processes
     app = App()

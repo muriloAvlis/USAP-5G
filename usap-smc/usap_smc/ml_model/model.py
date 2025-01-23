@@ -20,7 +20,7 @@ class Model(object):
         try:
             self.model = load_model(model_path)
 
-            logger.info("Modelo carregado com sucesso.")
+            logger.info("Modelo carregado com sucesso!")
         except Exception as e:
             logger.error(f"Erro ao carregar o modelo: {e}")
             # Gera um sinal de interrupção da aplicação
@@ -36,7 +36,7 @@ class Model(object):
 
             # Adiciona a dimensão esperada pelo modelo
             input = np.expand_dims(X, axis=0)
-            logger.debug(
+            logger.info(
                 f"Entrada processada: {input} para a UE com IMSI: {imsi}")
 
             # Faz a previsão com o modelo
@@ -61,6 +61,6 @@ class Model(object):
 
 # For tests
 if __name__ == "__main__":
-    data = [[0, 0, 200], [0, 0, 150]]
+    data = [[0.0, 0.0, 0], [0.0, 0.0, 0]]
     model = Model()
     sst = model.get_sst_inference(data, "000000000000001")
