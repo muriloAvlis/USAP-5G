@@ -16,13 +16,13 @@ from sklearn.metrics import classification_report
 class GenModel(object):
     def __init__(self):
         # Params
-        self.test_size = 0.2
+        self.test_size = 0.3
         self.num_classes = 4
 
         self.samples_per_block = 5
-        self.max_epochs_tunner = 30
-        self.epochs_model = 50
-        self.model_patience = 20
+        self.max_epochs_tunner = 3000
+        self.epochs_model = 500
+        self.model_patience = 30
         self.factor = 3
 
         features = [
@@ -75,7 +75,7 @@ class GenModel(object):
         model = Sequential()
         model.add(
             LSTM(
-                units=hp.Int('units', min_value=32, max_value=256,
+                units=hp.Int('units', min_value=32, max_value=512,
                              step=16),  # Unidades LSTM
                 activation=hp.Choice('activation', values=[
                                      'relu', 'tanh']),  # Função de ativação
@@ -86,7 +86,7 @@ class GenModel(object):
         model.compile(
             optimizer=tf.keras.optimizers.Adam(
                 learning_rate=hp.Choice('learning_rate', values=[
-                                        1e-2, 1e-3, 1e-4, 1e-5, 1e-6])  # Taxa de aprendizado
+                                        1e-2, 1e-3, 1e-4, 1e-5, 1e-6, 1e-7, 1e-8, 1e-9])  # Taxa de aprendizado
             ),
             loss='categorical_crossentropy',
             metrics=['accuracy'],
