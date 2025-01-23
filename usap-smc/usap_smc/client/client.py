@@ -47,7 +47,7 @@ class Client(object):
                 request = xapp_pb2.StreamUeMetricsRequest(client_id="usap-smc")
                 response_stream = stub.StreamUeMetrics(request)
 
-                logger.info("Conectado ao servidor. Recebendo métricas...")
+                logger.info("Conectado ao servidor. Aguardando métricas...")
 
                 # Processa o stream de respostas
                 features = ['DRB.UEThpDl', 'DRB.UEThpUl',
@@ -69,7 +69,6 @@ class Client(object):
 
                     # Processa as métricas
                     for ue in response.ueList:
-                        logger.info(f"UE IMSI: {ue.imsi}")
                         # Inicializar o buffer por UE IMSI
                         if ue.imsi not in buffer:
                             buffer[ue.imsi] = []
