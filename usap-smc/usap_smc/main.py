@@ -16,6 +16,7 @@ class App(object):
         """Handle graceful shutdown on SIGINT or SIGTERM."""
         logger.info(
             "Signal received: %s. Shutting down server gracefully.", sig)
+        self.client.stop()
         sys.exit(0)
 
     def Start(self):
