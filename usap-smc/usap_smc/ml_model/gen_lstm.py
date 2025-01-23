@@ -21,8 +21,8 @@ class GenModel(object):
 
         self.samples_per_block = 5
         self.max_epochs_tunner = 3000
-        self.epochs_model = 500
-        self.model_patience = 50
+        self.epochs_model = 1000
+        self.model_patience = 100
         self.factor = 3
 
         features = [
