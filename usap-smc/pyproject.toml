@@ -16,7 +16,7 @@ maintainers = [
 ]
 readme = "README.md"
 requires-python = ">=3.10, <3.13"
-dependencies = ["jsonify (>=0.5,<0.6)", "grpcio (>=1.69.0,<2.0.0)", "grpcio-tools (>=1.69.0,<2.0.0)", "structlog (>=24.4.0,<25.0.0)", "pymongo (>=4.10.1,<5.0.0)", "pandas (>=2.2.3,<3.0.0)", "keras-tuner (>=1.4.7,<2.0.0)", "tensorflow (>=2.18.0,<3.0.0)", "scikit-learn (>=1.6.1,<2.0.0)"]
+dependencies = ["jsonify (>=0.5,<0.6)", "grpcio (>=1.69.0,<2.0.0)", "grpcio-tools (>=1.69.0,<2.0.0)", "pymongo (>=4.10.1,<5.0.0)", "pandas (>=2.2.3,<3.0.0)", "keras-tuner (>=1.4.7,<2.0.0)", "scikit-learn (>=1.6.1,<2.0.0)", "tensorflow-cpu (>=2.18.0,<3.0.0)", "loguru (>=0.7.3,<0.8.0)"]
 license = { text = "Apache-2.0" }
 
 [build-system]

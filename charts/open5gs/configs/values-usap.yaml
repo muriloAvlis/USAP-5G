@@ -13,6 +13,10 @@ populate:
   #  - open5gs-dbctl add_ue_with_apn 999700000000002 465B5CE8B199B49FAA5F0A2EE238A6BC E8ED289DEBA952E4283B54E88E6183CA internet
   #  - open5gs-dbctl add_ue_with_slice 999700000000003 465B5CE8B199B49FAA5F0A2EE238A6BC E8ED289DEBA952E4283B54E88E6183CA internet 1 111111
     - open5gs-dbctl add_ue_with_slice 001010000000001 465B5CE8B199B49FAA5F0A2EE238A6BC E8ED289DEBA952E4283B54E88E6183CA default 128 FFFFFF
+    - open5gs-dbctl add_ue_with_slice 001010000000002 465B5CE8B199B49FAA5F0A2EE238A6BC E8ED289DEBA952E4283B54E88E6183CA default 128 FFFFFF
+
+nad:
+  enabled: false
 
 # Common
 mongodb:
@@ -50,6 +54,9 @@ smf:
       - subnet: 10.45.128.0/24
         gateway: 10.45.128.1
         dnn: default
+    smf:
+      pfcp:
+        dev: "eth0"
   mtu: 1500
   nodeSelector:
     kubernetes.io/hostname: core5g
@@ -86,6 +93,11 @@ upf:
       mask: 24
       createDev: true
       enableNAT: true
+    upf:
+      pfcp:
+        dev: eth0
+      gtpu:
+        dev: eth0
   nodeSelector:
     kubernetes.io/hostname: core5g
 
@@ -141,6 +153,9 @@ amf:
             sd: "0xFFFFFF"
           - sst: 128
             sd: "0xFFFFFF"
+    amf: ## CU-CP <-> AMF
+      ngap:
+        dev: "eth0"
     networkName: usapNetwork
   nodeSelector:
     kubernetes.io/hostname: core5g

@@ -14,20 +14,15 @@ spec:
       labels:
         app: usap-smc
     spec:
-      initContainers:
-        - name: wait-for-xapp
-          image: fullstorydev/grpcurl:latest
-          command:
-            - sh
-            - -c
-            - |
-              echo "Waiting for usap-xapp metrics server..."
-              while ! grpcurl -plaintext service-ricxapp-usap-xapp-grpc.ricxapp.svc:5052 list; do
-                echo "usap-xapp is not ready yet, retrying..."
-                sleep 3
-              done
-              echo "usap-xapp is ready!"
+      hostname: usap-smc
+      nodeSelector:
+        {{- if .Values.nodeSelector }}
+        {{ toYaml .Values.nodeSelector | nindent 8 }}
+        {{- end }}
       containers:
-      - name: {{ .Chart.Name }}
+      - name: usap-smc
         image: "{{ .Values.usap_smc.image.registry }}/{{ .Values.usap_smc.image.name }}:{{ .Values.usap_smc.image.tag }}"
         imagePullPolicy: {{ .Values.usap_smc.imagePullPolicy }}
+        env:
+          - name: LOG_LEVEL
+            value: {{ .Values.usap_smc.config.logger.level | quote }}

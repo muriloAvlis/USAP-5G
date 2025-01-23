@@ -1,7 +1,7 @@
 from usap_smc.logger.logger import Log
 from usap_smc.core5g.mongodb import MongoConnection
 
-logger = Log.get_logger()
+from loguru import logger
 
 
 class Database(MongoConnection):
@@ -21,7 +21,7 @@ class Database(MongoConnection):
         """Check if UE is in slice with SST"""
         query = {
             "imsi": imsi,
-            "slice": {"$elemMatch": {"sst": sst}}
+            "slice": {"$elemMatch": {"sst": int(sst)}}
         }
 
         res = self.collection.find_one(query)

@@ -5,7 +5,7 @@ import signal
 from usap_smc.logger.logger import Log
 from tensorflow.keras.models import load_model
 
-logger = Log().get_logger()
+from loguru import logger
 
 
 class Model(object):
@@ -60,7 +60,7 @@ class Model(object):
 
 
 # For tests
-# if __name__ == "__main__":
-#     data = [[0, 0, 0], [0, 0, 0]]
-#     model = Model()
-#     sst = model.get_sst_inference(data, "000000000000001")
+if __name__ == "__main__":
+    data = [[0, 0, 200], [0, 0, 150]]
+    model = Model()
+    sst = model.get_sst_inference(data, "000000000000001")

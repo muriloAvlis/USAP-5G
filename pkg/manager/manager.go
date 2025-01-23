@@ -164,6 +164,7 @@ func (m *Manager) handleRicIndication(msg *xapp.RMRParams) error {
 	for idx := range uesData.UeList {
 		ueImsi := m.E2sm.E2Node[msg.Meid.RanName].UeImsiList[idx]
 		uesData.UeList[idx].Imsi = ueImsi
+		// log.Printf("UE IMSI: %s", ueImsi)
 	}
 
 	m.Server.Mtx.Lock()
@@ -173,7 +174,7 @@ func (m *Manager) handleRicIndication(msg *xapp.RMRParams) error {
 	case m.Server.UEMetrics <- uesData:
 		xapp.Logger.Debug("Sending UE metrics to gRPC channel...")
 	default:
-		xapp.Logger.Warn("Channel buffer full. Dropping UE metrics.")
+		xapp.Logger.Debug("Channel buffer full. Dropping UE metrics...")
 	}
 
 	return nil

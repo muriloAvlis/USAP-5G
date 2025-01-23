@@ -2,10 +2,9 @@ import sys
 import signal
 import asyncio
 
+from loguru import logger
 from usap_smc.logger.logger import Log
 from usap_smc.client.client import Client
-
-logger = Log().get_logger()
 
 
 class App(object):
@@ -31,6 +30,8 @@ class App(object):
 
 
 def run():
+    Log().configure()
+
     logger.info("Starting usap-smc application...")
 
     # Call App class to start processes

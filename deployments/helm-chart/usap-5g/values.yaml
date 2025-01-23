@@ -47,6 +47,9 @@ replicaCount: 1
 # Image pulling policy
 image_pull_policy: Always
 
+nodeSelector: 
+  kubernetes.io/hostname: nrtric
+
 # Environment variables that will be injected
 appenv: {}
 
@@ -72,7 +75,7 @@ name: usap-xapp
 # Full instance name. If empty, full name will be constructed from name
 fullname: {}
 
-############### For USAP-SMC ###############
+########################### For USAP-SMC ###########################
 usap_smc:
   replicaCount: 1
   imagePullPolicy: Always
@@ -80,6 +83,9 @@ usap_smc:
     registry: docker.io
     name: muriloavlis/usap-smc
     tag: 0.0.1
+  config:
+    logger:
+      level: INFO
 
 ###############    The following are from the xApp descriptor     ###############
 appVersion: 0.0.1
