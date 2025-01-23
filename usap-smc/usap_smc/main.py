@@ -10,19 +10,22 @@ logger = Log().get_logger()
 
 class App(object):
     def __init__(self):
+        # Add signal handler
+        signal.signal(signal.SIGINT, self.signal_handler)
+        signal.signal(signal.SIGTERM, self.signal_handler)
+
         self.client = Client()
 
     def signal_handler(self, sig, frame):
         """Handle graceful shutdown on SIGINT or SIGTERM."""
         logger.info(
-            "Signal received: %s. Shutting down server gracefully.", sig)
-        self.client.stop()
+            "Signal received: %s. Shutting down application gracefully.", sig)
+
+        if hasattr(self, 'client'):
+            self.client.stop()
         sys.exit(0)
 
     def Start(self):
-        signal.signal(signal.SIGINT, self.signal_handler)
-        signal.signal(signal.SIGTERM, self.signal_handler)
-
         # Start client
         asyncio.run(self.client.run())
 

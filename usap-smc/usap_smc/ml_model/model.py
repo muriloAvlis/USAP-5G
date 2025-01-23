@@ -24,7 +24,7 @@ class Model(object):
         except Exception as e:
             logger.error(f"Erro ao carregar o modelo: {e}")
             # Gera um sinal de interrupção da aplicação
-            os.kill(os.getpid(), signal.SIGINT)
+            signal.raise_signal(signal.SIGINT)
 
     def get_sst_inference(self, buffer, imsi):
         """
