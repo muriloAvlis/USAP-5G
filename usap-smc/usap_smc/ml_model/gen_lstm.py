@@ -6,6 +6,7 @@ import tensorflow as tf
 from tensorflow.keras.models import Sequential
 from tensorflow.keras.layers import LSTM, Dense
 from tensorflow.keras.utils import to_categorical
+from tensorflow.keras.callbacks import EarlyStopping
 from sklearn.model_selection import train_test_split
 from keras_tuner import Hyperband
 from sklearn.metrics import classification_report
@@ -112,8 +113,17 @@ class GenModel(object):
 
         # Treinar o melhor modelo com os dados
         model = tuner.hypermodel.build(best_hps)
+
+        # Configurando o Early Stopping
+        early_stopping = EarlyStopping(
+            # Pode ser 'val_loss'
+            monitor='val_accuracy',
+            patience=10,               # Número de épocas sem melhoria antes de parar
+            restore_best_weights=True  # Restaura os pesos do modelo na melhor época
+        )
+
         history = model.fit(self.X_train, self.y_train,
-                            validation_split=0.2, epochs=self.epochs_model, verbose=1)
+                            validation_split=0.2, epochs=self.epochs_model, callbacks=[early_stopping], verbose=1)
 
         model.save(self.my_dir + "/models/oran-lstm.keras")
 
