@@ -111,6 +111,7 @@ class Client(object):
                                 logger.warning(
                                     f"UE {ue.imsi} is already in slice with SST {sst_inference}, ignoring...")
                             else:
+                                # TODO: update UE slice
                                 logger.info(
                                     f"UE slice ({ue.imsi}) updated to SST {sst_inference}")
 
@@ -120,3 +121,7 @@ class Client(object):
             except grpc.RpcError as e:
                 logger.error(
                     f"Falha ao receber o stream: {e.details()} (Status: {e.code()})")
+
+    def stop(self):
+        self.model.stop()
+        self.core5g.stop()

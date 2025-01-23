@@ -42,3 +42,7 @@ class Database(MongoConnection):
             logger.info(f"SST {sst} atualizado para a UE {imsi} no 5GC")
         else:
             logger.error(f"Erro ao atualizar SST da UE {imsi}")
+
+    def stop(self):
+        # Close mongodb connection
+        self.close()

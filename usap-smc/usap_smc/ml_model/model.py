@@ -1,5 +1,6 @@
 import os
 import numpy as np
+import signal
 
 from usap_smc.logger.logger import Log
 from tensorflow.keras.models import load_model
@@ -11,7 +12,7 @@ class Model(object):
     def __init__(self):
         # Caminho para o modelo LSTM
         my_dir = os.path.dirname(os.path.abspath(__file__))
-        model_path = my_dir + "/models/lstm-oran.keras"
+        model_path = my_dir + "/models/oran-lstm.keras"
         self.model = None
 
         # Load model
@@ -22,6 +23,8 @@ class Model(object):
             logger.info("Modelo carregado com sucesso.")
         except Exception as e:
             logger.error(f"Erro ao carregar o modelo: {e}")
+            # Gera um sinal de interrupção da aplicação
+            os.kill(os.getpid(), signal.SIGINT)
 
     def get_sst_inference(self, buffer, imsi):
         """
