@@ -1,6 +1,7 @@
 import numpy as np
 import pandas as pd
 import os
+import shutil
 
 import tensorflow as tf
 from tensorflow.keras.models import Sequential
@@ -21,12 +22,18 @@ class GenModel(object):
         self.samples_per_block = 5
         self.max_epochs_tunner = 30
         self.epochs_model = 50
+        self.model_patience = 20
         self.factor = 3
 
         features = [
             'tx_brate downlink (kbps)', 'rx_brate uplink (kbps)', 'sum_granted_prbs']
 
         self.my_dir = os.path.dirname(os.path.abspath(__file__))
+
+        tuning_dir = os.path.abspath("hyperband_tuning")
+        if os.path.exists(tuning_dir):
+            print(f"Removendo a pasta existente {tuning_dir}")
+            shutil.rmtree(tuning_dir)
 
         # load data
         self.df = pd.read_csv(self.my_dir + "/data/oran-ds.csv")
@@ -118,7 +125,8 @@ class GenModel(object):
         early_stopping = EarlyStopping(
             # Pode ser 'val_loss'
             monitor='val_accuracy',
-            patience=10,               # Número de épocas sem melhoria antes de parar
+            # Número de épocas sem melhoria antes de parar
+            patience=self.model_patience,
             restore_best_weights=True  # Restaura os pesos do modelo na melhor época
         )
 
