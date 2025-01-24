@@ -36,7 +36,7 @@ class GenModel(object):
             shutil.rmtree(tuning_dir)
 
         # load data
-        self.df = pd.read_csv(self.my_dir + "/data/oran-ds.csv")
+        self.df = pd.read_csv(self.my_dir + "/data/oran-synthetic-ds.csv")
 
         X_lstm, y_lstm = self.create_time_blocks(
             self.df, 'ue_id', features, self.samples_per_block)
