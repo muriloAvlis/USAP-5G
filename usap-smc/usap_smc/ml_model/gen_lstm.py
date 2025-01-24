@@ -22,7 +22,7 @@ class GenModel(object):
         self.samples_per_block = 5
         self.max_epochs_tunner = 3000
         self.epochs_model = 1000
-        self.model_patience = 500
+        # self.model_patience = 500
         self.factor = 3
 
         features = [
@@ -122,16 +122,16 @@ class GenModel(object):
         model = tuner.hypermodel.build(best_hps)
 
         # Configurando o Early Stopping
-        early_stopping = EarlyStopping(
-            # Pode ser 'val_loss'
-            monitor='val_accuracy',
-            # Número de épocas sem melhoria antes de parar
-            patience=self.model_patience,
-            restore_best_weights=True  # Restaura os pesos do modelo na melhor época
-        )
+        # early_stopping = EarlyStopping(
+        #     # Pode ser 'val_loss'
+        #     monitor='val_accuracy',
+        #     # Número de épocas sem melhoria antes de parar
+        #     patience=self.model_patience,
+        #     restore_best_weights=True  # Restaura os pesos do modelo na melhor época
+        # )
 
         history = model.fit(self.X_train, self.y_train,
-                            validation_split=0.2, epochs=self.epochs_model, callbacks=[early_stopping], verbose=1)
+                            validation_split=0.2, epochs=self.epochs_model, verbose=1)
 
         model.save(self.my_dir + "/models/oran-lstm.keras")
 

@@ -56,10 +56,10 @@ spec:
         {{- if .Values.nodeSelector }}
         {{ toYaml .Values.nodeSelector | nindent 8 }}
         {{- end }}
-      imagePullSecrets:
-{{- range .Values.containers }}
-        - name: {{ .image.registry | replace "." "-" | replace ":" "-" | replace "/" "-" | trunc 63 | trimSuffix "-" }}
-{{- end }}
+#       imagePullSecrets:
+# {{- range .Values.containers }}
+#         - name: {{ .image.registry | replace "." "-" | replace ":" "-" | replace "/" "-" | trunc 63 | trimSuffix "-" }}
+# {{- end }}
       volumes:
         - name: config-volume
           configMap:
