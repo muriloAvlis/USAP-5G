@@ -1,7 +1,10 @@
 import grpc
-import csv
-from usap_smc.utils.utils import get_ip_by_hostname
+import time
+import os
 
+import pandas as pd
+import numpy as np
+from usap_smc.utils.utils import get_ip_by_hostname
 from usap_smc.logger.logger import Log
 from usap_smc.pb import xapp_pb2
 from usap_smc.pb import xapp_pb2_grpc
@@ -9,15 +12,6 @@ from usap_smc.ml_model.model import Model
 from usap_smc.core5g.database import Database
 
 from loguru import logger
-
-
-def save_latency_iteratively(latency, message_id):
-    with open('latencias.csv', mode='a', newline='') as file:
-        writer = csv.writer(file)
-        if file.tell() == 0:  # Se o arquivo estiver vazio, escreve o cabeçalho
-            writer.writerow(['Mensagem', 'Latência (ms)'])
-        writer.writerow([message_id, latency])
-    logger.info(f"Latência salva: {latency} ms, Mensagem: {message_id}")
 
 
 class Client(object):
@@ -29,11 +23,20 @@ class Client(object):
         server_port = "5052"
         self.server_address = server_ip + ":" + server_port
 
+        self.my_dir = os.path.dirname(os.path.abspath(__file__))
+
         # Model
         self.model = Model()
 
         # Core
         self.core5g = Database()
+
+    def save_latencies(self, columns, latencies):
+        df = pd.DataFrame(latencies, columns=columns)
+        file_path = self.my_dir + \
+            "/data/latencies.csv"
+        df.to_csv(file_path, index=False)
+        logger.info(f"Registros de latência salvos em {file_path}")
 
     async def run(self) -> None:
         # Cria o canal gRPC
@@ -53,19 +56,18 @@ class Client(object):
                 features = ['DRB.UEThpDl', 'DRB.UEThpUl',
                             'RRU.PrbUsedDl', 'RRU.PrbUsedUl']
                 buffer = {}
-                message_id = 0  # Contador de mensagens
+
+                message_count = 0  # Contador de mensagens
+                latencies = np.empty((0, 6))
 
                 async for response in response_stream:
-                    # Incrementa o id da mensagem
-                    message_id += 1
+                    # Calcula a latência de recebimento
+                    recv_latency = (time.time() * 1000) - response.latency_ms
 
                     # Captura e armazena a latência
-                    latency = response.latency_ms
+                    ind_latency = response.latency_ms
 
-                    # Salva a latência de forma iterativa
-                    # save_latency_iteratively(latency, message_id)
-
-                    logger.info(f"Timestamp: {latency} ms")
+                    logger.info(f"Latency: {recv_latency} ms")
 
                     # Processa as métricas
                     for ue in response.ueList:
@@ -100,21 +102,46 @@ class Client(object):
                         # Chama a função de inferência se o buffer estiver cheio
                         if len(buffer[ue.imsi]) == 5:
                             # Chama a função de inferência (TODO: dá pra fazer com multi thread ??)
+                            inference_time_start = time.time()
                             sst_inference = self.model.get_sst_inference(
                                 buffer[ue.imsi], ue.imsi)  # np.int64
+                            inference_time_stop = time.time()
 
+                            inference_latency = (
+                                inference_time_stop - inference_time_start) * 1000  # in ms
                             # Verifica se a UE já está no slice inferido
                             if self.core5g.check_ue_in_slice(ue.imsi, sst_inference):
+
                                 logger.warning(
                                     f"UE {ue.imsi} is already in slice with SST {sst_inference}, ignoring...")
                             else:
-                                # TODO: update UE slice
+                                alloc_time_start = time.time()
+                                self.core5g.update_ue_slice_by_imsi(
+                                    ue.imsi, sst_inference)
+                                alloc_time_stop = time.time()
+
+                                alloc_latency = (
+                                    alloc_time_stop - alloc_time_start) * 1000  # in ms
                                 logger.info(
                                     f"UE slice ({ue.imsi}) updated to SST {sst_inference}")
 
                             # Limpa o buffer após o uso
                             buffer[ue.imsi].clear()
+                        else:
+                            inference_latency = 0
+                            alloc_latency = 0
 
+                        # Até 1000 registros
+                        latencies = np.vstack([latencies], [
+                            message_count, ind_latency, recv_latency, inference_latency, alloc_latency])
+
+                        # Incrementa o id da mensagem
+                        message_count += 1
+
+                        if message_count == 1001:
+                            columns = ["msg_count", "ind_latency", "recv_latency",
+                                       "inference_latency", "alloc_latency"]
+                            self.save_latencies(latencies, columns)
             except grpc.RpcError as e:
                 logger.error(
                     f"Falha ao receber o stream: {e.details()} (Status: {e.code()})")
