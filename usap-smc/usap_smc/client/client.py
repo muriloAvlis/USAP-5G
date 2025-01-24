@@ -98,7 +98,7 @@ class Client(object):
                         ])
 
                         # Chama a função de inferência se o buffer estiver cheio
-                        if len(buffer[ue.imsi]) == 2:
+                        if len(buffer[ue.imsi]) == 5:
                             # Chama a função de inferência (TODO: dá pra fazer com multi thread ??)
                             sst_inference = self.model.get_sst_inference(
                                 buffer[ue.imsi], ue.imsi)  # np.int64

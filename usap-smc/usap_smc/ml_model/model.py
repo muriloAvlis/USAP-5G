@@ -61,6 +61,7 @@ class Model(object):
 
 # For tests
 if __name__ == "__main__":
-    data = [[0.0, 0.0, 0], [0.0, 0.0, 0]]
+    data = [[0.0, 0.0, 0], [0.0, 0.0, 0], [
+        0.0, 0.0, 0], [0.0, 0.0, 0], [0.0, 0.0, 0]]
     model = Model()
     sst = model.get_sst_inference(data, "000000000000001")
