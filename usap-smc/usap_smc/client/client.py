@@ -35,14 +35,6 @@ class Client(object):
         # Core
         self.core5g = Database()
 
-    async def wait_for_server_ready(channel: Channel, timeout: int = 30):
-        try:
-            # O método `wait_for_ready` aguarda até que o servidor esteja pronto
-            await channel.channel_ready(timeout=timeout)
-            print("Conexão com o servidor estabelecida com sucesso.")
-        except grpc.aio.AioRpcError as e:
-            print(f"Erro ao conectar: {e}")
-
     async def run(self) -> None:
         # Cria o canal gRPC
         async with grpc.aio.insecure_channel(self.server_address) as channel:
