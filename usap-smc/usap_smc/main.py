@@ -18,7 +18,7 @@ class App(object):
     def signal_handler(self, sig, frame):
         """Handle graceful shutdown on SIGINT or SIGTERM."""
         logger.info(
-            "Signal received: %s. Shutting down application gracefully.", sig)
+            f"Signal received: {sig}. Shutting down application gracefully.")
 
         if hasattr(self, 'client'):
             self.client.stop()
