@@ -19,6 +19,19 @@ spec:
         {{- if .Values.nodeSelector }}
         {{ toYaml .Values.nodeSelector | nindent 8 }}
         {{- end }}
+      initContainers:
+        - name: check-grpc-connection
+          image: python:3.13-slim
+          command:
+            - /bin/sh
+            - -c
+            - |
+              pip install --root-user-action=ignore --upgrade pip 1> /dev/null && \
+              pip install --root-user-action=ignore grpcio grpcio-tools 1> /dev/null && \
+              python3 -u /scripts/check_grpc_connection.py
+          volumeMounts:
+            - name: init-script
+              mountPath: /scripts
       containers:
       - name: usap-smc
         image: "{{ .Values.usap_smc.image.registry }}/{{ .Values.usap_smc.image.name }}:{{ .Values.usap_smc.image.tag }}"
@@ -26,3 +39,7 @@ spec:
         env:
           - name: LOG_LEVEL
             value: {{ .Values.usap_smc.config.logger.level | quote }}
+      volumes:
+        - name: init-script
+          configMap:
+            name: grpc-check-script  # ConfigMap que contém o script Python

@@ -1,0 +1,45 @@
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: grpc-check-script
+data:
+  check_grpc_connection.py: |
+    import grpc
+    import time
+    import asyncio
+
+    async def wait_for_server_ready(channel: grpc.aio.Channel, timeout: int = 5):
+        try:
+            await asyncio.wait_for(channel.channel_ready(), timeout=timeout)
+            print("Server connection established successfully!")
+        except grpc.aio.AioRpcError as e:
+            print(f"Error to connect: {e}")
+            return False
+        except asyncio.TimeoutError:
+            print(f"Could not connect to server in {timeout} seconds")
+            return False
+        return True
+
+    async def connect_to_server(server_address: str):
+        async with grpc.aio.insecure_channel(server_address) as channel:
+            success = await wait_for_server_ready(channel)
+            if not success:
+                raise ConnectionError()
+
+    if __name__ == "__main__":
+        server_address = 'service-ricxapp-usap-xapp-grpc.ricxapp.svc:5052'
+        start_time = time.time()
+        
+        print('Trying to connect to the metrics server...')
+
+        # Cria explicitamente um novo loop de eventos
+        loop = asyncio.new_event_loop()
+        asyncio.set_event_loop(loop)
+
+        while time.time() - start_time < 60:
+            try:
+                loop.run_until_complete(connect_to_server(server_address))
+                break
+            except Exception as e:
+                print(f"Trying again...")
+                time.sleep(5)
