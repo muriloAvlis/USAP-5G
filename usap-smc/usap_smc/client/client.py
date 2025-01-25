@@ -105,7 +105,8 @@ class Client(object):
                         ])
 
                         # Chama a função de inferência se o buffer estiver cheio
-                        if len(buffer[ue.imsi]) == 5:
+                        # TEMP: remove it after tests
+                        if len(buffer[ue.imsi]) == 1:
                             # Chama a função de inferência (TODO: dá pra fazer com multi thread ??)
                             inference_time_start = time.time()
                             sst_inference = self.model.get_sst_inference(
