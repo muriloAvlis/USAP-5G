@@ -3,12 +3,11 @@ import json
 
 from concurrent import futures
 from grpc_reflection.v1alpha import reflection
-from usap_e2sm.logger.logger import Log
 from usap_e2sm.pb import e2sm_pb2
 from usap_e2sm.pb import e2sm_pb2_grpc
 from usap_e2sm.asn1.e2sm.e2sm_kpm_packer import e2sm_kpm_packer
 
-logger = Log().get_logger()
+from loguru import logger
 
 
 class EventTriggerService(e2sm_pb2_grpc.EventTriggerDefinitionServicer):
