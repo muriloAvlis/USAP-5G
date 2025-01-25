@@ -116,6 +116,7 @@ class IndicationMessage(e2sm_pb2_grpc.IndicationMessageServicer):
 
     def decodeIndicationMessage(self, request, context):
         try:
+            # timestamp = time.time() * 1000
             client_id = context.peer()
             logger.debug(
                 f"Received request from: {client_id} to function: decodeIndicationMessage")
@@ -129,13 +130,11 @@ class IndicationMessage(e2sm_pb2_grpc.IndicationMessageServicer):
             collectStartTime = self.e2sm_kpm.extract_hdr_info(decodedIndHeader)[
                 'colletStartTime']
 
-            logger.info(f"""StartTime: {collectStartTime} | Timestamp: {
-                        request.timestamp}""")
-
-            timestamp = time.time() * 1000
+            # logger.info(f"""StartTime: {collectStartTime} | Timestamp: {
+            #             request.timestamp}""")
 
             # Calcule latency
-            response.latency_ms = timestamp - \
+            response.latency_ms = request.timestamp - \
                 collectStartTime
 
             # Ind Message
