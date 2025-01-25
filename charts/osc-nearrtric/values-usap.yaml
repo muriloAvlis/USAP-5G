@@ -112,7 +112,6 @@ dbaas:
 
 e2mgr:
   e2mgr:
-    imagePullPolicy: Always
     image:
       registry: "nexus3.o-ran-sc.org:10002/o-ran-sc"
       name: ric-plt-e2mgr
@@ -130,7 +129,6 @@ e2term:
   loglevel: 4
   e2term:
     alpha:
-      imagePullPolicy: Always
       image:
         registry: "nexus3.o-ran-sc.org:10002/o-ran-sc"
         name: ric-plt-e2
@@ -154,7 +152,6 @@ jaegeradapter:
 
 rtmgr:
   rtmgr:
-    imagePullPolicy: Always
     image:
       registry: "nexus3.o-ran-sc.org:10002/o-ran-sc"
       name: ric-plt-rtmgr
