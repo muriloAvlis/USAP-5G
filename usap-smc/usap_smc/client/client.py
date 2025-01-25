@@ -161,11 +161,12 @@ class Client(object):
                                 message_count, ind_latency, recv_latency, class_latency, alloc_latency, tot_latency]])
 
                             # Incrementa o contador de mensagem
-                            message_count += 1
                         elif message_count == 6:
                             columns = ["msg_count", "ind_latency", "recv_latency",
                                        "class_latency", "alloc_latency", "tot_latency"]
                             self.save_latencies(columns, latencies)
+
+                        message_count += 1
 
             except grpc.RpcError as e:
                 logger.error(
