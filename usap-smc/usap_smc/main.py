@@ -1,6 +1,7 @@
 import sys
 import signal
 import asyncio
+import threading
 
 from loguru import logger
 from usap_smc.logger.logger import Log
@@ -22,6 +23,12 @@ class App(object):
 
         if hasattr(self, 'client'):
             self.client.stop()
+
+        # Esperar por um tempo para que threads sejam finalizadas
+        for thread in threading.enumerate():
+            if thread != threading.main_thread():
+                thread.join(timeout=10)
+
         sys.exit(0)
 
     def Start(self):
