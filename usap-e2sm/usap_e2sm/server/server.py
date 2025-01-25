@@ -130,6 +130,8 @@ class IndicationMessage(e2sm_pb2_grpc.IndicationMessageServicer):
                 'colletStartTime']
 
             # Calcule latency
+            logger.debug(request.timestamp)
+            logger.debug(collectStartTime)
             response.latency_ms = request.timestamp - \
                 collectStartTime
 

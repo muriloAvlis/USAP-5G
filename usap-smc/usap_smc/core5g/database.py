@@ -21,7 +21,7 @@ class Database(MongoConnection):
         """Check if UE is in slice with SST"""
         query = {
             "imsi": imsi,
-            "slice": {"$elemMatch": {"sst": int(sst)}}
+            "slice": {"$elemMatch": {"sst": sst}}
         }
 
         res = self.collection.find_one(query)
