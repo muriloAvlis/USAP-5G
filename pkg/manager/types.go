@@ -11,7 +11,7 @@ var (
 	// Default vars
 	Host                 = "service-ricxapp-usap-xapp-http.ricxapp"
 	HttpPort             = int64(8080)
-	RMRPort              = int64(4561)
+	RMRPort              = int64(4560)
 	XappEventInstanceID  = int64(1234)  // XappEventInstanceID
 	ReportingPeriod      = uint64(1000) // in ms
 	GranularityPeriod    = uint64(1000) // in ms
