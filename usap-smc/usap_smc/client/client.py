@@ -67,7 +67,7 @@ class Client(object):
                     # Captura e armazena a latência
                     ind_latency = response.latency_ms
 
-                    logger.info(f"msg_count={message_count}, recv_latency:
+                    logger.info(f"msg_count={message_count}, recv_latency: \
                                 {recv_latency} ms")
 
                     # Processa as métricas
