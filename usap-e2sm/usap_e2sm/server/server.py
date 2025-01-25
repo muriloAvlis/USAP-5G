@@ -1,6 +1,5 @@
 import grpc
 import json
-import time
 
 from concurrent import futures
 from grpc_reflection.v1alpha import reflection
@@ -130,8 +129,8 @@ class IndicationMessage(e2sm_pb2_grpc.IndicationMessageServicer):
             collectStartTime = self.e2sm_kpm.extract_hdr_info(decodedIndHeader)[
                 'colletStartTime']
 
-            # logger.info(f"""StartTime: {collectStartTime} | Timestamp: {
-            #             request.timestamp}""")
+            logger.info(f"""StartTime: {collectStartTime} | Timestamp: {
+                        request.timestamp}""")
 
             # Calcule latency
             response.latency_ms = request.timestamp - \
