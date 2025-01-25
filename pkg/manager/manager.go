@@ -159,7 +159,7 @@ func (m *Manager) handleRicIndication(msg *xapp.RMRParams) error {
 	// decode Header and Message
 	uesData := m.E2sm.DecodeIndicationMessage(timestamp, indMsg.IndHeader, indMsg.IndMessage)
 
-	xapp.Logger.Info("Indication latency (ms): %.2f", uesData.Latency)
+	xapp.Logger.Info("Indication latency (ms): %.2f", uesData.IndLatency)
 
 	for idx := range uesData.UeList {
 		ueImsi := m.E2sm.E2Node[msg.Meid.RanName].UeImsiList[idx]

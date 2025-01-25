@@ -62,10 +62,11 @@ class Client(object):
 
                 async for response in response_stream:
                     # Calcula a latência de recebimento
-                    recv_latency = (time.time() * 1000) - response.latency_ms
+                    recv_latency = (time.time() * 1000) - \
+                        response.timestamp_ms
 
                     # Captura e armazena a latência
-                    ind_latency = response.latency_ms
+                    ind_latency = response.indLatency_ms
 
                     logger.info(f"Ind_latency: {ind_latency}")
 
@@ -148,7 +149,7 @@ class Client(object):
                         elif message_count == 1001:
                             columns = ["msg_count", "ind_latency", "recv_latency",
                                        "inference_latency", "alloc_latency"]
-                            self.save_latencies(latencies, columns)
+                            self.save_latencies(columns, latencies)
 
             except grpc.RpcError as e:
                 logger.error(

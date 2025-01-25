@@ -36,9 +36,11 @@ class UeList(_message.Message):
     def __init__(self, ueID: _Optional[int] = ..., imsi: _Optional[str] = ..., ueMeas: _Optional[_Iterable[_Union[UeMeas, _Mapping]]] = ..., granulPeriod: _Optional[int] = ...) -> None: ...
 
 class StreamUeMetricsResponse(_message.Message):
-    __slots__ = ("latency_ms", "ueList")
-    LATENCY_MS_FIELD_NUMBER: _ClassVar[int]
+    __slots__ = ("timestamp_ms", "indLatency_ms", "ueList")
+    TIMESTAMP_MS_FIELD_NUMBER: _ClassVar[int]
+    INDLATENCY_MS_FIELD_NUMBER: _ClassVar[int]
     UELIST_FIELD_NUMBER: _ClassVar[int]
-    latency_ms: float
+    timestamp_ms: float
+    indLatency_ms: float
     ueList: _containers.RepeatedCompositeFieldContainer[UeList]
-    def __init__(self, latency_ms: _Optional[float] = ..., ueList: _Optional[_Iterable[_Union[UeList, _Mapping]]] = ...) -> None: ...
+    def __init__(self, timestamp_ms: _Optional[float] = ..., indLatency_ms: _Optional[float] = ..., ueList: _Optional[_Iterable[_Union[UeList, _Mapping]]] = ...) -> None: ...

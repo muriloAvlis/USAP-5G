@@ -159,8 +159,9 @@ func (e *E2sm) DecodeIndicationMessage(timestamp float64, indicationHeader []byt
 	}
 
 	res := &IndicationResponse{
-		Latency: response.LatencyMs,
-		UeList:  ueList,
+		Timestamp:  timestamp,
+		IndLatency: response.LatencyMs,
+		UeList:     ueList,
 	}
 
 	return res
