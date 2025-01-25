@@ -122,6 +122,14 @@ class Client(object):
                                 inference_time_stop - inference_time_start) * 1000  # in ms
                             # Verifica se a UE já está no slice inferido
                             if self.core5g.check_ue_in_slice(ue.imsi, sst_inference):
+                                # TEMP: remove it after tests
+                                alloc_time_start = time.time()
+                                self.core5g.update_ue_slice_by_imsi(
+                                    ue.imsi, sst_inference)
+                                alloc_time_stop = time.time()
+                                alloc_latency = (
+                                    alloc_time_stop - alloc_time_start) * 1000  # in ms
+
                                 logger.warning(
                                     f"UE {ue.imsi} is already in slice with SST {sst_inference}, ignoring...")
                             else:
