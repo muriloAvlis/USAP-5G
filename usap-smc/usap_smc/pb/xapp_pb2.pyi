@@ -40,7 +40,7 @@ class StreamUeMetricsResponse(_message.Message):
     TIMESTAMP_MS_FIELD_NUMBER: _ClassVar[int]
     INDLATENCY_MS_FIELD_NUMBER: _ClassVar[int]
     UELIST_FIELD_NUMBER: _ClassVar[int]
-    timestamp_ms: float
-    indLatency_ms: float
+    timestamp_ms: int
+    indLatency_ms: int
     ueList: _containers.RepeatedCompositeFieldContainer[UeList]
-    def __init__(self, timestamp_ms: _Optional[float] = ..., indLatency_ms: _Optional[float] = ..., ueList: _Optional[_Iterable[_Union[UeList, _Mapping]]] = ...) -> None: ...
+    def __init__(self, timestamp_ms: _Optional[int] = ..., indLatency_ms: _Optional[int] = ..., ueList: _Optional[_Iterable[_Union[UeList, _Mapping]]] = ...) -> None: ...

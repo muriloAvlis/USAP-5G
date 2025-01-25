@@ -78,7 +78,7 @@ message EncActDefResponse {
 }
 
 message DecodeIndMessageRequest {
-  double timestamp = 1;
+  int64 timestamp = 1;
   bytes indicationHeader = 2;
   bytes indicationMessage = 3;
 }
@@ -99,6 +99,6 @@ message UeMeasData {
 }
 
 message DecodeIndMessageResponse {
-  double latency_ms = 1;
+  int64 latency_ms = 1;
   repeated UeMeasData ueMeasData = 2;
 }

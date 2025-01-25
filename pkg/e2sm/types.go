@@ -49,7 +49,7 @@ type UeData struct {
 }
 
 type IndicationResponse struct {
-	Timestamp  float64 // is ms
-	IndLatency float64 // in ms
+	Timestamp  int64 // is ms
+	IndLatency int64 // in ms
 	UeList     []UeData
 }

@@ -118,7 +118,7 @@ func (e *E2sm) EncodeActionDefFormat4(machingUEConds MatchingUEConds, measNameLi
 	return response.GetActionDefinitionEnc()
 }
 
-func (e *E2sm) DecodeIndicationMessage(timestamp float64, indicationHeader []byte, indicationMessage []byte) *IndicationResponse {
+func (e *E2sm) DecodeIndicationMessage(timestamp int64, indicationHeader []byte, indicationMessage []byte) *IndicationResponse {
 	// Prepare request
 	client := pb.NewIndicationMessageClient(e.conn)
 

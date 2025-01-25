@@ -84,10 +84,10 @@ class DecodeIndMessageRequest(_message.Message):
     TIMESTAMP_FIELD_NUMBER: _ClassVar[int]
     INDICATIONHEADER_FIELD_NUMBER: _ClassVar[int]
     INDICATIONMESSAGE_FIELD_NUMBER: _ClassVar[int]
-    timestamp: float
+    timestamp: int
     indicationHeader: bytes
     indicationMessage: bytes
-    def __init__(self, timestamp: _Optional[float] = ..., indicationHeader: _Optional[bytes] = ..., indicationMessage: _Optional[bytes] = ...) -> None: ...
+    def __init__(self, timestamp: _Optional[int] = ..., indicationHeader: _Optional[bytes] = ..., indicationMessage: _Optional[bytes] = ...) -> None: ...
 
 class MeasData(_message.Message):
     __slots__ = ("measName", "valueInt", "valueReal", "noValue")
@@ -115,6 +115,6 @@ class DecodeIndMessageResponse(_message.Message):
     __slots__ = ("latency_ms", "ueMeasData")
     LATENCY_MS_FIELD_NUMBER: _ClassVar[int]
     UEMEASDATA_FIELD_NUMBER: _ClassVar[int]
-    latency_ms: float
+    latency_ms: int
     ueMeasData: _containers.RepeatedCompositeFieldContainer[UeMeasData]
-    def __init__(self, latency_ms: _Optional[float] = ..., ueMeasData: _Optional[_Iterable[_Union[UeMeasData, _Mapping]]] = ...) -> None: ...
+    def __init__(self, latency_ms: _Optional[int] = ..., ueMeasData: _Optional[_Iterable[_Union[UeMeasData, _Mapping]]] = ...) -> None: ...
