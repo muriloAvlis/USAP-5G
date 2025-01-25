@@ -99,7 +99,6 @@ appmgr:
         name: ric-plt-appmgr
         tag: 0.5.8
 
-
 dbaas:
   dbaas:
     image:
