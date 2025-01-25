@@ -33,8 +33,14 @@ class Client(object):
 
     def save_latencies(self, columns, latencies):
         df = pd.DataFrame(latencies, columns=columns)
-        file_path = self.my_dir + \
-            "/data/latencies.csv"
+
+        # Define o caminho completo do arquivo
+        file_dir = os.path.join(self.my_dir, "data")
+        file_path = os.path.join(file_dir, "latencies.csv")
+
+        # Cria o diretório se ele não existir
+        os.makedirs(file_dir, exist_ok=True)
+
         df.to_csv(file_path, index=False)
         logger.info(f"Registros de latência salvos em {file_path}")
 
@@ -57,8 +63,8 @@ class Client(object):
                             'RRU.PrbUsedDl', 'RRU.PrbUsedUl']
                 buffer = {}
 
-                message_count = 0  # Contador de mensagens
-                latencies = np.empty((0, 5))
+                message_count = 1  # Contador de mensagens
+                latencies = np.empty((0, 6))
 
                 async for response in response_stream:
                     # Calcula a latência de recebimento
@@ -67,11 +73,6 @@ class Client(object):
 
                     # Captura e armazena a latência
                     ind_latency = response.indLatency_ms
-
-                    logger.info(f"Ind_latency: {ind_latency}")
-
-                    logger.info(f"""msg_count={message_count}, recv_latency: {
-                                recv_latency} ms""")
 
                     # Processa as métricas
                     for ue in response.ueList:
@@ -116,7 +117,8 @@ class Client(object):
                             if sst_inference == 0:  # default slice
                                 sst_inference = 128
 
-                            inference_latency = (
+                            # Latência de classificação
+                            class_latency = (
                                 inference_time_stop - inference_time_start) * 1000  # in ms
                             # Verifica se a UE já está no slice inferido
                             if self.core5g.check_ue_in_slice(ue.imsi, sst_inference):
@@ -136,19 +138,25 @@ class Client(object):
                             # Limpa o buffer após o uso
                             buffer[ue.imsi].clear()
                         else:
-                            inference_latency = 0
+                            class_latency = 0
                             alloc_latency = 0
+
+                        tot_latency = ind_latency + recv_latency
+
+                        logger.info(f"""msg_count={message_count}, ind_lat: {ind_latency:.2f} ms, recv_lat: {
+                            recv_latency:.2f} ms, inf_lat: {class_latency:.2f} ms, alloc_lat: {alloc_latency:.2f} ms""")
 
                         # Até 1000 registros
                         if message_count <= 1000:
+                            tot_latency = ind_latency + recv_latency + class_latency + alloc_latency
                             latencies = np.vstack([latencies, [
-                                message_count, ind_latency, recv_latency, inference_latency, alloc_latency]])
+                                message_count, ind_latency, recv_latency, class_latency, alloc_latency, tot_latency]])
 
-                            # Incrementa o id da mensagem
+                            # Incrementa o contador de mensagem
                             message_count += 1
                         elif message_count == 1001:
                             columns = ["msg_count", "ind_latency", "recv_latency",
-                                       "inference_latency", "alloc_latency"]
+                                       "class_latency", "alloc_latency", "tot_latency"]
                             self.save_latencies(columns, latencies)
 
             except grpc.RpcError as e:
