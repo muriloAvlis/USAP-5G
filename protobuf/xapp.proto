@@ -33,6 +33,7 @@ message UeList {
 }
 
 message StreamUeMetricsResponse {
-    double latency_ms = 1;
-    repeated UeList ueList = 2;
+    double timestamp_ms = 1;
+    double indLatency_ms = 2;
+    repeated UeList ueList = 3;
 }

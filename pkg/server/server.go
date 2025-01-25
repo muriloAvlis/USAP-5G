@@ -84,8 +84,9 @@ func (s *UeMetricsServer) StreamUeMetrics(req *pb.StreamUeMetricsRequest, stream
 			}
 
 			response := &pb.StreamUeMetricsResponse{
-				LatencyMs: ind.Latency,
-				UeList:    ueListResponse,
+				TimestampMs:  ind.Timestamp,
+				IndLatencyMs: ind.IndLatency,
+				UeList:       ueListResponse,
 			}
 
 			// send response
