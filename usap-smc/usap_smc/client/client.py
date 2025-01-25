@@ -154,15 +154,15 @@ class Client(object):
                         logger.info(f"""msg_count={message_count}, ind_lat: {ind_latency:.2f} ms, recv_lat: {
                             recv_latency:.2f} ms, inf_lat: {class_latency:.2f} ms, alloc_lat: {alloc_latency:.2f} ms""")
 
-                        # Até 1000 registros
-                        if message_count <= 1000:
+                        # Até 10000 registros
+                        if message_count <= 5:
                             tot_latency = ind_latency + recv_latency + class_latency + alloc_latency
                             latencies = np.vstack([latencies, [
                                 message_count, ind_latency, recv_latency, class_latency, alloc_latency, tot_latency]])
 
                             # Incrementa o contador de mensagem
                             message_count += 1
-                        elif message_count == 1001:
+                        elif message_count == 6:
                             columns = ["msg_count", "ind_latency", "recv_latency",
                                        "class_latency", "alloc_latency", "tot_latency"]
                             self.save_latencies(columns, latencies)
