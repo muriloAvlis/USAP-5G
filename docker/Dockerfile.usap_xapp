@@ -51,7 +51,7 @@ RUN go build -v -o ./bin ./...
 #---------------- Final Stage ----------------#
 #---------------------------------------------#
 
-FROM bitnami/minideb:bookworm
+FROM bitnami/minideb:bullseye
 
 ARG RMR_VERSION
 ARG E2AP_VERSION
