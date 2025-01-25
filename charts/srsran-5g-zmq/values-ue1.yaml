@@ -166,7 +166,7 @@ config:
     
     log:
       filename: /tmp/gnb.log            # Path of the log file.
-      all_level: info                # Logging level applied to all layers.
+      all_level: debug                # Logging level applied to all layers.
 
     e2:
       enable_cu_cp_e2: false                

@@ -58,7 +58,7 @@ class Client(object):
                 buffer = {}
 
                 message_count = 0  # Contador de mensagens
-                latencies = np.empty((0, 6))
+                latencies = np.empty((0, 5))
 
                 async for response in response_stream:
                     # Calcula a latência de recebimento
@@ -67,7 +67,8 @@ class Client(object):
                     # Captura e armazena a latência
                     ind_latency = response.latency_ms
 
-                    logger.info(f"Latency: {recv_latency} ms")
+                    logger.info(f"msg_count={message_count}, recv_latency:
+                                {recv_latency} ms")
 
                     # Processa as métricas
                     for ue in response.ueList:
@@ -107,11 +108,15 @@ class Client(object):
                                 buffer[ue.imsi], ue.imsi)  # np.int64
                             inference_time_stop = time.time()
 
+                            sst_inference = int(sst_inference)
+
+                            if sst_inference == 0:  # default slice
+                                sst_inference = 128
+
                             inference_latency = (
                                 inference_time_stop - inference_time_start) * 1000  # in ms
                             # Verifica se a UE já está no slice inferido
                             if self.core5g.check_ue_in_slice(ue.imsi, sst_inference):
-
                                 logger.warning(
                                     f"UE {ue.imsi} is already in slice with SST {sst_inference}, ignoring...")
                             else:
@@ -132,16 +137,17 @@ class Client(object):
                             alloc_latency = 0
 
                         # Até 1000 registros
-                        latencies = np.vstack([latencies], [
-                            message_count, ind_latency, recv_latency, inference_latency, alloc_latency])
+                        if message_count <= 1000:
+                            latencies = np.vstack([latencies, [
+                                message_count, ind_latency, recv_latency, inference_latency, alloc_latency]])
 
-                        # Incrementa o id da mensagem
-                        message_count += 1
-
-                        if message_count == 1001:
+                            # Incrementa o id da mensagem
+                            message_count += 1
+                        elif message_count == 1001:
                             columns = ["msg_count", "ind_latency", "recv_latency",
                                        "inference_latency", "alloc_latency"]
                             self.save_latencies(latencies, columns)
+
             except grpc.RpcError as e:
                 logger.error(
                     f"Falha ao receber o stream: {e.details()} (Status: {e.code()})")
