@@ -5,7 +5,7 @@ ARG E2AP_VERSION=1.1.0
 #--------------- Builder Stage ---------------#
 #---------------------------------------------#
 
-FROM golang:1.23.4-bookworm AS builder
+FROM golang:1.23.5-bullseye AS builder
 
 ARG RMR_VERSION
 ARG E2AP_VERSION
