@@ -67,8 +67,10 @@ class Client(object):
                     # Captura e armazena a latência
                     ind_latency = response.latency_ms
 
-                    logger.info(f"msg_count={message_count}, recv_latency: \
-                                {recv_latency} ms")
+                    logger.info(f"Ind_latency: {ind_latency}")
+
+                    logger.info(f"""msg_count={message_count}, recv_latency: {
+                                recv_latency} ms""")
 
                     # Processa as métricas
                     for ue in response.ueList:
@@ -87,7 +89,7 @@ class Client(object):
                             elif meas.HasField("noValue"):
                                 meas_value = "No Value"
                             logger.debug(
-                                f"  MeasName: {meas.measName}, MeasValue: {meas_value}")
+                                f"MeasName: {meas.measName}, MeasValue: {meas_value}")
 
                             if meas.measName in features:
                                 meas_dict[meas.measName] = meas_value
