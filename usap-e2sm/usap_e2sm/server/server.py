@@ -1,5 +1,6 @@
 import grpc
 import json
+import time
 
 from concurrent import futures
 from grpc_reflection.v1alpha import reflection
@@ -131,8 +132,10 @@ class IndicationMessage(e2sm_pb2_grpc.IndicationMessageServicer):
             logger.info(f"""StartTime: {collectStartTime} | Timestamp: {
                         request.timestamp}""")
 
+            timestamp = time.time() * 1000
+
             # Calcule latency
-            response.latency_ms = request.timestamp - \
+            response.latency_ms = timestamp - \
                 collectStartTime
 
             # Ind Message
