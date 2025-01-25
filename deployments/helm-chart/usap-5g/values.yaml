@@ -95,12 +95,11 @@ containers:
     name: muriloavlis/usap-e2sm
     registry: docker.io
     tag: latest
-- image:
+- name: usap-xapp
+  image:
     name: muriloavlis/usap-xapp
     registry: docker.io
     tag: latest
-  name: usap-xapp
-  # command: ['sleep', 'infinity']
 controls:
   active: true
   emulatedScenario: true
