@@ -36,7 +36,7 @@ class Model(object):
 
             # Adiciona a dimensão esperada pelo modelo
             input = np.expand_dims(X, axis=0)
-            logger.info(
+            logger.debug(
                 f"Entrada processada: {input} para a UE com IMSI: {imsi}")
 
             # Faz a previsão com o modelo
