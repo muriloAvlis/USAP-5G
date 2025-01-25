@@ -98,7 +98,7 @@ containers:
 - image:
     name: muriloavlis/usap-xapp
     registry: docker.io
-    tag: 0.0.1
+    tag: latest
   name: usap-xapp
   # command: ['sleep', 'infinity']
 controls:
