@@ -140,6 +140,9 @@ func (m *Manager) sendSubscription(e2NodeID string) {
 func (m *Manager) handleRicIndication(msg *xapp.RMRParams) error {
 	var e2ap *e2ap.E2ap
 
+	// get TS in ms
+	timestamp := float64(time.Now().UnixNano()) / 1e6
+
 	// Decode Indication Message
 	indMsg, err := e2ap.DecodeRicIndMsg(msg.Payload)
 	if err != nil {
@@ -152,9 +155,6 @@ func (m *Manager) handleRicIndication(msg *xapp.RMRParams) error {
 		indMsg.IndMessage == nil || len(indMsg.IndMessage) == 0 {
 		return errors.New("unable to get IndicationHeader or IndicationMessage due to invalid size")
 	}
-
-	// get TS in ms
-	timestamp := float64(time.Now().UnixNano()) / 1e6
 
 	// decode Header and Message
 	uesData := m.E2sm.DecodeIndicationMessage(timestamp, indMsg.IndHeader, indMsg.IndMessage)
