@@ -141,7 +141,7 @@ func (m *Manager) handleRicIndication(msg *xapp.RMRParams) error {
 	var e2ap *e2ap.E2ap
 
 	// get TS in ms
-	timestamp := float64(time.Now().UnixNano()) / 1e6
+	timestamp := float64(time.Now().UnixMilli())
 
 	// Decode Indication Message
 	indMsg, err := e2ap.DecodeRicIndMsg(msg.Payload)
