@@ -1,4 +1,4 @@
-# USAP Slice Manager and Classifier (CGS)
+# USAP Slice Manager and Classifier (SMC)
 
 ## Dependencies
 
