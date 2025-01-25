@@ -2,12 +2,8 @@ import sys
 import signal
 
 from usap_e2sm.server.server import Server
-from usap_e2sm.logger.logger import Log
-
-
 from loguru import logger
-from usap_smc.logger.logger import Log
-from usap_smc.client.client import Client
+from usap_e2sm.logger.logger import Log
 
 
 class App():
