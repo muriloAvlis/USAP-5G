@@ -32,6 +32,8 @@ class Client(object):
         self.core5g = Database()
 
     def save_latencies(self, columns, latencies):
+        # Salvar com apenas duas casas decimais
+        latencies = np.round(latencies, 2)
         df = pd.DataFrame(latencies, columns=columns)
 
         # Define o caminho completo do arquivo
