@@ -115,7 +115,7 @@ class Client(object):
                             sst_inference = int(sst_inference)
 
                             if sst_inference == 0:  # default slice
-                                sst_inference = 128
+                                sst_inference = 1  # REMOVEME
 
                             # Latência de classificação
 
