@@ -31,7 +31,7 @@ class App():
 def run():
     Log().configure()
 
-    logger.info("Starting usap-e2ap application...")
+    logger.info("Starting usap-e2sm application...")
 
     app = App()
 
