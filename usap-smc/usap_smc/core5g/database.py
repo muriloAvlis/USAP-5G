@@ -41,6 +41,7 @@ class Database(MongoConnection):
         if res.modified_count > 0:
             logger.info(f"SST {sst} atualizado para a UE {imsi} no 5GC")
         else:
+            return
             logger.error(f"Erro ao atualizar SST da UE {imsi}")
 
     def stop(self):

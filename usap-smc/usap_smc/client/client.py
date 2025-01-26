@@ -117,12 +117,12 @@ class Client(object):
                             if sst_inference == 0:  # default slice
                                 sst_inference = 128
 
-                            # Latência de classificação
+                            # TEMP: remove it after tests
+                            sst_inference = 1
 
                             # Verifica se a UE já está no slice inferido
                             if self.core5g.check_ue_in_slice(ue.imsi, sst_inference):
                                 # TEMP: remove it after tests
-                                sst_inference = 1
                                 alloc_time_start = time.time()
                                 self.core5g.update_ue_slice_by_imsi(
                                     ue.imsi, sst_inference)
@@ -131,7 +131,7 @@ class Client(object):
                                     alloc_time_stop - alloc_time_start) * 1000  # in ms
 
                                 logger.warning(
-                                    f"UE {ue.imsi} is already in slice with SST {sst_inference}, ignoring...")
+                                    f"UE {ue.imsi} já está no slice com SST {sst_inference}, ignorando...")
                             else:
                                 alloc_time_start = time.time()
                                 self.core5g.update_ue_slice_by_imsi(
