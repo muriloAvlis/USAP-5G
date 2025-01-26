@@ -115,6 +115,6 @@ class DecodeIndMessageResponse(_message.Message):
     __slots__ = ("latency_ms", "ueMeasData")
     LATENCY_MS_FIELD_NUMBER: _ClassVar[int]
     UEMEASDATA_FIELD_NUMBER: _ClassVar[int]
-    latency_ms: int
+    latency_ms: float
     ueMeasData: _containers.RepeatedCompositeFieldContainer[UeMeasData]
-    def __init__(self, latency_ms: _Optional[int] = ..., ueMeasData: _Optional[_Iterable[_Union[UeMeasData, _Mapping]]] = ...) -> None: ...
+    def __init__(self, latency_ms: _Optional[float] = ..., ueMeasData: _Optional[_Iterable[_Union[UeMeasData, _Mapping]]] = ...) -> None: ...
