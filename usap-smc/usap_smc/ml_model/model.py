@@ -1,6 +1,7 @@
 import os
 import numpy as np
 import signal
+import time
 
 from usap_smc.logger.logger import Log
 from tensorflow.keras.models import load_model
@@ -40,12 +41,18 @@ class Model(object):
                 f"Entrada processada: {input} para a UE com IMSI: {imsi}")
 
             # Faz a previsão com o modelo
+            inference_time_start = time.time()
             sst_inference = np.argmax(self.model.predict(input), axis=1)[0]
+            inference_time_stop = time.time()
+
+            # tempo de classificação
+            class_latency = (
+                inference_time_stop - inference_time_start) * 1000  # in ms
 
             logger.info(
                 f"Resultado da inferência: SST={sst_inference} para o UE={imsi}")
 
-            return sst_inference
+            return sst_inference, class_latency
 
         except Exception as e:
             logger.error(f"Erro durante a inferência: {e}")

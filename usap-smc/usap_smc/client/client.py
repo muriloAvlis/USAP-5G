@@ -107,12 +107,10 @@ class Client(object):
                         ])
 
                         # Chama a função de inferência se o buffer estiver cheio
-                        if len(buffer[ue.imsi]) == 5:
+                        if len(buffer[ue.imsi]) == 10:
                             # Chama a função de inferência (TODO: dá pra fazer com multi thread ??)
-                            inference_time_start = time.time()
-                            sst_inference = self.model.get_sst_inference(
+                            sst_inference, class_latency = self.model.get_sst_inference(
                                 buffer[ue.imsi], ue.imsi)  # np.int64
-                            inference_time_stop = time.time()
 
                             sst_inference = int(sst_inference)
 
@@ -120,8 +118,7 @@ class Client(object):
                                 sst_inference = 128
 
                             # Latência de classificação
-                            class_latency = (
-                                inference_time_stop - inference_time_start) * 1000  # in ms
+
                             # Verifica se a UE já está no slice inferido
                             if self.core5g.check_ue_in_slice(ue.imsi, sst_inference):
                                 # TEMP: remove it after tests
@@ -154,7 +151,7 @@ class Client(object):
                         tot_latency = ind_latency + recv_latency
 
                         logger.info(f"""msg_count={message_count}, ind_lat: {ind_latency:.2f} ms, recv_lat: {
-                            recv_latency:.2f} ms, inf_lat: {class_latency:.2f} ms, alloc_lat: {alloc_latency:.2f} ms""")
+                            recv_latency:.2f} ms, class_latency: {class_latency:.2f} ms, alloc_lat: {alloc_latency:.2f} ms""")
 
                         # Até 10000 registros
                         if message_count <= 100:
