@@ -115,13 +115,14 @@ class Client(object):
                             sst_inference = int(sst_inference)
 
                             if sst_inference == 0:  # default slice
-                                sst_inference = 1  # REMOVEME
+                                sst_inference = 128
 
                             # Latência de classificação
 
                             # Verifica se a UE já está no slice inferido
                             if self.core5g.check_ue_in_slice(ue.imsi, sst_inference):
                                 # TEMP: remove it after tests
+                                sst_inference = 1
                                 alloc_time_start = time.time()
                                 self.core5g.update_ue_slice_by_imsi(
                                     ue.imsi, sst_inference)
