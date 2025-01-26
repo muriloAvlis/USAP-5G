@@ -127,7 +127,7 @@ def ntp_ts_to_ms(ntp_timestamp):
     unix_timestamp = ntp_seconds - ntp_epoch_offset + (ntp_fraction / 2**32)
 
     # Converta para milissegundos
-    unix_timestamp_ms = int(unix_timestamp * 1000)
+    unix_timestamp_ms = unix_timestamp * 1000
 
     return unix_timestamp_ms
 
