@@ -37,8 +37,8 @@ class Model(object):
 
             # Adiciona a dimensão esperada pelo modelo
             input = np.expand_dims(X, axis=0)
-            logger.info(
-                f"Entrada processada: {input} para a UE com IMSI: {imsi}")
+            logger.debug(
+                f"Entrada processada: {input} para a UE {imsi}")
 
             # Faz a previsão com o modelo
             inference_time_start = time.time()
