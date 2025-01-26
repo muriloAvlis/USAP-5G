@@ -12,7 +12,7 @@ class MongoConnection(object):
         self._client = None
 
         # TODO: obter a partir de configuração/values.yaml
-        db_hostname = "10.21.2.5"
+        db_hostname = "10.21.2.2"
         db_port = "27017"
         self.uri = "mongodb://" + db_hostname + ":" + db_port + \
             "/?directConnection=true&serverSelectionTimeoutMS=1000&appName=usap-smc"
