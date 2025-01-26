@@ -47,6 +47,9 @@ replicaCount: 1
 # Image pulling policy
 image_pull_policy: Always
 
+nodeSelector: 
+  kubernetes.io/hostname: oran-cloud2
+
 # Environment variables that will be injected
 appenv: {}
 
@@ -72,6 +75,18 @@ name: usap-xapp
 # Full instance name. If empty, full name will be constructed from name
 fullname: {}
 
+########################### For USAP-SMC ###########################
+usap_smc:
+  replicaCount: 1
+  imagePullPolicy: Always
+  image:
+    registry: docker.io
+    name: muriloavlis/usap-smc
+    tag: latest
+  config:
+    logger:
+      level: INFO
+
 ###############    The following are from the xApp descriptor     ###############
 appVersion: 0.0.1
 containers:
@@ -79,13 +94,12 @@ containers:
   image:
     name: muriloavlis/usap-e2sm
     registry: docker.io
-    tag: 0.0.1
-- image:
+    tag: latest
+- name: usap-xapp
+  image:
     name: muriloavlis/usap-xapp
     registry: docker.io
-    tag: 0.0.1
-  name: usap-xapp
-  # command: ['sleep', 'infinity']
+    tag: latest
 controls:
   active: true
   emulatedScenario: false
