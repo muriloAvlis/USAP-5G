@@ -29,7 +29,7 @@ class App(object):
             if thread != threading.main_thread():
                 thread.join(timeout=10)
 
-        sys.exit(0)
+        # sys.exit(0)
 
     def Start(self):
         # Start client
