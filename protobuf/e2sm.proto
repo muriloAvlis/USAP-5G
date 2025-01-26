@@ -99,6 +99,6 @@ message UeMeasData {
 }
 
 message DecodeIndMessageResponse {
-  int64 latency_ms = 1;
+  double latency_ms = 1;
   repeated UeMeasData ueMeasData = 2;
 }
