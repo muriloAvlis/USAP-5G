@@ -42,7 +42,7 @@ global:
     submgr:
       http: 8088
   nodeSelector: 
-    kubernetes.io/hostname: oran-cloud2
+    kubernetes.io/hostname: oran-cloud5
 
 # Change the overall image pull policy using the following option
 #  pullpolicy: IfNotPresent
@@ -133,7 +133,7 @@ e2term:
         registry: "nexus3.o-ran-sc.org:10002/o-ran-sc"
         name: ric-plt-e2
         tag: 6.0.6
-      privilegedmode: false
+      privilegedmode: true
       hostnetworkmode: false
       env:
         print: "1"
@@ -197,7 +197,7 @@ influxdb2:
   persistence:
     storageClass: openebs-hostpath
   nodeSelector: 
-    kubernetes.io/hostname: oran-cloud2
+    kubernetes.io/hostname: oran-cloud5
 
 xapp-onboarder:
   xapponboarder:
