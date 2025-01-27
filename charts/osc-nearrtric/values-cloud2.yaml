@@ -42,7 +42,7 @@ global:
     submgr:
       http: 8088
   nodeSelector: 
-    kubernetes.io/hostname: oran-cloud5
+    kubernetes.io/hostname: oran-cloud2
 
 # Change the overall image pull policy using the following option
 #  pullpolicy: IfNotPresent
@@ -197,7 +197,7 @@ influxdb2:
   persistence:
     storageClass: openebs-hostpath
   nodeSelector: 
-    kubernetes.io/hostname: oran-cloud5
+    kubernetes.io/hostname: oran-cloud2
 
 xapp-onboarder:
   xapponboarder:
