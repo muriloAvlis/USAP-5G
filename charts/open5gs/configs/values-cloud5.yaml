@@ -12,9 +12,11 @@ populate:
   #  - open5gs-dbctl add 999700000000001 465B5CE8B199B49FAA5F0A2EE238A6BC E8ED289DEBA952E4283B54E88E6183CA
   #  - open5gs-dbctl add_ue_with_apn 999700000000002 465B5CE8B199B49FAA5F0A2EE238A6BC E8ED289DEBA952E4283B54E88E6183CA internet
   #  - open5gs-dbctl add_ue_with_slice 999700000000003 465B5CE8B199B49FAA5F0A2EE238A6BC E8ED289DEBA952E4283B54E88E6183CA internet 1 111111
-    - open5gs-dbctl add_ue_with_slice 001010000021001 00112233445566778899AABBCCDDEEFF 279EB54971771559879284FDDDE3EE0C oranbr 1 FFFFFF
-    - open5gs-dbctl add_ue_with_slice 001010000021002 00112233445566778899AABBCCDDEEFF 279EB54971771559879284FDDDE3EE0C oranbr 1 FFFFFF
-    - open5gs-dbctl add_ue_with_slice 001010000021003 00112233445566778899AABBCCDDEEFF 279EB54971771559879284FDDDE3EE0C oranbr 1 FFFFFF
+    - open5gs-dbctl add_ue_with_slice 001010000021001 00112233445566778899AABBCCDDEEFF 279EB54971771559879284FDDDE3EE0C oranbr 1 FFFFFF # CPE
+    - open5gs-dbctl add_ue_with_slice 001010000021002 00112233445566778899AABBCCDDEEFF 279EB54971771559879284FDDDE3EE0C oranbr 1 FFFFFF # CELLPHONE-1
+    # - open5gs-dbctl add_ue_with_slice 001010000021003 00112233445566778899AABBCCDDEEFF 279EB54971771559879284FDDDE3EE0C oranbr 1 FFFFFF # RASP-1
+    - open5gs-dbctl add_ue_with_slice 901700000041589 16FC086F3BBCA529B7221C08E4F6DFE3 51680E453DD972FBA105C7D2EAFE8613 oranbr 1 FFFFFF # CELLPHONE-2
+    - open5gs-dbctl add_ue_with_slice 901700000041596 C27D1C24D7AEA00A71C8868007D6B3F7 87D0D9F22D90EF6C7933494C872D2897 oranbr 1 FFFFFF # RASP-2
 
 # Common
 mongodb:
@@ -32,6 +34,10 @@ mongodb:
 smf:
   enabled: true
   config:
+    # upf:
+    #   pfcp:
+    #     hostname: "10.21.2.2"
+    #     port: 8805
     pcrf:
       enabled: false
     dnsList:
@@ -40,8 +46,8 @@ smf:
     - 2001:4860:4860::8888
     - 2001:4860:4860::8844
     subnetList:
-      - subnet: 10.46.0.0/16
-        gateway: 10.46.0.1
+      - subnet: 10.45.0.0/16
+        gateway: 10.45.0.1
         dnn: oranbr
   mtu: 1500
   nodeSelector:
@@ -50,9 +56,15 @@ smf:
 upf:
   enabled: true
   config:
+    hostNetwork: false
+    upf:
+      pfcp:
+        dev: "eth0"
+      gtpu:
+        dev: "eth0"
     subnetList:
-    - subnet: 10.46.0.0/16
-      gateway: 10.46.0.1
+    - subnet: 10.45.0.0/16
+      gateway: 10.45.0.1
       dnn: oranbr
       dev: ogstun
       mask: 16
@@ -65,9 +77,9 @@ webui:
   enabled: true
   services:
     http:
-      type: NodePort
+      type: "NodePort"
       nodePorts:
-        http: "30999"
+        http: "30998"
   nodeSelector:
     kubernetes.io/hostname: oran-cloud5
 
@@ -86,6 +98,11 @@ sgwu:
 # 5G
 amf:
   enabled: true
+  services:
+    ngap:
+      type: "NodePort"
+      nodePorts:
+        ngap: "30412"
   config:
     logLevel: info
     guamiList:
@@ -95,11 +112,21 @@ amf:
         amf_id:
           region: 1
           set: 1
+      - plmn_id:
+          mcc: "901"
+          mnc: "70"
+        amf_id:
+          region: 1
+          set: 1
     taiList:
       - plmn_id:
           mcc: "001"
           mnc: "01"
-        tac: [1]
+        tac: [2]
+      - plmn_id:
+          mcc: "901"
+          mnc: "70"
+        tac: [2]
     plmnList:
       - plmn_id:
           mcc: "001"
@@ -107,7 +134,13 @@ amf:
         s_nssai:
           - sst: 1
             sd: "0xFFFFFF"
-    networkName: openran
+      - plmn_id:
+          mcc: "901"
+          mnc: "70"
+        s_nssai:
+          - sst: 1
+            sd: "0xFFFFFF"
+    networkName: USAP-5g
   nodeSelector:
     kubernetes.io/hostname: oran-cloud5
 
@@ -129,6 +162,9 @@ nrf:
       - plmn_id:
           mcc: "001"
           mnc: "01"
+      - plmn_id:
+          mcc: "901"
+          mnc: "70"
   nodeSelector:
     kubernetes.io/hostname: oran-cloud5
 
