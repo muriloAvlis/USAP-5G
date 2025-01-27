@@ -48,7 +48,7 @@ replicaCount: 1
 image_pull_policy: Always
 
 nodeSelector: 
-  kubernetes.io/hostname: oran-cloud5
+  kubernetes.io/hostname: oran-cloud2
 
 # Environment variables that will be injected
 appenv: {}
