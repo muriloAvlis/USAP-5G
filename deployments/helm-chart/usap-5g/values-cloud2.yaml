@@ -120,7 +120,7 @@ controls:
         report_style_type: 4
         ue_list:
           - imsi: "001010000021002"
-          - imsi: "901700000041589"
+          # - imsi: "901700000041589"
       - name: "RC" # TODO
 coredb:
   dbname: oai_db
