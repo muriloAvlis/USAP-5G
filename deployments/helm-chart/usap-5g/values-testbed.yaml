@@ -85,7 +85,7 @@ usap_smc:
     tag: latest
   config:
     logger:
-      level: INFO
+      level: DEBUG
 
 ###############    The following are from the xApp descriptor     ###############
 appVersion: 0.0.1

@@ -92,8 +92,8 @@ class Client(object):
                                 meas_value = meas.valueReal
                             elif meas.HasField("noValue"):
                                 meas_value = "No Value"
-                            logger.debug(
-                                f"MeasName: {meas.measName}, MeasValue: {meas_value}")
+                            # logger.debug(
+                            #     f"MeasName: {meas.measName}, MeasValue: {meas_value}")
 
                             if meas.measName in features:
                                 meas_dict[meas.measName] = meas_value
