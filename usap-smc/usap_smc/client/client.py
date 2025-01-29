@@ -107,15 +107,12 @@ class Client(object):
                         ])
 
                         # Chama a função de inferência se o buffer estiver cheio
-                        if len(buffer[ue.imsi]) == 1:
+                        if len(buffer[ue.imsi]) == 5:
                             # Chama a função de inferência (TODO: dá pra fazer com multi thread ??)
                             sst_inference, class_latency = self.model.get_sst_inference(
                                 buffer[ue.imsi], ue.imsi)  # np.int64
 
                             sst_inference = int(sst_inference)
-
-                            if sst_inference == 0:  # default slice
-                                sst_inference = 128
 
                             # TEMP: remove it after tests
                             sst_inference = 1
@@ -130,8 +127,8 @@ class Client(object):
                                 alloc_latency = (
                                     alloc_time_stop - alloc_time_start) * 1000  # in ms
 
-                                logger.warning(
-                                    f"UE {ue.imsi} já está no slice com SST {sst_inference}, ignorando...")
+                                # logger.warning(
+                                #     f"UE {ue.imsi} já está no slice com SST {sst_inference}, ignorando...")
                             else:
                                 alloc_time_start = time.time()
                                 self.core5g.update_ue_slice_by_imsi(
@@ -141,7 +138,7 @@ class Client(object):
                                 alloc_latency = (
                                     alloc_time_stop - alloc_time_start) * 1000  # in ms
                                 logger.info(
-                                    f"UE slice ({ue.imsi}) updated to SST {sst_inference}")
+                                    f"Slice da UE ({ue.imsi}) atualizado para o SST {sst_inference}")
 
                             # Limpa o buffer após o uso
                             buffer[ue.imsi].clear()

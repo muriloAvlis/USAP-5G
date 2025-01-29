@@ -49,6 +49,9 @@ class Model(object):
             class_latency = (
                 inference_time_stop - inference_time_start) * 1000  # in ms
 
+            if sst_inference == 0:
+                sst_inference = 128
+
             logger.info(
                 f"Resultado da inferência: SST={sst_inference} para o UE={imsi}")
 
