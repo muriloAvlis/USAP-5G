@@ -140,11 +140,11 @@ amf:
         s_nssai:
           - sst: 1
             sd: "0xFFFFFF"
-      - plmn_id:
-          mcc: "901"
-          mnc: "70"
-        s_nssai:
-          - sst: 1
+          - sst: 2
+            sd: "0xFFFFFF"
+          - sst: 3
+            sd: "0xFFFFFF"
+          - sst: 128
             sd: "0xFFFFFF"
     networkName: USAP-5g
   nodeSelector:
@@ -180,6 +180,15 @@ nssf:
     nsiList:
       - uri: ""
         sst: 1
+        sd: "0xFFFFFF"
+      - uri: ""
+        sst: 2
+        sd: "0xFFFFFF"
+      - uri: ""
+        sst: 3
+        sd: "0xFFFFFF"
+      - uri: ""
+        sst: 128
         sd: "0xFFFFFF"
   nodeSelector:
     kubernetes.io/hostname: oran-cloud2

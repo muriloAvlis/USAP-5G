@@ -125,7 +125,7 @@ class GenModel(object):
         early_stopping = EarlyStopping(
             # Pode ser 'val_loss'
             monitor='val_accuracy',
-             # Número de épocas sem melhoria antes de parar
+            # Número de épocas sem melhoria antes de parar
             patience=self.model_patience,
             restore_best_weights=True  # Restaura os pesos do modelo na melhor época
         )
@@ -156,6 +156,8 @@ class GenModel(object):
 if __name__ == "__main__":
     genModel = GenModel()
 
-    model = genModel.build_model()
+    print(len(genModel.X_test), genModel.y_test)
 
-    genModel.model_evaluate(model)
+    # model = genModel.build_model()
+
+    # genModel.model_evaluate(model)
