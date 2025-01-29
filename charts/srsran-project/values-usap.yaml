@@ -1,0 +1,191 @@
+#
+# Copyright 2021-2023 Software Radio Systems Limited
+#
+# By using this file, you agree to the terms and conditions set
+# forth in the LICENSE file which can be found at the top level of
+# the distribution.
+#
+
+replicaCount: 1
+
+image:
+  # Check https://hub.docker.com/u/softwareradiosystems for available images
+  repository: muriloavlis/srsran-5g
+  pullPolicy: Always
+  tag: split72_latest
+
+imagePullSecrets:
+  - name: regcred
+
+nameOverride: ""
+fullnameOverride: ""
+
+serviceAccount:
+  create: true
+  annotations: {}
+  name: "srsadmin-cu-du-ru2"
+
+podAnnotations: {}
+
+podSecurityContext: {}
+
+securityContext:
+  capabilities:
+    add: ["SYS_NICE", "NET_ADMIN"]
+  privileged: true
+  # readOnlyRootFilesystem: true
+  # runAsNonRoot: true
+  # runAsUser: 1000
+
+network:
+  hostNetwork: true
+
+resources:
+  enable_hugepages_1gi: true
+  # enable_hugepages_2mi: false
+  limits:
+    cpu: 32
+    memory: 64Gi
+    hugepages-1Gi: 1Gi
+  requests:
+    cpu: 32
+    memory: 64Gi
+    hugepages-1Gi: 1Gi
+
+nodeSelector: {}
+  # kubernetes.io/hostname: node1
+
+tolerations: {}
+  # - key: "purpose"
+  #   value: "manual-testing"
+  #   operator: "Equal"
+  #   effect: "NoSchedule"
+
+affinity: {}
+
+debugging:
+  enabled: false
+  storageCapacity: "100Mi"
+  hostPath: "/mnt/debugging-logs"
+  containerPath: "/tmp"
+
+envs:
+  core:
+    amf_hostname: "10.21.2.2" # oai-amf.oai5gcn or open5gs-amf-ngap.open5gs or IP Address
+  dpdk:
+    isolated_cpus: "29-56" # format: 1 or [1,2,3] or 1-3. Set "" to disable
+
+config:
+  run_as: gnb
+  gnb-config.yml: |-
+    gnb_id: 1
+    gnb_du_id: 1
+    ran_node_name: srsran_cu_du_ru2
+    gnb_id_bit_length: 22
+
+    cu_cp:
+      amf:
+        addr: $AMF_ADDR
+        port: 30412
+        bind_addr: 10.21.2.55
+        supported_tracking_areas:
+          - tac: 2
+            plmn_list:
+              - plmn: "00101"
+                tai_slice_support_list:
+                  - sst: 1
+                  - sst: 2
+                  - sst: 3
+                  - sst: 128
+  
+    ru_ofh:
+      ru_bandwidth_MHz: 100
+      t1a_max_cp_dl: 500
+      t1a_min_cp_dl: 250
+      t1a_max_cp_ul: 465
+      t1a_min_cp_ul: 250
+      t1a_max_up: 250
+      t1a_min_up: 80
+      ta4_max: 500
+      ta4_min: 25
+      is_prach_cp_enabled: true
+      ignore_ecpri_payload_size: true
+      compr_method_ul: bfp
+      compr_bitwidth_ul: 9
+      compr_method_dl: bfp
+      compr_bitwidth_dl: 9
+      compr_method_prach: bfp
+      compr_bitwidth_prach: 9
+      enable_ul_static_compr_hdr: false
+      enable_dl_static_compr_hdr: false
+      iq_scaling: 3.0
+      cells:
+        - network_interface: 0000:31:00.2 
+          ru_mac_addr: 6c:ad:ad:00:0a:8e # RU-2
+          du_mac_addr: 3c:ec:ef:c2:60:8e
+          vlan_tag_cp: 162
+          vlan_tag_up: 162
+          prach_port_id: [4, 5, 6, 7]
+          dl_port_id: [0, 1, 2, 3]
+          ul_port_id: [0, 1, 2, 3]
+
+    cell_cfg:
+      dl_arfcn: 649980
+      band: 78
+      channel_bandwidth_MHz: 100
+      common_scs: 30
+      plmn: "00101"
+      tac: 2
+      pci: 2
+      nof_antennas_dl: 4
+      nof_antennas_ul: 4
+
+      tdd_ul_dl_cfg:
+        dl_ul_tx_period: 10
+        nof_dl_slots: 7
+        nof_dl_symbols: 6
+        nof_ul_slots: 2
+        nof_ul_symbols: 0
+      pdsch:
+        mcs_table: qam256
+      pusch:
+        mcs_table: qam256
+
+    hal:
+      eal_args: "--lcores (0-1)@($ISOLATED_CPUS) -a 0000:31:00.2"  # EAL configuration parameters used to initialize DPDK.
+
+    e2:
+      enable_cu_cp_e2: false               # Enables the CU E2 agent for CU-CP. Supported: [false, true]. 
+      enable_cu_up_e2: false               # Enables the CU E2 agent for CU-UP. Supported: [false, true].
+      enable_du_e2: true                   # Enables the DU E2 agent. Supported: [false, true].
+      addr: 10.21.2.5                      # Sets the RIC IP address.
+      port: 32222                          # Sets the RIC Port. Supported: [20000 - 40000].
+      bind_addr: 10.21.2.55                 # Sets the local IP address to bind for RIC connection. Supported: IPv4 address.
+      e2sm_kpm_enabled: true               # Enabled the E2SM KPM service module. Supported: [false, true].
+      e2sm_rc_enabled: true                # Enabled the E2SM RC service module. Supported: [false, true].
+
+    metrics:
+      addr: 127.0.0.1                       # Sets the metrics address. Supported: IPV4 address.
+      port: 55555                           # Sets the metrics UPD port. Supported: [0 - 65535].
+      cu_cp_statistics_report_period: 1     # Sets the CU-CP statistics report period in seconds. Set this value to 0 to disable this feature. Supported: [0 - inf].
+      cu_up_statistics_report_period: 1     # Sets the CU-UP statistics report period in seconds. Set this value to 0 to disable this feature. Supported: [0 - inf].
+      pdcp_report_period: 1000                 # Sets the PDCP metrics report period.
+      rlc_report_period: 1000                  # Sets the RLC metrics report period in milliseconds. Supported [0 - inf]
+      enable_json_metrics: false            # Enables JSON metrics reporting. Supported: [false, true].
+      autostart_stdout_metrics: true        # Sets whether or note to autostart stdout metrics reporting. Supported [false, true].
+      sched_report_period: 1000             # Sets the DU statistics report period in milliseconds. This metric sets the console output period. Supported: [0 - inf].
+
+    log:
+      filename: /tmp/gnb.log
+      all_level: info
+
+    pcap:
+      mac_enable: false
+      mac_type: dlt
+      mac_filename: /tmp/gnb_mac.pcap
+      ngap_enable: false
+      ngap_filename: /tmp/gnb_ngap.pcap
+      e2ap_cu_cp_filename: /tmp/cu_cp_e2ap.pcap 
+      e2ap_cu_up_filename: /tmp/cu_up_e2ap.pcap
+      e2ap_du_filename: /tmp/du_e2ap.pcap   
+      e2ap_enable: false
