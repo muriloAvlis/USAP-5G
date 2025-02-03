@@ -8,6 +8,7 @@ from tensorflow.keras.models import Sequential
 from tensorflow.keras.layers import LSTM, Dense
 from tensorflow.keras.utils import to_categorical
 from tensorflow.keras.callbacks import EarlyStopping
+from sklearn.metrics import balanced_accuracy_score
 from sklearn.model_selection import train_test_split
 from keras_tuner import Hyperband
 from sklearn.metrics import classification_report
@@ -22,7 +23,7 @@ class GenModel(object):
         self.samples_per_block = 5
         self.max_epochs_tunner = 3000
         self.epochs_model = 1000
-        self.model_patience = 10
+        self.model_patience = 100
         self.factor = 3
 
         features = [
@@ -153,7 +154,11 @@ class GenModel(object):
         y_true_classes = self.y_test.argmax(axis=1)
 
         print("Relatório de classificação:")
-        print(classification_report(y_true_classes, y_pred_classes))
+        print(classification_report(y_true_classes, y_pred_classes, digits=4))
+
+        # Acurácia média de cada classe:
+        balanced_acc = balanced_accuracy_score(y_true_classes, y_pred_classes)
+        print(f'Balanced Accuracy: {balanced_acc:.4f}')
 
 
 if __name__ == "__main__":
