@@ -41,6 +41,9 @@ class GenModel(object):
         X_lstm, y_lstm = self.create_time_blocks(
             self.df, 'ue_id', features, self.samples_per_block)
 
+        # unique, counts = np.unique(y_lstm, return_counts=True)
+        # print(pd.DataFrame({"Classe": unique, "Quantidade": counts}))
+
         # Preprocess data
         self.preprocess_data(X_lstm, y_lstm)
 
@@ -69,7 +72,7 @@ class GenModel(object):
     def preprocess_data(self, X_lstm, y_lstm):
         y_categorical = to_categorical(y_lstm, num_classes=self.num_classes)
         self.X_train, self.X_test, self.y_train, self.y_test = train_test_split(
-            X_lstm, y_categorical, test_size=self.test_size, random_state=42, stratify=y_lstm)
+            X_lstm, y_categorical, test_size=self.test_size, random_state=42)
 
     def build_params(self, hp):
         model = Sequential()
