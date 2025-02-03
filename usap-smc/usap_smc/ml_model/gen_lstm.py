@@ -22,7 +22,7 @@ class GenModel(object):
         self.samples_per_block = 5
         self.max_epochs_tunner = 3000
         self.epochs_model = 1000
-        self.model_patience = 200
+        self.model_patience = 10
         self.factor = 3
 
         features = [
@@ -69,7 +69,7 @@ class GenModel(object):
     def preprocess_data(self, X_lstm, y_lstm):
         y_categorical = to_categorical(y_lstm, num_classes=self.num_classes)
         self.X_train, self.X_test, self.y_train, self.y_test = train_test_split(
-            X_lstm, y_categorical, test_size=self.test_size, random_state=42)
+            X_lstm, y_categorical, test_size=self.test_size, random_state=42, stratify=y_lstm)
 
     def build_params(self, hp):
         model = Sequential()
@@ -156,8 +156,6 @@ class GenModel(object):
 if __name__ == "__main__":
     genModel = GenModel()
 
-    print(len(genModel.X_test), genModel.y_test)
+    model = genModel.build_model()
 
-    # model = genModel.build_model()
-
-    # genModel.model_evaluate(model)
+    genModel.model_evaluate(model)

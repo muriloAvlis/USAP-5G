@@ -15,7 +15,7 @@ data = pd.read_csv(csv_file)
 columns = ['msg_count', 'ind_latency', 'recv_latency',
            'class_latency', 'alloc_latency', 'tot_latency']
 
-fig1 = plt.figure(figsize=(21, 12))
+fig1 = plt.figure(figsize=(12, 9))
 gs = fig1.add_gridspec(2, 2)
 axs = [
     fig1.add_subplot(gs[0, 0]),
@@ -30,9 +30,11 @@ axs[0].plot(data['msg_count'].iloc[2::100], data['ind_latency'].iloc[2::100],
 axs[0].set_title('Latência de Reporte', fontsize=20,
                  fontweight='bold', color='black', pad=20)
 axs[0].set_xlabel(r'Nº mensagem $\times$ 10$^3$',
-                  fontsize=15, labelpad=10)
+                  fontsize=18, labelpad=10)
 axs[0].set_ylabel('Latência (ms)',
-                  fontsize=15, labelpad=10)
+                  fontsize=18, labelpad=10)
+axs[0].tick_params(axis='x', labelsize=18)  # Tamanho dos números no eixo X
+axs[0].tick_params(axis='y', labelsize=18)  # Tamanho dos números no eixo Y
 axs[0].autoscale(enable=True, axis='both', tight=False)
 # Configurar os ticks do eixo X em incrementos de 1000
 axs[0].xaxis.set_major_locator(
@@ -40,6 +42,9 @@ axs[0].xaxis.set_major_locator(
 axs[0].xaxis.set_major_formatter(ticker.FuncFormatter(
     lambda x, _: f'{int(x / 1e3)}'  # Formatar valores como '1k', '2k', etc.
 ))
+
+axs[0].yaxis.set_major_locator(ticker.MultipleLocator(0.01))
+
 axs[0].grid(alpha=0.5)
 # axs[0].legend()
 
@@ -49,9 +54,11 @@ axs[1].plot(data['msg_count'][2::100], data['recv_latency'][2::100],
 axs[1].set_title('Latência do Servidor de Métricas', fontsize=20,
                  fontweight='bold', color='black', pad=20)
 axs[1].set_xlabel(r'Nº mensagem $\times$ 10$^3$',
-                  fontsize=15, labelpad=10)
+                  fontsize=18, labelpad=10)
 axs[1].set_ylabel('Latência (ms)',
-                  fontsize=15, labelpad=10)
+                  fontsize=18, labelpad=10)
+axs[1].tick_params(axis='x', labelsize=18)  # Tamanho dos números no eixo X
+axs[1].tick_params(axis='y', labelsize=18)  # Tamanho dos números no eixo Y
 axs[1].autoscale(enable=True, axis='both', tight=False)
 # Configurar os ticks do eixo X em incrementos de 1000
 axs[1].xaxis.set_major_locator(
@@ -69,9 +76,11 @@ axs[2].plot(data['msg_count'][2::100], data['class_latency'][2::100],
 axs[2].set_title('Latência de Classificação', fontsize=20,
                  fontweight='bold', color='black', pad=20)
 axs[2].set_xlabel(r'Nº mensagem $\times$ 10$^3$',
-                  fontsize=15, labelpad=10)
+                  fontsize=18, labelpad=10)
 axs[2].set_ylabel('Latência (ms)',
-                  fontsize=15, labelpad=10)
+                  fontsize=18, labelpad=10)
+axs[2].tick_params(axis='x', labelsize=18)  # Tamanho dos números no eixo X
+axs[2].tick_params(axis='y', labelsize=18)  # Tamanho dos números no eixo Y
 axs[2].autoscale(enable=True, axis='both', tight=False)
 # Co2figurar os ticks do eixo X em incrementos de 1000
 axs[2].xaxis.set_major_locator(
@@ -85,12 +94,16 @@ axs[2].grid(alpha=0.5)
 # GRAFICO 4
 axs[3].plot(data['msg_count'][2::100], data['alloc_latency'][2::100],
             label="Latência inferência (ms)", alpha=0.8, color="indigo")
-axs[3].set_title('Latência de Inferência/Alocação', fontsize=20,
+axs[3].set_title('Latência de Alocação', fontsize=20,
                  fontweight='bold', color='black', pad=20)
 axs[3].set_xlabel(r'Nº mensagem $\times$ 10$^3$',
-                  fontsize=15, labelpad=10)
+                  fontsize=18, labelpad=10)
 axs[3].set_ylabel('Latência (ms)',
-                  fontsize=15, labelpad=10)
+                  fontsize=18, labelpad=10)
+
+axs[3].tick_params(axis='x', labelsize=18)  # Tamanho dos números no eixo X
+axs[3].tick_params(axis='y', labelsize=18)  # Tamanho dos números no eixo Y
+
 axs[3].autoscale(enable=True, axis='both', tight=False)
 # Co2figurar os ticks do eixo X em incrementos de 1000
 axs[3].xaxis.set_major_locator(
@@ -101,26 +114,29 @@ axs[3].xaxis.set_major_formatter(ticker.FuncFormatter(
 axs[3].yaxis.set_major_locator(ticker.MultipleLocator(0.2))
 axs[3].grid(alpha=0.5)
 
-plt.tight_layout(pad=3.0)
+plt.tight_layout(pad=1.0)
 
 fig1.savefig(save_path + "latencies.pdf",
              format="pdf", dpi=1200)
 
 
 # GRAFICO 5 -> Latência Total
-fig2, ax = plt.subplots(figsize=(21, 12))
+fig2, ax = plt.subplots(figsize=(12, 9))
 
 # Plotar Latência Total no eixo 'ax'
 ax.plot(data['msg_count'][2::100], data['tot_latency'][2::100],
         label="Latência Total (ms)", alpha=0.8, color="sienna")
 
 # Ajustar título e rótulos
-ax.set_title('Latência Total', fontsize=20,
+ax.set_title('Latência Total', fontsize=24,
              fontweight='bold', color='black', pad=20)
 ax.set_xlabel(r'Nº mensagem $\times$ 10$^3$',
-              fontsize=15, labelpad=10)
+              fontsize=20, labelpad=10)
 ax.set_ylabel('Latência Total (ms)',
-              fontsize=15, labelpad=10)
+              fontsize=20, labelpad=10)
+
+ax.tick_params(axis='x', labelsize=18)  # Tamanho dos números no eixo X
+ax.tick_params(axis='y', labelsize=18)  # Tamanho dos números no eixo Y
 
 # Ajustar os ticks do eixo X e Y
 ax.autoscale(enable=True, axis='both')
