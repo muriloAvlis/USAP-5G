@@ -4,7 +4,7 @@ import os
 import shutil
 
 import tensorflow as tf
-from tensorflow.keras.models import Sequential
+from tensorflow.keras.models import Sequential, load_model
 from tensorflow.keras.layers import LSTM, Dense
 from tensorflow.keras.utils import to_categorical
 from tensorflow.keras.callbacks import EarlyStopping
@@ -156,14 +156,23 @@ class GenModel(object):
         print("Relatório de classificação:")
         print(classification_report(y_true_classes, y_pred_classes, digits=4))
 
-        # Acurácia média de cada classe:
-        balanced_acc = balanced_accuracy_score(y_true_classes, y_pred_classes)
-        print(f'Balanced Accuracy: {balanced_acc:.4f}')
+        # Calcular acurácia por classe
+        unique_classes = np.unique(y_true_classes)  # Obtém as classes únicas
+        for label in unique_classes:
+            # Verifica a quantidade de acertos para cada classe
+            class_correct = np.sum(
+                (y_pred_classes == label) & (y_true_classes == label))
+            class_total = np.sum(y_true_classes == label)
+            class_accuracy = class_correct / \
+                class_total if class_total > 0 else 0  # Evita divisão por 0
+            print(f"Acurácia da Classe {label}: {class_accuracy:.4f}")
 
 
 if __name__ == "__main__":
     genModel = GenModel()
 
-    model = genModel.build_model()
+    # Load Model
+    model = load_model(genModel.my_dir + "/models/oran-lstm.keras")
+    # model = genModel.build_model()
 
     genModel.model_evaluate(model)
