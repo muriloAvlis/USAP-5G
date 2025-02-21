@@ -1,6 +1,6 @@
 # Include variables bellow
 
-USAP_VERSION 		?= 0.0.1
+USAP_VERSION 		?= sid-xapp
 SRSRAN_VERSION			?= main
 SRSRAN_DOCKER_VERSION 	?= zmq_latest
 SRSUE_VERSION			?= master

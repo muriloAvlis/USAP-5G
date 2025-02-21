@@ -20,6 +20,7 @@ var (
 	SubsequentActionType = "continue"
 	TimeToWait           = "w10ms"
 	KPM_RAN_FUNC_ID      = int64(2)
+	CsvHeaderCtl         = true
 )
 
 type Manager struct {

@@ -1,6 +1,7 @@
 package manager
 
 import (
+	"encoding/csv"
 	"encoding/json"
 	"errors"
 	"fmt"
@@ -15,6 +16,7 @@ import (
 	"github.com/muriloAvlis/usap-5g/pkg/config"
 	"github.com/muriloAvlis/usap-5g/pkg/e2ap"
 	"github.com/muriloAvlis/usap-5g/pkg/e2sm"
+	"github.com/muriloAvlis/usap-5g/pkg/pb"
 	"github.com/muriloAvlis/usap-5g/pkg/rnib"
 )
 
@@ -167,17 +169,87 @@ func (m *Manager) handleRicIndication(msg *xapp.RMRParams) error {
 		// log.Printf("UE IMSI: %s", ueImsi)
 	}
 
-	m.Server.Mtx.Lock()
-	defer m.Server.Mtx.Unlock()
+	m.saveMetrics(uesData)
 
-	select {
-	case m.Server.UEMetrics <- uesData:
-		xapp.Logger.Debug("Sending UE metrics to gRPC channel...")
-	default:
-		xapp.Logger.Debug("Channel buffer full. Dropping UE metrics...")
-	}
+	//m.Server.Mtx.Lock()
+	//defer m.Server.Mtx.Unlock()
+
+	//select {
+	//case m.Server.UEMetrics <- uesData:
+	//	xapp.Logger.Debug("Sending UE metrics to gRPC channel...")
+	//default:
+	//	xapp.Logger.Debug("Channel buffer full. Dropping UE metrics...")
+	//}
 
 	return nil
+}
+
+// função para salvar as métricas em formato csv
+
+func (m *Manager) saveMetrics(uesData *e2sm.IndicationResponse) {
+	// Abrir ou criar o arquivo CSV
+	//xapp.Logger.Debug("Teste antes de criar o dataset")
+	file, err := os.OpenFile("/tmp/dataset.csv", os.O_APPEND|os.O_CREATE|os.O_WRONLY, 0644)
+	//xapp.Logger.Debug("Teste depois de criar o dataset")
+	if err != nil {
+		fmt.Println("Erro ao abrir o arquivo:", err)
+		return
+	}
+	defer file.Close()
+
+	writer := csv.NewWriter(file)
+	defer writer.Flush()
+
+	// Iterar sobre a lista de UEs
+	for _, ue := range uesData.UeList {
+		// Montar uma linha CSV
+		// Escrever o ID do UE e outros dados gerais
+		record := []string{
+			fmt.Sprintf("%d", uesData.Timestamp),    // Timestamp
+			fmt.Sprintf("%f", uesData.IndLatency),   // Indication Latency
+			fmt.Sprintf("%d", ue.UeID),              // UeID
+			ue.Imsi,                                 // IMSI
+			fmt.Sprintf("%d", ue.GranularityPeriod), // GranularityPeriod
+		}
+		if CsvHeaderCtl {
+			header := []string{"Timestamp", "IndLatency", "UeID", "IMSI", "GranularityPeriod"}
+			for _, meas := range ue.MeasData {
+				header = append(header, meas.MeasName)
+			}
+			err = writer.Write(header)
+			if err != nil {
+				fmt.Println("Erro ao escrever o cabeçalho:", err)
+				return
+			}
+			CsvHeaderCtl = false
+		}
+		// Adicionar os MeasData
+		for _, meas := range ue.MeasData {
+			var measValueStr string
+			// Usando switch para tratar os tipos da interface
+			switch v := meas.MeasValue.(type) {
+			case *pb.MeasData_ValueInt:
+				// Aqui você acessa o campo dentro do ponteiro *pb.MeasData_ValueInt
+				fmt.Println("teste pb.MeasData_ValueInt")
+				measValueStr = fmt.Sprintf("%d", v.ValueInt) // Assumindo que Value é o campo que contém o valor
+			case *pb.MeasData_ValueReal:
+				measValueStr = fmt.Sprintf("%f", v.ValueReal) // Se for float, converta para string
+			case *pb.MeasData_NoValue:
+				measValueStr = "NoValue"
+			default:
+				// Caso o tipo não seja esperado, use a representação padrão
+				measValueStr = fmt.Sprintf("%v", v)
+			}
+			record = append(record, measValueStr)
+		}
+
+		// Escrever a linha no CSV
+		err := writer.Write(record)
+		if err != nil {
+			fmt.Println("Erro ao escrever no arquivo:", err)
+			return
+		}
+	}
 }
 
 func (m *Manager) controlLoop() {
