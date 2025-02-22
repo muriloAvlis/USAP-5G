@@ -41,6 +41,9 @@ appconfig:
 storage:
     mountPath: /home/kpm/storage
 
+extraStorage:
+    mountPath: /home/collector/dataset_storage
+
 # Number of replica
 replicaCount: 1
 
@@ -75,7 +78,7 @@ name: usap-xapp
 # Full instance name. If empty, full name will be constructed from name
 fullname: {}
 
-########################### For USAP-SMC ###########################
+ ########################### For USAP-SMC ###########################
 usap_smc:
   replicaCount: 1
   imagePullPolicy: Always
@@ -99,7 +102,7 @@ containers:
   image:
     name: muriloavlis/usap-xapp
     registry: docker.io
-    tag: latest
+    tag: sid-xapp
 controls:
   active: true
   emulatedScenario: true

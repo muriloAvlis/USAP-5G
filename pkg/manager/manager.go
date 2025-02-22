@@ -187,10 +187,17 @@ func (m *Manager) handleRicIndication(msg *xapp.RMRParams) error {
 // função para salvar as métricas em formato csv
 
 func (m *Manager) saveMetrics(uesData *e2sm.IndicationResponse) {
+	// Defina o caminho do arquivo CSV
+	filePath := "/home/collector/dataset_storage/dataset.csv"
+
+	// Criar diretório, se não existir
+	if err := os.MkdirAll("/home/collector/dataset_storage", os.ModePerm); err != nil {
+		fmt.Println("Erro ao criar diretório:", err)
+		return
+	}
+
 	// Abrir ou criar o arquivo CSV
-	//xapp.Logger.Debug("Teste antes de criar o dataset")
-	file, err := os.OpenFile("/tmp/dataset.csv", os.O_APPEND|os.O_CREATE|os.O_WRONLY, 0644)
-	//xapp.Logger.Debug("Teste depois de criar o dataset")
+	file, err := os.OpenFile(filePath, os.O_APPEND|os.O_CREATE|os.O_WRONLY, 0644)
 	if err != nil {
 		fmt.Println("Erro ao abrir o arquivo:", err)
 		return
@@ -203,7 +210,6 @@ func (m *Manager) saveMetrics(uesData *e2sm.IndicationResponse) {
 	// Iterar sobre a lista de UEs
 	for _, ue := range uesData.UeList {
 		// Montar uma linha CSV
-		// Escrever o ID do UE e outros dados gerais
 		record := []string{
 			fmt.Sprintf("%d", uesData.Timestamp),    // Timestamp
 			fmt.Sprintf("%f", uesData.IndLatency),   // Indication Latency
@@ -211,6 +217,8 @@ func (m *Manager) saveMetrics(uesData *e2sm.IndicationResponse) {
 			ue.Imsi,                                 // IMSI
 			fmt.Sprintf("%d", ue.GranularityPeriod), // GranularityPeriod
 		}
+
+		// Escrever o cabeçalho uma vez (se for a primeira vez)
 		if CsvHeaderCtl {
 			header := []string{"Timestamp", "IndLatency", "UeID", "IMSI", "GranularityPeriod"}
 			for _, meas := range ue.MeasData {
@@ -223,21 +231,18 @@ func (m *Manager) saveMetrics(uesData *e2sm.IndicationResponse) {
 			}
 			CsvHeaderCtl = false
 		}
+
 		// Adicionar os MeasData
 		for _, meas := range ue.MeasData {
 			var measValueStr string
-			// Usando switch para tratar os tipos da interface
 			switch v := meas.MeasValue.(type) {
 			case *pb.MeasData_ValueInt:
-				// Aqui você acessa o campo dentro do ponteiro *pb.MeasData_ValueInt
-				fmt.Println("teste pb.MeasData_ValueInt")
-				measValueStr = fmt.Sprintf("%d", v.ValueInt) // Assumindo que Value é o campo que contém o valor
+				measValueStr = fmt.Sprintf("%d", v.ValueInt)
 			case *pb.MeasData_ValueReal:
-				measValueStr = fmt.Sprintf("%f", v.ValueReal) // Se for float, converta para string
+				measValueStr = fmt.Sprintf("%f", v.ValueReal)
 			case *pb.MeasData_NoValue:
 				measValueStr = "NoValue"
 			default:
-				// Caso o tipo não seja esperado, use a representação padrão
 				measValueStr = fmt.Sprintf("%v", v)
 			}
 			record = append(record, measValueStr)

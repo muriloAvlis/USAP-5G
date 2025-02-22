@@ -72,6 +72,10 @@ spec:
             type: DirectoryOrCreate
         {{- end }}
         {{- end }}
+        - name: dataset-storage
+          hostPath:
+            path: /home/collector/dataset_storage
+            type: DirectoryOrCreate
       containers:
 {{- $containers := .Values.containers }}
 {{- $ports := .Values.messaging.ports }}
@@ -123,6 +127,8 @@ spec:
               mountPath: {{ .Values.storage.mountPath }}
             {{- end }}
             {{- end }}
+            - name: dataset-storage
+              mountPath: /home/collector/dataset_storage
           envFrom:
             - configMapRef:
                 name: {{ include "ricxapp.configmapname" . }}-appenv
