@@ -175,4 +175,12 @@ if __name__ == "__main__":
     model = load_model(genModel.my_dir + "/models/oran-lstm.keras")
     # model = genModel.build_model()
 
-    genModel.model_evaluate(model)
+    # genModel.model_evaluate(model)
+
+    # Acessar o otimizador do modelo e exibir a taxa de aprendizado
+    optimizer = model.optimizer
+    # ou optimizer.learning_rate dependendo da versão
+    learning_rate = optimizer.learning_rate
+
+    # Exibir a taxa de aprendizado
+    print(f"Taxa de aprendizado: {learning_rate.numpy()}")

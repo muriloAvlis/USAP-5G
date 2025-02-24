@@ -2,13 +2,14 @@ import pandas as pd
 import matplotlib.pyplot as plt
 import matplotlib.ticker as ticker
 import numpy as np
-
 import os
+
+# TODO: organize-me por favor :(
 
 # Carregar o arquivo CSV (substitua 'path_to_your_file.csv' pelo caminho do seu arquivo)
 my_dir = os.path.dirname(os.path.abspath(__file__))
 save_path = os.path.join(my_dir, "../../assets/images/")
-csv_file = my_dir + "/latencies.csv"
+csv_file = my_dir + "/latencies_emu.csv"
 data = pd.read_csv(csv_file)
 
 # Estatísticas
@@ -46,7 +47,7 @@ axs[0].xaxis.set_major_formatter(ticker.FuncFormatter(
     lambda x, _: f'{int(x / 1e3)}'  # Formatar valores como '1k', '2k', etc.
 ))
 
-axs[0].yaxis.set_major_locator(ticker.MultipleLocator(0.01))
+axs[0].yaxis.set_major_locator(ticker.MultipleLocator(2))
 
 axs[0].grid(alpha=0.5)
 # axs[0].legend()
@@ -69,7 +70,7 @@ axs[1].xaxis.set_major_locator(
 axs[1].xaxis.set_major_formatter(ticker.FuncFormatter(
     lambda x, _: f'{int(x / 1e3)}'  # Formatar valores como '1k', '2k', etc.
 ))
-axs[1].yaxis.set_major_locator(ticker.MultipleLocator(0.3))
+axs[1].yaxis.set_major_locator(ticker.MultipleLocator(40))
 axs[1].grid(alpha=0.5)
 # axs[1].legend()
 
@@ -91,7 +92,7 @@ axs[2].xaxis.set_major_locator(
 axs[2].xaxis.set_major_formatter(ticker.FuncFormatter(
     lambda x, _: f'{int(x / 1e3)}'
 ))
-axs[2].yaxis.set_major_locator(ticker.MultipleLocator(2.5))
+axs[2].yaxis.set_major_locator(ticker.MultipleLocator(6))
 axs[2].grid(alpha=0.5)
 
 # GRAFICO 4
@@ -114,12 +115,12 @@ axs[3].xaxis.set_major_locator(
 axs[3].xaxis.set_major_formatter(ticker.FuncFormatter(
     lambda x, _: f'{int(x / 1e3)}'
 ))
-axs[3].yaxis.set_major_locator(ticker.MultipleLocator(0.2))
+axs[3].yaxis.set_major_locator(ticker.MultipleLocator(1.0))
 axs[3].grid(alpha=0.5)
 
 plt.tight_layout(pad=1.0)
 
-fig1.savefig(save_path + "latencies.pdf",
+fig1.savefig(save_path + "latencies_emu.pdf",
              format="pdf", dpi=1200)
 
 
@@ -147,7 +148,7 @@ ax.xaxis.set_major_locator(ticker.MultipleLocator(1000))  # Ticks a cada 1000
 ax.xaxis.set_major_formatter(ticker.FuncFormatter(
     lambda x, _: f'{int(x / 1e3)}'))  # Formatar valores como '1k', '2k', etc.
 # Ajuste da escala no eixo Y
-ax.yaxis.set_major_locator(ticker.MultipleLocator(1.5))
+ax.yaxis.set_major_locator(ticker.MultipleLocator(25))
 
 # Configurar grid
 ax.grid(alpha=0.5)
@@ -156,7 +157,7 @@ ax.grid(alpha=0.5)
 # ax.legend()  # Posição da legenda
 
 # Salvar gráficos
-fig2.savefig(save_path + "tot_latency.pdf",
+fig2.savefig(save_path + "tot_latency_emu.pdf",
              format="pdf", dpi=1200)
 
 # Exibir o gráfico
