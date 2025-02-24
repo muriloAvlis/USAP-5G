@@ -74,7 +74,7 @@ spec:
         {{- end }}
         - name: dataset-storage
           hostPath:
-            path: /home/collector/dataset_storage
+            path: /var/xapp_collector/dataset_storage
             type: DirectoryOrCreate
       containers:
 {{- $containers := .Values.containers }}
@@ -128,7 +128,7 @@ spec:
             {{- end }}
             {{- end }}
             - name: dataset-storage
-              mountPath: /home/collector/dataset_storage
+              mountPath: /var/xapp_collector/dataset_storage
           envFrom:
             - configMapRef:
                 name: {{ include "ricxapp.configmapname" . }}-appenv

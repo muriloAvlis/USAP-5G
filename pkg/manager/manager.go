@@ -188,10 +188,10 @@ func (m *Manager) handleRicIndication(msg *xapp.RMRParams) error {
 
 func (m *Manager) saveMetrics(uesData *e2sm.IndicationResponse) {
 	// Defina o caminho do arquivo CSV
-	filePath := "/home/collector/dataset_storage/dataset.csv"
+	filePath := "/var/xapp_collector/dataset_storage/dataset.csv"
 
 	// Criar diretório, se não existir
-	if err := os.MkdirAll("/home/collector/dataset_storage", os.ModePerm); err != nil {
+	if err := os.MkdirAll("/var/xapp_collector/dataset_storage", os.ModePerm); err != nil {
 		fmt.Println("Erro ao criar diretório:", err)
 		return
 	}

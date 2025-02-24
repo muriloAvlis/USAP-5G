@@ -42,7 +42,7 @@ storage:
     mountPath: /home/kpm/storage
 
 extraStorage:
-    mountPath: /home/collector/dataset_storage
+    mountPath: /var/xapp_collector/dataset_storage #/home/xapp_collector/dataset_storage
 
 # Number of replica
 replicaCount: 1
@@ -51,7 +51,7 @@ replicaCount: 1
 image_pull_policy: Always
 
 nodeSelector: 
-  kubernetes.io/hostname: nrtric
+  kubernetes.io/hostname: oran-cloud5
 
 # Environment variables that will be injected
 appenv: {}
@@ -105,7 +105,7 @@ containers:
     tag: sid-xapp
 controls:
   active: true
-  emulatedScenario: true
+  emulatedScenario: false
   interfaceId:
     globalGNBId:
       plmnId: 00101
@@ -122,8 +122,8 @@ controls:
         granularity_period: 1000
         report_style_type: 4
         ue_list:
-          - imsi: "001010000021002"
-          - imsi: "901700000041589"
+          #- imsi: "001010000021002"
+          - imsi: "901700000041596"
       - name: "RC" # TODO
 coredb:
   dbname: oai_db
