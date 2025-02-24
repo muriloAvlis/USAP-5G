@@ -79,16 +79,16 @@ name: usap-xapp
 fullname: {}
 
  ########################### For USAP-SMC ###########################
-usap_smc:
-  replicaCount: 1
-  imagePullPolicy: Always
-  image:
-    registry: docker.io
-    name: muriloavlis/usap-smc
-    tag: latest
-  config:
-    logger:
-      level: INFO
+# usap_smc:
+#   replicaCount: 1
+#   imagePullPolicy: Always
+#   image:
+#     registry: docker.io
+#     name: muriloavlis/usap-smc
+#     tag: latest
+#   config:
+#     logger:
+#       level: INFO
 
 ###############    The following are from the xApp descriptor     ###############
 appVersion: 0.0.1
