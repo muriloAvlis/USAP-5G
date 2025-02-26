@@ -6,9 +6,9 @@ Primeiro ataque:
         Ataque + video:  
     Configuração do ataque:
         Ataque puro (só o tŕafego de ataque): target - upf / Number of Packets - 75000 / packet size - 1024 / attack rate - 100 / port - 80
-        Ataque + Stream:
+        Ataque + Stream: target - upf / Number of Packets / packet size - 1024 / attack rate / port - 80
         Ataque + video:  
     Tempo:
         Ataque puro (só o tŕafego de ataque): +- 25 minutos
-        Ataque + Stream:
+        Ataque + Stream: +- 50 minutos
         Ataque + video:  
