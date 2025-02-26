@@ -1,0 +1,14 @@
+Primeiro ataque:
+    SYN flood:
+    Número de métricas coletadas:
+        Ataque puro (só o tŕafego de ataque): 1487
+        Ataque + Stream:
+        Ataque + video:  
+    Configuração do ataque:
+        Ataque puro (só o tŕafego de ataque): target - upf / Number of Packets - 75000 / packet size - 1024 / attack rate - 100 / port - 80
+        Ataque + Stream:
+        Ataque + video:  
+    Tempo:
+        Ataque puro (só o tŕafego de ataque): +- 25 minutos
+        Ataque + Stream:
+        Ataque + video:  
