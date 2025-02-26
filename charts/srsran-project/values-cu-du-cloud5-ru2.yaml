@@ -12,12 +12,12 @@ image:
   # Check https://hub.docker.com/u/softwareradiosystems for available images
   repository: muriloavlis/srsran-5g
   pullPolicy: Always
-  tag: split72_24_10_1
+  tag: split72_latest
 
 imagePullSecrets:
   - name: regcred
 
-nameOverride: ""
+nameOverride: "-"
 fullnameOverride: ""
 
 serviceAccount:
@@ -71,9 +71,9 @@ debugging:
 
 envs:
   core:
-    amf_hostname: "10.21.2.2" # oai-amf.oai5gcn or open5gs-amf-ngap.open5gs or IP Address
+    amf_hostname: open5gs-amf-ngap.open5gs # oai-amf.oai5gcn or open5gs-amf-ngap.open5gs or IP Address
   dpdk:
-    isolated_cpus: "29-56" # format: 1 or [1,2,3] or 1-3. Set "" to disable
+    isolated_cpus: "29-59" # format: 1 or [1,2,3] or 1-3. Set "" to disable
 
 config:
   run_as: gnb
@@ -86,7 +86,7 @@ config:
     cu_cp:
       amf:
         addr: $AMF_ADDR
-        port: 30412
+        port: 38412
         bind_addr: 10.21.2.55
         supported_tracking_areas:
           - tac: 2
@@ -94,9 +94,9 @@ config:
               - plmn: "00101"
                 tai_slice_support_list:
                   - sst: 1
-                  - sst: 2
-                  - sst: 3
-                  - sst: 128
+              - plmn: "90170"
+                tai_slice_support_list:
+                  - sst: 1
   
     ru_ofh:
       ru_bandwidth_MHz: 100
@@ -118,9 +118,9 @@ config:
       compr_bitwidth_prach: 9
       enable_ul_static_compr_hdr: false
       enable_dl_static_compr_hdr: false
-      iq_scaling: 3.0
+      iq_scaling: 1.6
       cells:
-        - network_interface: 0000:31:00.2 
+        - network_interface: 0000:31:00.2
           ru_mac_addr: 6c:ad:ad:00:0a:8e # RU-2
           du_mac_addr: 3c:ec:ef:c2:60:8e
           vlan_tag_cp: 162
@@ -157,12 +157,13 @@ config:
     e2:
       enable_cu_cp_e2: false               # Enables the CU E2 agent for CU-CP. Supported: [false, true]. 
       enable_cu_up_e2: false               # Enables the CU E2 agent for CU-UP. Supported: [false, true].
+      # enable_cu_e2: false                   # Enables the CU E2 agent. Supported: [false, true]. 
       enable_du_e2: true                   # Enables the DU E2 agent. Supported: [false, true].
       addr: 10.21.2.5                      # Sets the RIC IP address.
       port: 32222                          # Sets the RIC Port. Supported: [20000 - 40000].
-      bind_addr: 10.21.2.55                 # Sets the local IP address to bind for RIC connection. Supported: IPv4 address.
+      bind_addr: 10.21.2.5                 # Sets the local IP address to bind for RIC connection. Supported: IPv4 address.
       e2sm_kpm_enabled: true               # Enabled the E2SM KPM service module. Supported: [false, true].
-      e2sm_rc_enabled: true                # Enabled the E2SM RC service module. Supported: [false, true].
+      e2sm_rc_enabled: false                # Enabled the E2SM RC service module. Supported: [false, true].
 
     metrics:
       addr: 127.0.0.1                       # Sets the metrics address. Supported: IPV4 address.
@@ -177,7 +178,7 @@ config:
 
     log:
       filename: /tmp/gnb.log
-      all_level: info
+      all_level: warning
 
     pcap:
       mac_enable: false
@@ -188,4 +189,4 @@ config:
       e2ap_cu_cp_filename: /tmp/cu_cp_e2ap.pcap 
       e2ap_cu_up_filename: /tmp/cu_up_e2ap.pcap
       e2ap_du_filename: /tmp/du_e2ap.pcap   
-      e2ap_enable: false
+      e2ap_enable: false               

@@ -83,4 +83,4 @@ TODO
 
 ### Acknowledgements
 
-Thanks to GT-IQoS and RNP for their support in this project
+Este trabalho foi parcialmente financiado pelo Conselho Nacional de Desenvolvimento Científico e Tecnológico (CNPq), pela Fundação Coordenação de Aperfeiçoamento de Pessoal de Nível Superior (CAPES), e pela Fundação de Amparo à Pesquisa do Estado de São Paulo (FAPESP) projeto 2023/00811-0, projeto 2023/00673-7, projeto 2021/00199-8 (CPE SMARTNESS), projeto 2020/04031-1, e projeto 2018/23097-3. Ao OpenRAN@Brasil em parceria com a Rede Nacional de Ensino e Pesquisa (RNP) e Ministério de Ciência e Tecnologia (MCTI) projeto 01245.014203/2021-14.
