@@ -9,8 +9,8 @@ import os
 # =========================
 current_dir = os.getcwd()
 # Caminho dos arquivos
-MODEL_PATH = current_dir + "/experimentos/best_model_with_highest_recall.keras"
-VAL_CSV_PATH = current_dir + "/experimentos/fold_4/val_data.csv"
+MODEL_PATH = current_dir + "/experimentos_defesa/fold_1/lstm_defended_fold1.keras"
+VAL_CSV_PATH = current_dir + "/experimentos/fold_1/val_data.csv"
 
 # Features utilizadas no treinamento
 # features = [

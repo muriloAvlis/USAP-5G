@@ -66,7 +66,7 @@ recall_scores = []
 best_model = None
 tempo_total = 0
 tempos_folds = []
-epsilon_values = [0.1, 0.2, 0.3]
+epsilon_values = [0.1, 0.2, 0.3, 0.4, 0.5, 0.6, 0.7, 0.8, 0.9, 1.0]
 
 for train_idx, val_idx in skf.split(X, y):
     print(f"\n🔁 Fold {fold}")
