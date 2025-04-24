@@ -2,14 +2,15 @@ import numpy as np
 import pandas as pd
 import tensorflow as tf
 from sklearn.metrics import classification_report, confusion_matrix
+import os
 
 # =========================
 # 1. CONFIGURAÇÕES INICIAIS
 # =========================
-
+current_dir = os.getcwd()
 # Caminho dos arquivos
-MODEL_PATH = "/home/victor/test-victor/lstm-oran-test.keras"
-VAL_CSV_PATH = "/home/victor/test-victor/datasets/fix-dataset/val_instances.csv"
+MODEL_PATH = current_dir + "/experimentos/best_model_with_highest_recall.keras"
+VAL_CSV_PATH = current_dir + "/experimentos/fold_4/val_data.csv"
 
 # Features utilizadas no treinamento
 # features = [
@@ -107,5 +108,5 @@ for attack_type in ["FGSM", "PDG"]:
 
         print("\nMatriz de Confusão (Amostras Adversariais):")
         print(cm_adv)
-        print(f"\n🔹 Falso Positivo (FP): {fp_adv}")
-        print(f"🔹 Falso Negativo (FN): {fn_adv}")
+        print(f"\nFalso Positivo (FP): {fp_adv}")
+        print(f"Falso Negativo (FN): {fn_adv}")

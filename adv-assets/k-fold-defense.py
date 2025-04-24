@@ -10,45 +10,37 @@ from sklearn.utils.class_weight import compute_class_weight
 from imblearn.over_sampling import SMOTE
 from sklearn.metrics import classification_report, confusion_matrix
 import os
+import time
+
+current_dir = os.getcwd()
 
 # AUGMENTAÇÃO SINTÉTICA BASEADA EM RUÍDO GAUSSIANO
 def augment_syn_attack(data, noise=0.01):
     return data + noise * np.random.randn(*data.shape)
 
-# FGSM
-def create_adversarial_pattern_fgsm(input_data, target_label, model, epsilon):
-    input_tensor = tf.convert_to_tensor(input_data, dtype=tf.float32)
-    target_tensor = tf.convert_to_tensor(target_label, dtype=tf.float32)
-    target_tensor = tf.reshape(target_tensor, (-1, 1))
-
+# FGSM (em batch)
+def create_adversarial_fgsm_batch(model, X, y, epsilon):
     with tf.GradientTape() as tape:
-        tape.watch(input_tensor)
-        prediction = model(input_tensor, training=False)
-        loss = tf.keras.losses.binary_crossentropy(target_tensor, prediction)
+        tape.watch(X)
+        prediction = model(X, training=False)
+        loss = tf.keras.losses.binary_crossentropy(y, prediction)
+    gradient = tape.gradient(loss, X)
+    adv_x = X + epsilon * tf.sign(gradient)
+    return tf.clip_by_value(adv_x, -1, 1)
 
-    gradient = tape.gradient(loss, input_tensor)
-    adversarial_example = input_tensor + epsilon * tf.sign(gradient)
-    return tf.clip_by_value(adversarial_example, -1, 1)
-
-# PGD
-def create_adversarial_pattern_pgd(input_data, target_label, model, epsilon, alpha=0.01, num_iter=10):
-    x_adv = tf.identity(input_data)
-    target_tensor = tf.convert_to_tensor(target_label, dtype=tf.float32)
-    target_tensor = tf.reshape(target_tensor, (-1, 1))
-
+# PGD (em batch)
+def create_adversarial_pgd_batch(model, X, y, epsilon, alpha=0.01, num_iter=40):
+    adv_x = tf.identity(X)
     for _ in range(num_iter):
         with tf.GradientTape() as tape:
-            tape.watch(x_adv)
-            prediction = model(x_adv, training=False)
-            loss = tf.keras.losses.binary_crossentropy(target_tensor, prediction)
-
-        gradient = tape.gradient(loss, x_adv)
-        signed_grad = tf.sign(gradient)
-        x_adv = x_adv + alpha * signed_grad
-        x_adv = tf.clip_by_value(x_adv, input_data - epsilon, input_data + epsilon)
-        x_adv = tf.clip_by_value(x_adv, -1, 1)
-
-    return x_adv
+            tape.watch(adv_x)
+            prediction = model(adv_x, training=False)
+            loss = tf.keras.losses.binary_crossentropy(y, prediction)
+        gradient = tape.gradient(loss, adv_x)
+        adv_x = adv_x + alpha * tf.sign(gradient)
+        adv_x = tf.clip_by_value(adv_x, X - epsilon, X + epsilon)
+        adv_x = tf.clip_by_value(adv_x, -1, 1)
+    return adv_x
 
 # MODELO LSTM
 def build_lstm(input_shape):
@@ -63,7 +55,7 @@ def build_lstm(input_shape):
     return model
 
 # CARREGAR DATASET
-df = pd.read_csv('/home/victor/test-victor/datasets/fix-dataset/dataset_sem_colunas.csv')
+df = pd.read_csv(current_dir + "/assets/datasets/fix-dataset/dataset_sem_colunas.csv")
 
 features = ['IndLatency', 'DRB.UEThpDl', 'DRB.UEThpUl']
 X = df[features].values
@@ -74,7 +66,10 @@ n_splits = 5
 skf = StratifiedKFold(n_splits=n_splits, shuffle=True, random_state=42)
 
 fold = 1
+tempo_total = 0
+tempos_folds = []
 for train_index, test_index in skf.split(X, y):
+    inicio_fold = time.time()
     print(f"\n🔁 Fold {fold}")
 
     X_train, X_test = X[train_index], X[test_index]
@@ -100,52 +95,75 @@ for train_index, test_index in skf.split(X, y):
     model = build_lstm((X_train_augmented_lstm.shape[1], 1))
 
     epsilon_values = [0.1, 0.2, 0.3, 0.4, 0.5, 0.6, 0.7, 0.8, 0.9, 1.0]
+    X_all_adv = []
+    y_all_adv = []
 
-    for epoch in range(20):
-        print(f"Época {epoch + 1} de 20")
+    X_input_tensor = tf.convert_to_tensor(X_train_augmented_lstm, dtype=tf.float32)
+    y_input_tensor = tf.convert_to_tensor(y_train_augmented.reshape(-1, 1), dtype=tf.float32)
 
-        for epsilon in epsilon_values:
-            print(f"  Gerando exemplos adversariais (FGSM + PGD) com epsilon = {epsilon}")
+    adv_path = f"{current_dir}/experimentos-defesa/fold_{fold}/adversarials"
+    os.makedirs(adv_path, exist_ok=True)
 
-            X_adv_fgsm = np.array([
-                create_adversarial_pattern_fgsm(X_train_augmented[i:i+1], [y_train_augmented[i]], model, epsilon).numpy().squeeze()
-                for i in range(len(X_train_augmented))
-            ])
-            X_adv_pgd = np.array([
-                create_adversarial_pattern_pgd(X_train_augmented[i:i+1], [y_train_augmented[i]], model, epsilon).numpy().squeeze()
-                for i in range(len(X_train_augmented))
-            ])
+    for epsilon in epsilon_values:
+        print(f"  Gerando exemplos adversariais com epsilon = {epsilon}")
 
-            X_adv_combined = np.vstack([X_adv_fgsm, X_adv_pgd])[..., np.newaxis]
-            y_adv_combined = np.hstack([y_train_augmented, y_train_augmented])
+        X_adv_fgsm = create_adversarial_fgsm_batch(model, X_input_tensor, y_input_tensor, epsilon).numpy()
+        X_adv_pgd = create_adversarial_pgd_batch(model, X_input_tensor, y_input_tensor, epsilon, alpha=0.01, num_iter=40).numpy()
 
-            X_train_combined = np.vstack([X_train_augmented_lstm, X_adv_combined])
-            y_train_combined = np.hstack([y_train_augmented, y_adv_combined])
+        X_all_adv.append(np.vstack([X_adv_fgsm, X_adv_pgd]))
+        y_all_adv.append(np.hstack([y_train_augmented, y_train_augmented]))
 
-            model.fit(
-                X_train_combined, y_train_combined,
-                epochs=1, batch_size=32,
-                validation_data=(X_test_lstm, y_test),
-                class_weight=class_weights_dict,
-                verbose=1
-            )
+        pd.DataFrame(X_adv_fgsm.squeeze().reshape(X_adv_fgsm.shape[0], -1), columns=features).to_csv(f"{adv_path}/fgsm_eps_{epsilon}.csv", index=False)
+        pd.DataFrame(X_adv_pgd.squeeze().reshape(X_adv_pgd.shape[0], -1), columns=features).to_csv(f"{adv_path}/pgd_eps_{epsilon}.csv", index=False)
 
-    # AVALIAÇÃO
+    X_adv_combined = np.vstack(X_all_adv)
+    y_adv_combined = np.hstack(y_all_adv)
+
+    X_train_combined = np.vstack([X_train_augmented_lstm, X_adv_combined])
+    y_train_combined = np.hstack([y_train_augmented, y_adv_combined])
+
+    os.makedirs(f'{current_dir}/experimentos-defesa/fold_{fold}', exist_ok=True)
+    pd.DataFrame(np.hstack([X_train_augmented, y_train_augmented.reshape(-1, 1)]), columns=features + ['label']).to_csv(
+        f'{current_dir}/experimentos-defesa/fold_{fold}/train_data.csv', index=False)
+    pd.DataFrame(np.hstack([X_test, y_test.reshape(-1, 1)]), columns=features + ['label']).to_csv(
+        f'{current_dir}/experimentos-defesa/fold_{fold}/test_data.csv', index=False)
+
+    model.fit(
+        X_train_combined, y_train_combined,
+        epochs=20, batch_size=128,
+        validation_data=(X_test_lstm, y_test),
+        class_weight=class_weights_dict,
+        verbose=1
+    )
+
     y_pred = model.predict(X_test_lstm).flatten()
     y_pred_labels = (y_pred > 0.5).astype(int)
 
     print("\nRelatório de Classificação:")
     print(classification_report(y_test, y_pred_labels))
+    report = classification_report(y_test, y_pred_labels, output_dict=True)
+    report_df = pd.DataFrame(report).transpose()
+    report_df.to_csv(f"{current_dir}/experimentos-defesa/fold_{fold}/classification_report.csv", index=True)
 
     cm = confusion_matrix(y_test, y_pred_labels)
     tn, fp, fn, tp = cm.ravel()
     print("\nMatriz de Confusão:")
     print(cm)
-    print(f"🔹 Falso Positivo (FP): {fp}")
-    print(f"🔹 Falso Negativo (FN): {fn}")
+    print(f"Falso Positivo (FP): {fp}")
+    print(f"Falso Negativo (FN): {fn}")
+    cm_df = pd.DataFrame(cm, index=['Real:0', 'Real:1'], columns=['Pred:0', 'Pred:1'])
+    cm_df.to_csv(f"{current_dir}/experimentos-defesa/fold_{fold}/confusion_matrix.csv")
 
-    save_path = f"/home/victor/test-victor/experimentos-defesa/fold_{fold}"
+    save_path = f"{current_dir}/experimentos-defesa/fold_{fold}"
     os.makedirs(save_path, exist_ok=True)
     model.save(os.path.join(save_path, f"lstm_defend_model_fold{fold}.keras"))
 
+    final_fold = time.time()
+    tempo_fold = final_fold - inicio_fold
+    tempos_folds.append({'Fold': fold, 'Tempo (s)': tempo_fold})
+    tempo_total += tempo_fold
     fold += 1
+
+tempos_folds.append({'Fold': 'Total', 'Tempo (s)': tempo_total})
+tempos_df = pd.DataFrame(tempos_folds)
+tempos_df.to_csv(f"{current_dir}/experimentos-defesa/tempos_folds.csv", index=False)

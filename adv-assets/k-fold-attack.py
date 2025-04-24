@@ -7,9 +7,12 @@ from sklearn.metrics import classification_report, confusion_matrix
 # ============================
 # 1. CONFIGURAÇÕES E FUNÇÕES
 # ============================
-
-BASE_PATH = "/home/victor/test-victor/experimentos"
-RESULTS_PATH = "/home/victor/test-victor/experimentos/resultados"
+current_dir = os.getcwd()
+BASE_PATH = current_dir + "/experimentos-defesa"
+#BASE_PATH = current_dir + "/experimentos"
+#BASE_PATH_val = current_dir + "/experimentos"
+RESULTS_PATH = current_dir +  "/experimentos-defesa/resultados"
+#RESULTS_PATH = current_dir +  "/experimentos/resultados"
 features = ['IndLatency', 'DRB.UEThpDl', 'DRB.UEThpUl']
 epsilons = [0.1, 0.2, 0.3, 0.4, 0.5, 0.6, 0.7, 0.8, 0.9, 1.0]
 
@@ -53,14 +56,14 @@ n_folds = 5
 
 for fold in range(1, n_folds + 1):
     print(f"\n==============================")
-    print(f"🔁 Avaliando Fold {fold}")
+    print(f" Avaliando Fold {fold}")
     print(f"==============================")
 
-    model_path = os.path.join(BASE_PATH, f"fold_{fold}", f"lstm_model_fold{fold}.keras")
+    model_path = os.path.join(BASE_PATH, f"fold_{fold}", f"lstm_defend_model_fold{fold}.keras")
     val_path = os.path.join(BASE_PATH, f"fold_{fold}", f"test_data.csv")
 
     if not os.path.exists(model_path) or not os.path.exists(val_path):
-        print(f"⚠️ Modelo ou dados não encontrados para o fold {fold}. Pulando...")
+        print(f"Modelo ou dados não encontrados para o fold {fold}. Pulando...")
         continue
 
     # Carregar modelo e dados
@@ -76,7 +79,7 @@ for fold in range(1, n_folds + 1):
 
     for attack_type in ["FGSM", "PGD"]:
         for eps in epsilons:
-            print(f"\n🧪 Fold {fold} | Ataque {attack_type} | ε = {eps}")
+            print(f"\n Fold {fold} | Ataque {attack_type} | ε = {eps}")
 
             if attack_type == "FGSM":
                 X_adv_attacks = np.array([
@@ -99,13 +102,13 @@ for fold in range(1, n_folds + 1):
             y_adv_labels = (y_adv_pred > 0.5).astype(int)
 
             # Avaliação contra y_test original
-            print("\n📊 Relatório de Classificação (Conjunto Completo com Ataque na Classe 1):")
+            print("\nRelatório de Classificação (Conjunto Completo com Ataque na Classe 1):")
             print(classification_report(y_test, y_adv_labels, digits=4))
 
             cm_adv = confusion_matrix(y_test, y_adv_labels)
             tn_adv, fp_adv, fn_adv, tp_adv = cm_adv.ravel()
 
-            print("\n🧮 Matriz de Confusão:")
+            print("\nMatriz de Confusão:")
             print(cm_adv)
             print(f"🔹 Falso Positivo (FP): {fp_adv}")
             print(f"🔹 Falso Negativo (FN): {fn_adv}")
