@@ -34,7 +34,10 @@ def build_lstm(input_shape):
 df = pd.read_csv(current_dir + "/assets/datasets/fix-dataset/dataset_sem_colunas.csv")
 
 # 2. DEFINIR FEATURES E LABELS
-features = ['IndLatency', 'DRB.UEThpDl', 'DRB.UEThpUl']
+#features = ['IndLatency', 'DRB.UEThpDl', 'DRB.UEThpUl']
+features = ['IndLatency', 'DRB.AirIfDelayUl', 'DRB.PacketSuccessRateUlgNBUu', 'DRB.RlcDelayUl',
+             'DRB.RlcPacketDropRateDl', 'DRB.RlcSduDelayDl', 'DRB.RlcSduTransmittedVolumeDL',
+             'DRB.RlcSduTransmittedVolumeUL', 'DRB.UEThpDl', 'DRB.UEThpUl']
 X = df[features].values
 y = df['label'].values
 
@@ -81,11 +84,11 @@ for train_index, val_index in skf.split(X, y):
     X_val_lstm = X_val.reshape((X_val.shape[0], X_val.shape[1], 1))
 
     # SALVAR DADOS DO FOLD
-    os.makedirs(f'{current_dir}/experimentos/fold_{fold}', exist_ok=True)
+    os.makedirs(f'{current_dir}/experimentos_all_metrics/fold_{fold}', exist_ok=True)
     pd.DataFrame(np.hstack([X_train_augmented, y_train_augmented.reshape(-1, 1)]), columns=features + ['label']).to_csv(
-        f'{current_dir}/experimentos/fold_{fold}/train_data.csv', index=False)
+        f'{current_dir}/experimentos_all_metrics/fold_{fold}/train_data.csv', index=False)
     pd.DataFrame(np.hstack([X_val, y_val.reshape(-1, 1)]), columns=features + ['label']).to_csv(
-        f'{current_dir}/experimentos/fold_{fold}/val_data.csv', index=False)
+        f'{current_dir}/experimentos_all_metrics/fold_{fold}/val_data.csv', index=False)
 
     # CONSTRUIR E TREINAR MODELO
     model = build_lstm((X_train_augmented_lstm.shape[1], 1))
@@ -103,7 +106,7 @@ for train_index, val_index in skf.split(X, y):
     print(classification_report(y_val, y_pred_labels))
     report = classification_report(y_val, y_pred_labels, output_dict=True)
     report_df = pd.DataFrame(report).transpose()
-    report_df.to_csv(f"{current_dir}/experimentos/fold_{fold}/classification_report.csv", index=True)
+    report_df.to_csv(f"{current_dir}/experimentos_all_metrics/fold_{fold}/classification_report.csv", index=True)
 
     cm = confusion_matrix(y_val, y_pred_labels)
     tn, fp, fn, tp = cm.ravel()
@@ -112,10 +115,10 @@ for train_index, val_index in skf.split(X, y):
     print(f"Falso Positivo (FP): {fp}")
     print(f"Falso Negativo (FN): {fn}")
     cm_df = pd.DataFrame(cm, index=['Real:0', 'Real:1'], columns=['Pred:0', 'Pred:1'])
-    cm_df.to_csv(f"{current_dir}/experimentos/fold_{fold}/confusion_matrix.csv")
+    cm_df.to_csv(f"{current_dir}/experimentos_all_metrics/fold_{fold}/confusion_matrix.csv")
 
     # Salvar o modelo para cada fold (opcional, caso queira analisar mais tarde)
-    model.save(f"{current_dir}/experimentos/fold_{fold}/lstm_model_fold{fold}.keras")
+    model.save(f"{current_dir}/experimentos_all_metrics/fold_{fold}/lstm_model_fold{fold}.keras")
 
     # Armazenar o Recall para escolher o melhor modelo
     report_metrics = report['1']
@@ -135,18 +138,18 @@ for train_index, val_index in skf.split(X, y):
 # Armazenar o tempo total
 tempos_folds.append({'Fold': 'Total', 'Tempo (s)': tempo_total})
 tempos_df = pd.DataFrame(tempos_folds)
-tempos_df.to_csv(f"{current_dir}/experimentos/tempos_folds.csv", index=False)
+tempos_df.to_csv(f"{current_dir}/experimentos_all_metrics/tempos_folds.csv", index=False)
 
 # Exibir o melhor fold com base no Recall
 print(f"\n🌟 Melhor Fold (baseado em Recall): {best_fold}")
 
 # Salvar o melhor modelo (o que teve maior recall)
-best_model.save(f"{current_dir}/experimentos/best_model_with_highest_recall.keras")
+best_model.save(f"{current_dir}/experimentos_all_metrics/best_model_with_highest_recall.keras")
 print(f"Modelo com melhor recall salvo como: best_model_with_highest_recall.keras")
 
 # Agora, podemos testar o modelo com os dados de validação (ou outro conjunto de dados)
 # CARREGAR O MELHOR MODELO SALVO
-loaded_model = tf.keras.models.load_model(f"{current_dir}/experimentos/best_model_with_highest_recall.keras")
+loaded_model = tf.keras.models.load_model(f"{current_dir}/experimentos_all_metrics/best_model_with_highest_recall.keras")
 
 # Testar o modelo carregado no conjunto de validação de um fold específico
 print(f"\nTestando o modelo com o melhor recall no Fold {best_fold}")
@@ -165,7 +168,7 @@ y_pred_labels_test = (y_pred_test > 0.5).astype(int)
 print("\nRelatório de Classificação do Teste:")
 report_test = classification_report(y_test, y_pred_labels_test, output_dict=True)
 report_test_df = pd.DataFrame(report_test).transpose()
-report_test_df.to_csv(f"{current_dir}/experimentos/best_model_classification_report.csv", index=True)
+report_test_df.to_csv(f"{current_dir}/experimentos_all_metrics/best_model_classification_report.csv", index=True)
 
 # Matriz de Confusão do Teste
 cm_test = confusion_matrix(y_test, y_pred_labels_test)
@@ -175,4 +178,4 @@ print(cm_test)
 print(f"Falso Positivo (FP): {fp_test}")
 print(f"Falso Negativo (FN): {fn_test}")
 cm_test_df = pd.DataFrame(cm_test, index=['Real:0', 'Real:1'], columns=['Pred:0', 'Pred:1'])
-cm_test_df.to_csv(f"{current_dir}/experimentos/best_model_confusion_matrix.csv")
+cm_test_df.to_csv(f"{current_dir}/experimentos_all_metrics/best_model_confusion_matrix.csv")

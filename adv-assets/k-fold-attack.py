@@ -8,11 +8,13 @@ from sklearn.metrics import classification_report, confusion_matrix
 # 1. CONFIGURAÇÕES E FUNÇÕES
 # ============================
 current_dir = os.getcwd()
-BASE_PATH = current_dir + "/experimentos-defesa"
+#BASE_PATH = current_dir + "/experimentos_defesa"
+BASE_PATH = current_dir + "/experimentos"
+BASE_PATH_VAL = current_dir + "/experimentos"
 #BASE_PATH = current_dir + "/experimentos"
 #BASE_PATH_val = current_dir + "/experimentos"
-RESULTS_PATH = current_dir +  "/experimentos-defesa/resultados"
-#RESULTS_PATH = current_dir +  "/experimentos/resultados"
+#RESULTS_PATH = current_dir +  "/experimentos_defesa/resultados"
+RESULTS_PATH = current_dir +  "/experimentos/resultados"
 features = ['IndLatency', 'DRB.UEThpDl', 'DRB.UEThpUl']
 epsilons = [0.1, 0.2, 0.3, 0.4, 0.5, 0.6, 0.7, 0.8, 0.9, 1.0]
 
@@ -59,8 +61,9 @@ for fold in range(1, n_folds + 1):
     print(f" Avaliando Fold {fold}")
     print(f"==============================")
 
-    model_path = os.path.join(BASE_PATH, f"fold_{fold}", f"lstm_defend_model_fold{fold}.keras")
-    val_path = os.path.join(BASE_PATH, f"fold_{fold}", f"test_data.csv")
+    model_path = os.path.join(BASE_PATH, f"fold_{fold}", f"lstm_model_fold{fold}.keras")
+    #model_path = os.path.join(BASE_PATH, f"fold_{fold}", f"lstm_defended_fold{fold}.keras")
+    val_path = os.path.join(BASE_PATH_VAL, f"fold_{fold}", f"val_data.csv")
 
     if not os.path.exists(model_path) or not os.path.exists(val_path):
         print(f"Modelo ou dados não encontrados para o fold {fold}. Pulando...")
