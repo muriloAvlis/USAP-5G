@@ -9,13 +9,16 @@ from sklearn.metrics import classification_report, confusion_matrix
 # ============================
 current_dir = os.getcwd()
 #BASE_PATH = current_dir + "/experimentos_defesa"
-BASE_PATH = current_dir + "/experimentos"
-BASE_PATH_VAL = current_dir + "/experimentos"
+BASE_PATH = current_dir + "/experimentos_all_metrics"
+BASE_PATH_VAL = current_dir + "/experimentos_all_metrics"
 #BASE_PATH = current_dir + "/experimentos"
 #BASE_PATH_val = current_dir + "/experimentos"
 #RESULTS_PATH = current_dir +  "/experimentos_defesa/resultados"
-RESULTS_PATH = current_dir +  "/experimentos/resultados"
-features = ['IndLatency', 'DRB.UEThpDl', 'DRB.UEThpUl']
+RESULTS_PATH = current_dir +  "/experimentos_all_metrics/resultados"
+# features = ['IndLatency', 'DRB.UEThpDl', 'DRB.UEThpUl']
+features = ['IndLatency', 'DRB.AirIfDelayUl', 'DRB.PacketSuccessRateUlgNBUu', 'DRB.RlcDelayUl',
+             'DRB.RlcPacketDropRateDl', 'DRB.RlcSduDelayDl', 'DRB.RlcSduTransmittedVolumeDL',
+             'DRB.RlcSduTransmittedVolumeUL', 'DRB.UEThpDl', 'DRB.UEThpUl']
 epsilons = [0.1, 0.2, 0.3, 0.4, 0.5, 0.6, 0.7, 0.8, 0.9, 1.0]
 
 def create_adversarial_pattern_fgsm(input_data, target_label, model, epsilon):
