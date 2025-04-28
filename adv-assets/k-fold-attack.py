@@ -9,12 +9,12 @@ from sklearn.metrics import classification_report, confusion_matrix
 # ============================
 current_dir = os.getcwd()
 #BASE_PATH = current_dir + "/experimentos_defesa"
-BASE_PATH = current_dir + "/experimentos_all_metrics"
+BASE_PATH = current_dir + "/experimentos_defesa_all_metrics"
 BASE_PATH_VAL = current_dir + "/experimentos_all_metrics"
 #BASE_PATH = current_dir + "/experimentos"
 #BASE_PATH_val = current_dir + "/experimentos"
 #RESULTS_PATH = current_dir +  "/experimentos_defesa/resultados"
-RESULTS_PATH = current_dir +  "/experimentos_all_metrics/resultados"
+RESULTS_PATH = current_dir +  "/experimentos_defesa_all_metrics/resultados"
 # features = ['IndLatency', 'DRB.UEThpDl', 'DRB.UEThpUl']
 features = ['IndLatency', 'DRB.AirIfDelayUl', 'DRB.PacketSuccessRateUlgNBUu', 'DRB.RlcDelayUl',
              'DRB.RlcPacketDropRateDl', 'DRB.RlcSduDelayDl', 'DRB.RlcSduTransmittedVolumeDL',
@@ -64,8 +64,8 @@ for fold in range(1, n_folds + 1):
     print(f" Avaliando Fold {fold}")
     print(f"==============================")
 
-    model_path = os.path.join(BASE_PATH, f"fold_{fold}", f"lstm_model_fold{fold}.keras")
-    #model_path = os.path.join(BASE_PATH, f"fold_{fold}", f"lstm_defended_fold{fold}.keras")
+    #model_path = os.path.join(BASE_PATH, f"fold_{fold}", f"lstm_model_fold{fold}.keras")
+    model_path = os.path.join(BASE_PATH, f"fold_{fold}", f"lstm_defended_fold{fold}.keras")
     val_path = os.path.join(BASE_PATH_VAL, f"fold_{fold}", f"val_data.csv")
 
     if not os.path.exists(model_path) or not os.path.exists(val_path):

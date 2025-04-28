@@ -1,0 +1,2 @@
+fold,attack,epsilon,FP,FN,TP,TN
+5,FGSM,0.4,22,72,1317,11088

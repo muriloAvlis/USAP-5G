@@ -15,7 +15,9 @@ import time
 # Setup
 current_dir = os.getcwd()
 df = pd.read_csv(current_dir + "/assets/datasets/fix-dataset/dataset_sem_colunas.csv")
-features = ['IndLatency', 'DRB.UEThpDl', 'DRB.UEThpUl']
+features = ['IndLatency', 'DRB.AirIfDelayUl', 'DRB.PacketSuccessRateUlgNBUu', 'DRB.RlcDelayUl',
+             'DRB.RlcPacketDropRateDl', 'DRB.RlcSduDelayDl', 'DRB.RlcSduTransmittedVolumeDL',
+             'DRB.RlcSduTransmittedVolumeUL', 'DRB.UEThpDl', 'DRB.UEThpUl']
 X = df[features].values
 y = df['label'].values
 
@@ -134,10 +136,10 @@ for train_idx, val_idx in skf.split(X, y):
     recall = report['1']['recall']
     recall_scores.append(recall)
 
-    os.makedirs(f"{current_dir}/experimentos_defesa/fold_{fold}", exist_ok=True)
-    pd.DataFrame(report).transpose().to_csv(f"{current_dir}/experimentos_defesa/fold_{fold}/classification_report.csv")
-    pd.DataFrame(cm, index=['Real:0', 'Real:1'], columns=['Pred:0', 'Pred:1']).to_csv(f"{current_dir}/experimentos_defesa/fold_{fold}/confusion_matrix.csv")
-    model_defended.save(f"{current_dir}/experimentos_defesa/fold_{fold}/lstm_defended_fold{fold}.keras")
+    os.makedirs(f"{current_dir}/experimentos_defesa_all_metrics/fold_{fold}", exist_ok=True)
+    pd.DataFrame(report).transpose().to_csv(f"{current_dir}/experimentos_defesa_all_metrics/fold_{fold}/classification_report.csv")
+    pd.DataFrame(cm, index=['Real:0', 'Real:1'], columns=['Pred:0', 'Pred:1']).to_csv(f"{current_dir}/experimentos_defesa_all_metrics/fold_{fold}/confusion_matrix.csv")
+    model_defended.save(f"{current_dir}/experimentos_defesa_all_metrics/fold_{fold}/lstm_defended_fold{fold}.keras")
 
     if recall == max(recall_scores):
         best_model = model_defended
@@ -150,8 +152,8 @@ for train_idx, val_idx in skf.split(X, y):
 
 # Final
 tempos_folds.append({'Fold': 'Total', 'Tempo (s)': tempo_total})
-pd.DataFrame(tempos_folds).to_csv(f"{current_dir}/experimentos_defesa/tempos_folds.csv", index=False)
+pd.DataFrame(tempos_folds).to_csv(f"{current_dir}/experimentos_defesa_all_metrics/tempos_folds.csv", index=False)
 
 print(f"\n🌟 Melhor Fold (baseado em Recall): {best_fold}")
-best_model.save(f"{current_dir}/experimentos_defesa/best_defended_model.keras")
+best_model.save(f"{current_dir}/experimentos_defesa_all_metrics/best_defended_model.keras")
 print("✅ Modelo defendido com melhor recall salvo.")
