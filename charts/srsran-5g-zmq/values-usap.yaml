@@ -86,11 +86,11 @@ image:
 ## @param extraEnvVars Extra environment variables
 extraEnvVars:
   - name: AMF_HOSTNAME
-    value: open5gs-amf-ngap.open5gs.svc
+    value: oai-amf.oai-core # or open5gs-amf-ngap.open5gs.svc or oai-amf.oai-core or IP Address
   - name: AMF_BIND_INTERFACE
     value: eth0
   - name: RIC_HOSTNAME
-    value: service-ricplt-e2term-sctp-alpha.ricplt.svc
+    value: 127.0.0.1 # service-ricplt-e2term-sctp-alpha.ricplt.svc # or IP Address
   - name: RIC_BIND_INTERFACE
     value: eth0
   - name: RUN_AS
@@ -163,15 +163,22 @@ config:
         prach_config_index: 1           # Sets PRACH config to match what is expected by srsUE
       pdsch:
         mcs_table: qam64
+      pusch:
+        mcs_table: qam64
+
+    expert_execution:
+      threads:
+          non_rt:
+            nof_non_rt_threads: 2
     
     log:
       filename: /tmp/gnb.log            # Path of the log file.
       all_level: info                # Logging level applied to all layers.
 
     e2:
-      enable_cu_cp_e2: true                
-      enable_cu_up_e2: true                
-      enable_du_e2: true                   
+      enable_cu_cp_e2: false                
+      enable_cu_up_e2: false                
+      enable_du_e2: false                   
       addr: $RIC_ADDR                      
       port: 36421
       bind_addr: $RIC_BIND_ADDR                 
@@ -333,8 +340,8 @@ affinity: {}
 ## @param nodeSelector Node labels for pod assignment. Evaluated as a template.
 ## ref: https://kubernetes.io/docs/user-guide/node-selection/
 ##
-nodeSelector:
-    kubernetes.io/hostname: ran5g
+nodeSelector: {}
+    # kubernetes.io/hostname: ran5g
 ## srsran container's resource requests and limits
 ## ref: http://kubernetes.io/docs/user-guide/compute-resources/
 ## @param resources.requests [object] The requested resources for the init container
