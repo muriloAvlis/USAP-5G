@@ -58,8 +58,8 @@ helm repo update
 ### Prepare Near-RT RIC Helm Charts
 
 ```sh
-cd ~/git/charts/osc-nearrtric
-tar -xvf nearrtric.tgz
+cd charts/osc-nearrtric
+tar -xvf dist/packages/nearrtric-0.1.0.tgz
 make nearrtric
 ```
 
