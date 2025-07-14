@@ -2,9 +2,9 @@
 
 ## Requirements
 
-- Kubernetes
+- Kubernetes (installation tutorial available [here](https://github.com/muriloAvlis/k8s-utils/blob/main/docs/cluster_deploy/kubeadm/install.md))
 - Helm v3
-- [OpenEBS](installation tutorial available at: https://github.com/muriloAvlis/k8s-utils/blob/main/docs/tools/openebs/install.md)
+- OpenEBS (installation tutorial available [here](https://github.com/muriloAvlis/k8s-utils/blob/main/docs/tools/openebs/install.md))
 
 ## Getting Started
 
