@@ -1,6 +1,15 @@
 # UE Smart Allocation Platform on Open 5G Networks (USAP)
 
-The UE Smart Allocation Platform on Open 5G Networks (USAP) is a project to manage and optimize the allocation of UEs and UE QoS, using slices on Open 5G Networks with support for the ORAN Alliance O-RAN standard.
+This repository contains the implementation and experiments related to the following paper:
+
+> M. Silva, L. Oliveira, V. Dias, M. Gomes, F. Farias, A. Riker, and A. Abelém
+“Automatizando a Alocação de Usuários em Slices 5G em Arquiteturas Open RAN”
+XXX Workshop de Gerência e Operação de Redes e Serviços (WGRS 2025)
+DOI: [10.5753/wgrs.2025.8865](10.5753/wgrs.2025.8865)
+
+If you use or reference this work in your research, please cite the paper accordingly.
+
+<!-- The UE Smart Allocation Platform on Open 5G Networks (USAP) is a project to manage and optimize the allocation of UEs and UE QoS, using slices on Open 5G Networks with support for the ORAN Alliance O-RAN standard. -->
 
 <!-- ## Tutorials
 
@@ -76,10 +85,6 @@ helm upgrade --install usap-5g -n ricxapp deployments/helm-chart/usap-5g -f depl
 ### Proposal topology
 
 ![proposal-topology-v1](./assets/images/proposal_topology.png)
-
-### How It Works
-
-TODO
 
 ### Acknowledgements
 
