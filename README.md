@@ -5,7 +5,7 @@ This repository contains the implementation and experiments related to the follo
 > M. Silva, L. Oliveira, V. Dias, M. Gomes, F. Farias, A. Riker, and A. Abelém
 “Automatizando a Alocação de Usuários em Slices 5G em Arquiteturas Open RAN”
 XXX Workshop de Gerência e Operação de Redes e Serviços (WGRS 2025)
-DOI: [10.5753/wgrs.2025.8865](https://doi.org/10.5753/wgrs.2025.8865)
+DOI: <a href="https://doi.org/10.5753/wgrs.2025.8865" target="_blank">10.5753/wgrs.2025.8865</a>
 
 If you use or reference this work in your research, please cite the paper accordingly.
 
